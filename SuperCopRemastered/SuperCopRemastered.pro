@@ -26,11 +26,24 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    Game/supercoprmgame.cpp
+    Game/supercoprmgame.cpp \
+    Game/levelbase.cpp \
+    Game/platform.cpp \
+    Game/player.cpp \
+    Game/wall.cpp \
+    Game/enemy.cpp \
+    Game/donut.cpp
 
 HEADERS += \
         mainwindow.h \
-    Game/supercoprmgame.h
+    Game/supercoprmgame.h \
+    Game/levelbase.h \
+    Game/platform.h \
+    Game/player.h \
+    Game/wall.h \
+    Game/enemy.h \
+    Game/donut.h \
+    Game/datatypes.h
 
 FORMS += \
         mainwindow.ui
