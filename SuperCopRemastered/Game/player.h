@@ -69,7 +69,7 @@ public slots:
 
 private:
 
-    bool rolling, jumping, moveLeft, moveRight, ascend, upPressed, pause;
+    bool rolling, jumping, moveLeft, moveRight, ascend, upPressed, pause, running;
     bool onGround, playerOnWall, playerOnPlatform, wallCollided;
     int rectPosX, rectPosY, rectSizeX, rectSizeY;
     int posX, posY;

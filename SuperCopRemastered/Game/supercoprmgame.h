@@ -13,7 +13,7 @@
 #include <vector>
 #include <QElapsedTimer>
 #include <QVBoxLayout>
-
+#include <QDebug>
 #include <fstream>
 
 #include "datatypes.h"

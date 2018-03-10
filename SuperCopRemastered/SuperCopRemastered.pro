@@ -32,7 +32,11 @@ SOURCES += \
     Game/player.cpp \
     Game/wall.cpp \
     Game/enemy.cpp \
-    Game/donut.cpp
+    Game/donut.cpp \
+    Game/blockbase.cpp \
+    Game/bonusblock.cpp \
+    Game/itembase.cpp \
+    Game/enemybase.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -43,7 +47,12 @@ HEADERS += \
     Game/wall.h \
     Game/enemy.h \
     Game/donut.h \
-    Game/datatypes.h
+    Game/datatypes.h \
+    Game/blockbase.h \
+    Game/bonusblock.h \
+    Game/itembase.h \
+    Game/blockrenders.h \
+    Game/enemybase.h
 
 FORMS += \
         mainwindow.ui

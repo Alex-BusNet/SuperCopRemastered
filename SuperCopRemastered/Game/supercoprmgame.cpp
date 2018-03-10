@@ -3,9 +3,15 @@
 SuperCopRMGame::SuperCopRMGame(QWidget *parent)
     : QWidget(parent)
 {
-    QWidget::setFixedSize(this->width(),this->height());
+//    QWidget::setWindowState(Qt::WindowFullScreen);
+    QWidget::setFixedSize(1280, 720);
+    qDebug() << "Loading player";
     player = new Player(this->width(), this->height());
+    qDebug() << "Creating LevelBase...";
     lb = new LevelBase(this->width(), this->height());
+    qDebug() << "Loading Level...";
+    lb->LoadLevel(1);
+
     msg = new QMessageBox();
     pbox = new QMessageBox();
 
@@ -14,13 +20,14 @@ SuperCopRMGame::SuperCopRMGame(QWidget *parent)
 
     pausedFont = new QFont(this->font());
     pausedFont->setPointSize(48);
-
+    qDebug() << "Setting Background...";
     QPixmap bkgnd("Assets/UI/background.png");
-    bkgnd = bkgnd.scaled(this->size(), Qt::IgnoreAspectRatio);
+    bkgnd = bkgnd.scaled(this->width(), this->height(), Qt::IgnoreAspectRatio);
     QPalette palette;
     palette.setBrush(QPalette::Background, bkgnd);
     this->setPalette(palette);
 
+    qDebug() << "Creating Timers...";
     timer = new QTimer();
     timer->setInterval(50);
     connect(timer, &QTimer::timeout, this, &SuperCopRMGame::updateField);
@@ -39,6 +46,7 @@ SuperCopRMGame::SuperCopRMGame(QWidget *parent)
     location=0;
 
     //Initializes all Vector Elements;
+    qDebug() << "Loading vectors from file...";
     this->setVecs();
 
     showDevOpts = false;
@@ -70,6 +78,7 @@ SuperCopRMGame::SuperCopRMGame(QWidget *parent)
 
     timer->start();
     keyTimer->start();
+    qDebug() << "Done.";
 }
 
 SuperCopRMGame::~SuperCopRMGame()
@@ -328,93 +337,93 @@ void SuperCopRMGame::paintEvent(QPaintEvent *e)
     playerRect = QRect(player->getRectPosX(),player->getRectPosY(),player->getRectSizeX(),player->getRectSizeY());
 
 
-    for(unsigned int i = 0; i < donuts.size(); i++)
-    {
-        donutRect = QRect((*(donuts.at(i))).getPosX(),(*(donuts.at(i))).getPosY(), (*(donuts.at(i))).getSize().x, (*(donuts.at(i))).getSize().y);
+//    for(unsigned int i = 0; i < donuts.size(); i++)
+//    {
+//        donutRect = QRect((*(donuts.at(i))).getPosX(),(*(donuts.at(i))).getPosY(), (*(donuts.at(i))).getSize().x, (*(donuts.at(i))).getSize().y);
 
-        if(donutspawn.at(i)<=location)
-        {
-            (*(donuts.at(i))).setActive(true);
-        }//spawns a donut at each read location
+//        if(donutspawn.at(i)<=location)
+//        {
+//            (*(donuts.at(i))).setActive(true);
+//        }//spawns a donut at each read location
 
-        if((*(donuts.at(i))).getActive())
-        {
-            (*(donuts.at(i))).drawDonut(painter);
-        }//Controls whether donut is painted
+//        if((*(donuts.at(i))).getActive())
+//        {
+//            (*(donuts.at(i))).drawDonut(painter);
+//        }//Controls whether donut is painted
 
-        if((*(donuts.at(i))).getActive() && playerRect.intersects(donutRect)){
-            (*(donuts.at(i))).setActive(false);
-            (*(donuts.at(i))).setPosX(-10000);//Donuts may technically be reactivated by going backward, but the player cannot go back past 0, and donuts will spawn waaaay back.
-            gamescore+=10;
-        }//handles collisions with donut
+//        if((*(donuts.at(i))).getActive() && playerRect.intersects(donutRect)){
+//            (*(donuts.at(i))).setActive(false);
+//            (*(donuts.at(i))).setPosX(-10000);//Donuts may technically be reactivated by going backward, but the player cannot go back past 0, and donuts will spawn waaaay back.
+//            gamescore+=10;
+//        }//handles collisions with donut
 
-        for(unsigned int j = 0; j < walls.size(); j++)
-        {
-            wallRect = QRect((*(walls.at(j))).getWallPosX(), (*(walls.at(j))).getWallPosY(), (*(walls.at(j))).getWallSize().x, (*(walls.at(j))).getWallSize().y);
-            if(donutRect.intersects(wallRect))
-            {
-                (*(donuts.at(i))).setActive(false);
-            }
-        }//Donuts don't spawn in walls
-
-
-    }//Handles all cases of donut objects.
-
-    for(unsigned int i = 0; i < enemies.size(); i++)
-    {
-        enemyRect = QRect((*(enemies.at(i))).getPosX(), (*(enemies.at(i))).getPosY(), (*(enemies.at(i))).getSize().x, (*(enemies.at(i))).getSize().y);
-
-        if (1 == (*(enemies.at(i))).getDirection()&&this->width()==(*(enemies.at(i))).getPosX()){
-            (*(enemies.at(i))).setDirection(0);
-        }//Enemies don't wander off the right side of the screen
+//        for(unsigned int j = 0; j < walls.size(); j++)
+//        {
+//            wallRect = QRect((*(walls.at(j))).getWallPosX(), (*(walls.at(j))).getWallPosY(), (*(walls.at(j))).getWallSize().x, (*(walls.at(j))).getWallSize().y);
+//            if(donutRect.intersects(wallRect))
+//            {
+//                (*(donuts.at(i))).setActive(false);
+//            }
+//        }//Donuts don't spawn in walls
 
 
-        if(enemyspawn.at(i) <= location)
-        {
-            (*(enemies.at(i))).setActive(true);
-        }//spawns an enemy at each read location
+//    }//Handles all cases of donut objects.
 
-        if((*(enemies.at(i))).getActive())
-        {
-            (*(enemies.at(i))).drawEnemy(painter);
-        }//enemy moves based on time
+//    for(unsigned int i = 0; i < enemies.size(); i++)
+//    {
+//        enemyRect = QRect((*(enemies.at(i))).getPosX(), (*(enemies.at(i))).getPosY(), (*(enemies.at(i))).getSize().x, (*(enemies.at(i))).getSize().y);
 
-        if(playerRect.intersects(enemyRect) && player->isJumping() && !player->isAscending())
-        {
-            (*(enemies.at(i))).setActive(false);
-            (*(enemies.at(i))).setPosX(-100);
-        }//Kills enemy if you jump on it
-
-        if(playerRect.intersects(enemyRect) && (player->isOnGround() || player->isAscending()))
-        {
-            (*(enemies.at(i))).setPosY((*(enemies.at(i))).getPosY() - 1);
-            timer->stop();
-            msg->setText("Game Over");
-            msg->exec();
-            this->setHighScores();
-            this->close();
-        }//Handles game-ending collisions
+//        if (1 == (*(enemies.at(i))).getDirection()&&this->width()==(*(enemies.at(i))).getPosX()){
+//            (*(enemies.at(i))).setDirection(0);
+//        }//Enemies don't wander off the right side of the screen
 
 
-    }//Handles all cases of enemy objects.
+//        if(enemyspawn.at(i) <= location)
+//        {
+//            (*(enemies.at(i))).setActive(true);
+//        }//spawns an enemy at each read location
 
-    for(unsigned int i = 0; i < walls.size(); i++)
-    {
-        wallRect = QRect((*(walls.at(i))).getWallPosX(), (*(walls.at(i))).getWallPosY(), (*(walls.at(i))).getWallSize().x, (*(walls.at(i))).getWallSize().y);
+//        if((*(enemies.at(i))).getActive())
+//        {
+//            (*(enemies.at(i))).drawEnemy(painter);
+//        }//enemy moves based on time
 
-        if(wallSpawn.at(i) <= location)
-        {
-            (*(walls.at(i))).setActive(true);
-        }//Spawns a wall at each read location
+//        if(playerRect.intersects(enemyRect) && player->isJumping() && !player->isAscending())
+//        {
+//            (*(enemies.at(i))).setActive(false);
+//            (*(enemies.at(i))).setPosX(-100);
+//        }//Kills enemy if you jump on it
 
-        if((*walls.at(i)).isActive())
-        {
-            (*(walls.at(i))).drawWall(painter);
+//        if(playerRect.intersects(enemyRect) && (player->isOnGround() || player->isAscending()))
+//        {
+//            (*(enemies.at(i))).setPosY((*(enemies.at(i))).getPosY() - 1);
+//            timer->stop();
+//            msg->setText("Game Over");
+//            msg->exec();
+//            this->setHighScores();
+//            this->close();
+//        }//Handles game-ending collisions
 
-        }//Controls whether wall is drawn on screen
+
+//    }//Handles all cases of enemy objects.
+
+//    for(unsigned int i = 0; i < walls.size(); i++)
+//    {
+//        wallRect = QRect((*(walls.at(i))).getWallPosX(), (*(walls.at(i))).getWallPosY(), (*(walls.at(i))).getWallSize().x, (*(walls.at(i))).getWallSize().y);
+
+//        if(wallSpawn.at(i) <= location)
+//        {
+//            (*(walls.at(i))).setActive(true);
+//        }//Spawns a wall at each read location
+
+//        if((*walls.at(i)).isActive())
+//        {
+//            (*(walls.at(i))).drawWall(painter);
+
+//        }//Controls whether wall is drawn on screen
 
 
-    }//Handles all wall objects
+//    }//Handles all wall objects
 
     for(unsigned int i = 0; i < platforms.size(); i++)
     {
@@ -557,10 +566,10 @@ void SuperCopRMGame::paintEvent(QPaintEvent *e)
 
 
 void SuperCopRMGame::setVecs(){
-    QString enemyfile("Assets/level/enemy.txt");
-    QString donutfile("Assets/level/donut.txt");
-    QString wallFile("Assets/level/wall.txt");
-    QString platFile("Assets/level/platform.txt");
+    QString enemyfile("Assets/Level/enemy.txt");
+    QString donutfile("Assets/Level/donut.txt");
+    QString wallFile("Assets/Level/wall.txt");
+    QString platFile("Assets/Level/platform.txt");
 
     ifstream enemyread;
     enemyread.open(enemyfile.toStdString().c_str());

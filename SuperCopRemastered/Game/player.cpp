@@ -37,8 +37,8 @@ Player::Player(int parentWidth, int parentHeight)
 {
     posX = 130; //(parent->width() / 5) + 10;
     posY = 140;
-    size.x = 25;
-    size.y = 43;
+    size.x = 35;
+    size.y = 70;
     image = new QPixmap("Assets/Running/Run0_1.png");
     frame = 0;
     lastActionPressed = 0;
@@ -52,7 +52,7 @@ Player::Player(int parentWidth, int parentHeight)
 
     leftBound = parentWidth / 5;
     rightBound = parentWidth - (parentWidth / 3);
-    ground = parentHeight- 140;
+    ground = parentHeight - 170;
 
     rolling = false;
     jumping = false;
@@ -155,11 +155,47 @@ void Player::jump()
     frame++;
     jumping = true;
     upPressed = true;
+//    ascend = true;
+//    QString imagePath;
 
-    if(0 < this->getFrame() && 10 > this->getFrame())
+//    for(int i = 0; i < 6; i++)
+//    {
+//        if(running)
+//        {
+//            if(playerDirection == EAST) { posX += 35; }
+//            else if (playerDirection == WEST) { posX -= 35; }
+//        }
+//        else if(!ascend)
+//        {
+//            if(lastActionPressed == LEFT) { posX -= 23; }
+//            else if(lastActionPressed == RIGHT) { posX += 23; }
+//        }
+
+//        if(ascend)
+//            posY += 60;
+
+//        if(i == 3)
+//        {
+//            imagePath = QString("Assets/Running/Run1_1.png");
+//            changeImage(imagePath);
+//            ascend = false;
+//        }
+
+//        if(posY + size.y >= ground)
+//        {
+//            frame = 0;
+//            standBy();
+//            upPressed = false;
+//            break;
+//        }
+
+
+//    }
+
+    if(0 < this->getFrame() && 6 > this->getFrame())
     {
         QString imagePath;
-        if(0 < this->getFrame() && 5 > this->getFrame())
+        if(0 < this->getFrame() && 3 > this->getFrame())
         {
             ascend = true;
             switch(playerDirection)
@@ -167,14 +203,14 @@ void Player::jump()
             case WEST:
                 imagePath = QString("Assets/Running/Run1_1.png");
                 changeImage(imagePath);
-                posY -= 30;
-                rectPosY -= 30;
+                posY -= 60;
+                rectPosY -= 60;
                 break;
             case EAST:
                 imagePath = QString("Assets/Running/Run0_1.png");
                 changeImage(imagePath);
-                posY -= 30;
-                rectPosY -= 30;
+                posY -= 60;
+                rectPosY -= 60;
                 break;
             case STAND:
                 break;
@@ -188,10 +224,32 @@ void Player::jump()
             case WEST:
                 imagePath = QString("Assets/Running/Run1_1.png");
                 changeImage(imagePath);
+                if(lastActionPressed == LEFT)
+                {
+                    posX -= 5;
+                    rectPosX -= 5;
+                }
+                else if(lastActionPressed == RIGHT)
+                {
+                    posX += 5;
+                    rectPosX += 5;
+                    playerDirection = EAST;
+                }
                 break;
             case EAST:
                 imagePath = QString("Assets/Running/Run0_1.png");
                 changeImage(imagePath);
+                if(lastActionPressed == LEFT)
+                {
+                    posX -= 5;
+                    rectPosX -= 5;
+                    playerDirection = WEST;
+                }
+                else if(lastActionPressed == RIGHT)
+                {
+                    posX += 5;
+                    rectPosX += 5;
+                }
                 break;
             case STAND:
                 break;
@@ -302,12 +360,13 @@ void Player::roll()
 
 void Player::run()
 {
+    running = true;
     if(this->isJumping() && (!this->isOnGround() && !this->isOnPlatform() && !this->isOnWall()))
     {
         if(posX + 26 < rightBound)
         {
-            posX += 1;
-            rectPosX += 1;
+            posX += 3;
+            rectPosX += 3;
         }
         else
         {
@@ -331,6 +390,7 @@ void Player::run()
         frame++;
         upPressed = false;
         QString imagePath = QString("Assets/Running/Run0_%1.png").arg(frame);
+
 
         if(0 < this->getFrame() && 4 > this->getFrame())
         {
@@ -399,6 +459,7 @@ void Player::runInverted()
 
 void Player::standBy()
 {
+    running = false;
     //Checks which direction the player was moving last then sets the appropiate standing image
     if(1 == playerDirection)
     {
@@ -583,15 +644,3 @@ int Player::getPosY()
 {
     return posY;
 }//Accessor
-
-
-//int Player::getSizeX()
-//{
-//    return sizeX;
-//}//Accessor
-
-
-//int Player::getSizeY()
-//{
-//    return sizeY;
-//}//Accessor
