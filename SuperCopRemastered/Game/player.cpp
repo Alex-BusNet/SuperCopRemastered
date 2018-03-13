@@ -1,58 +1,40 @@
 #include "player.h"
+#include <QDebug>
 
 Player::Player()
 {
-//    posX = 130; //(parent->width() / 5) + 10;
-//    posY = 140;
-//    size,x = 25;
-//    size.y = 43;
-//    image = new QPixmap("../SuperCop/Images/Running/Run0_1.png");
-//    frame = 0;
-//    lastActionPressed = 0;
-//    playerDirection = 1;
-//    speedX = 5;
 
-//    rectPosX = posX + 2;
-//    rectPosY = posY; //parent->height() - 140;
-//    rectSizeX = size.x - 5;
-//    rectSizeY = size.y;
-
-//    leftBound = parent->width() / 5;
-//    rightBound = parent->width() - (parent->width() / 3);
-//    ground = 140;
-
-//    rolling = false;
-//    jumping = false;
-//    moveRight = false;
-//    moveLeft = false;
-//    ascend = false;
-//    playerOnWall = false;
-//    playerOnPlatform = false;
-//    onGround = true;
-//    upPressed = false;
-//    wallCollided = false;
 }
 
 Player::Player(int parentWidth, int parentHeight)
 {
     posX = 130; //(parent->width() / 5) + 10;
-    posY = 140;
-    size.x = 76;
-    size.y = 94;
-    image = new QPixmap("Assets/Running/New/Run0_1.png");
-    frame = 0;
+    size.x = 95;
+    size.y = 93;
+    posY = parentHeight - 100;
+
+    idleImagePath = QString("Assets/Idle/%1/Idle(%2).png");
+    runImagePath = QString("Assets/Running/Test/%1/Run(%2).png");
+    jumpImagePath = QString("Assets/Jumping/Test/%1/Jump(%2).png");
+    slideImagePath = QString("Assets/Sliding/%1/Slide(%2).png");
+    fallImagePath = QString("Assets/Falling/%1/Fall(%2).png");
+
+    frame = 1;
+
+    image = new QPixmap(idleImagePath.arg(frame));
     lastActionPressed = 0;
     playerDirection = 1;
-    speedX = 5;
+    speedX = PLAYER_INITIAL_X_VELOCITY;
+    jumpSpeed = PLAYER_INITIAL_Y_VELOCITY;
 
-    rectPosX = posX + 2;
-    rectPosY = posY; //parent->height() - 140;
-    rectSizeX = size.x - 5;
-    rectSizeY = size.y;
+    rectPosX = posX + 15;// + 2;
+    rectPosY = posY + 8; //parent->height() - 140;
+    rectSizeX = size.x - 30;// - 5;
+    rectSizeY = size.y - 15;
 
-    leftBound = parentWidth / 5;
-    rightBound = parentWidth - (parentWidth / 3);
-    ground = parentHeight - 170;
+    leftBound = parentWidth / 6;
+    rightBound = parentWidth - (parentWidth / 5);
+    ground = parentHeight;
 
     rolling = false;
     jumping = false;
@@ -64,6 +46,10 @@ Player::Player(int parentWidth, int parentHeight)
     onGround = true;
     upPressed = false;
     wallCollided = false;
+
+    qDebug() << "Ground: " << ground;
+    qDebug() << "Player height: " << size.y;
+    qDebug() << "Player pos (Y): " << posY;
 }
 
 Player::~Player()
@@ -79,6 +65,12 @@ Size Player::getSize()
 void Player::drawPlayer(QPainter &painter)
 {
     painter.drawPixmap(posX, posY, size.x, size.y, *image);
+    painter.drawRect(posX, posY, size.x, size.y);
+    painter.drawRect(rectPosX, rectPosY, rectSizeX, rectSizeY);
+    painter.drawText(10, 80, QString("Player state: %1").arg(PlayerStateStrings[pState]));
+    painter.drawText(10, 90, QString("Jump Speed:   %1").arg(jumpSpeed));
+    painter.drawText(10, 100, QString("Glide Distance: %1").arg(glideDistance));
+    painter.drawText(10, 110, QString("X Speed:  %1").arg(speedX));
 }//Draws the player
 
 
@@ -93,57 +85,144 @@ void Player::playerScreenPos()
 {
     //Check where player is on screen. If within a predefined rect, do not scroll screen.
     //If on edge of rect, move camera in direction player is running
-    if(1 == lastActionPressed && (this->posX + 25 < rightBound) && !wallCollided)
+    if(!jumping && 1 == lastActionPressed && (this->posX + 25 < rightBound) && !wallCollided)
     {
-        this->setPosX(this->getPosX() + speedX + 5);
-        this->setRectPosX(this->getRectPosX() + speedX + 5);
+        this->setPosX(this->getPosX() + speedX);
+        this->setRectPosX(this->getRectPosX() + speedX);
     }
-    else if(4 == lastActionPressed && (this->posX > leftBound) && !wallCollided)
+    else if(!jumping && 4 == lastActionPressed && (this->posX > leftBound) && !wallCollided)
     {
-        this->setPosX(this->getPosX() - speedX - 5);
-        this->setRectPosX(this->getRectPosX() - speedX - 5);
+        this->setPosX(this->getPosX() - speedX);
+        this->setRectPosX(this->getRectPosX() - speedX);
     }
     else
     {
         this->setPosX(this->getPosX());
         this->setRectPosX(this->getRectPosX());
     }
+}
+
+PlayerState Player::getState()
+{
+    return pState;
 }//Controls whether the screen moves or the player does
+
+void Player::UpdatePlayer()
+{
+    switch(pState)
+    {
+    case IDLE:
+        standBy();
+        break;
+    case RUNNING_RIGHT:
+        run();
+        break;
+    case RUNNING_LEFT:
+        runInverted();
+        break;
+    case JUMPING:
+        jump();
+        break;
+    case LONG_JUMPING:
+        longJump();
+        break;
+    case FALLING:
+        fall();
+        break;
+    case SLIDING:
+        slide();
+        break;
+    case PAUSED:
+        break;
+    default:
+        standBy();
+        break;
+    }
+}
+
+void Player::UpdateFrame()
+{
+    frame++;
+
+    if(pState == JUMPING || pState == LONG_JUMPING)
+    {
+        if(frame >= JUMP_FRAME_COUNT) { frame = 1; }
+    }
+    else if(pState == RUNNING_LEFT || pState == RUNNING_RIGHT)
+    {
+        if(frame >= RUN_FRAME_COUNT) { frame = 1; }
+    }
+    else if(pState == IDLE)
+    {
+        if(frame >= IDLE_FRAME_COUNT) { frame = 1; }
+    }
+    else if (pState == SLIDING)
+    {
+        if(frame >= SLIDE_FRAME_COUNT) { frame = 1; pState = IDLE; lastState = SLIDING;}
+    }
+    else if (pState == FALLING)
+    {
+        if(frame >= FALLING_FRAME_COUNT) { frame = FALLING_FRAME_COUNT; pState = FALLING; }
+    }
+}
 
 
 void Player::playerAction(int action)
 {
+    //Checks which direction is being called then runs the appropriate function
+    switch (action)
+    {
+    case RIGHT:
+        if((posY + size.y) < ground)
+            pState = FALLING;
+        else
+            pState = RUNNING_RIGHT;
+        break;
+    case UP:
+        if(pState == JUMPING || lastState == JUMPING)
+            break;
+        if(pState == RUNNING_RIGHT || pState == RUNNING_LEFT)
+            pState = LONG_JUMPING;
+        else
+            pState = JUMPING;
+        break;
+    case DOWN:
+        if(lastState != SLIDING)
+            pState = SLIDING;
+        else if((posY + size.y) < ground)
+            pState = FALLING;
+        else
+            pState = IDLE;
+        break;
+    case LEFT:
+        if((posY + size.y) < ground)
+            pState = FALLING;
+        else
+            pState = RUNNING_LEFT;
+        break;
+    case NONE:
+        if((posY + size.y) < ground)
+            pState = FALLING;
+        else
+            pState = IDLE;
+        break;
+    case PAUSE:
+        pState = PAUSED;
+        pausePlayer();
+    default:
+        pState = IDLE;
+        break;
+    }
+
     //If the new direction does not match the previous direction, reset the frame counter to zero.
     if(action != lastActionPressed)
     {
         if(!upPressed)
         {
-            frame = 0;
+            frame = 1;
         }
 
         lastActionPressed = action;
-    }
-
-    //Checks which direction is being called then runs the appropriate function
-    switch (action)
-    {
-    case RIGHT:
-        run();
-        break;
-    case UP:
-        jump();
-        break;
-    case DOWN:
-        roll();
-        break;
-    case LEFT:
-        runInverted();
-        break;
-    case NONE:
-        standBy();
-        break;
-    case PAUSE:
-        pausePlayer();
     }
 
     this->playerScreenPos();
@@ -152,307 +231,134 @@ void Player::playerAction(int action)
 
 void Player::jump()
 {
-    frame++;
-    jumping = true;
-    upPressed = true;
-//    ascend = true;
-//    QString imagePath;
-
-//    for(int i = 0; i < 6; i++)
-//    {
-//        if(running)
-//        {
-//            if(playerDirection == EAST) { posX += 35; }
-//            else if (playerDirection == WEST) { posX -= 35; }
-//        }
-//        else if(!ascend)
-//        {
-//            if(lastActionPressed == LEFT) { posX -= 23; }
-//            else if(lastActionPressed == RIGHT) { posX += 23; }
-//        }
-
-//        if(ascend)
-//            posY += 60;
-
-//        if(i == 3)
-//        {
-//            imagePath = QString("Assets/Running/Run1_1.png");
-//            changeImage(imagePath);
-//            ascend = false;
-//        }
-
-//        if(posY + size.y >= ground)
-//        {
-//            frame = 0;
-//            standBy();
-//            upPressed = false;
-//            break;
-//        }
-
-
-//    }
-
-    if(0 < this->getFrame() && 6 > this->getFrame())
+    if(frame == 1)
     {
-        QString imagePath;
-        if(0 < this->getFrame() && 3 > this->getFrame())
+        jumping = true;
+        glideDistance = 0;
+    }
+
+    QString dir = (playerDirection == EAST) ? "Right" : "Left";
+
+    if(pState == JUMPING)
+    {
+        if(playerDirection == WEST && lastActionPressed == LEFT) { posX -= 23; rectPosX -= 23;}
+        else if(playerDirection == EAST && lastActionPressed == RIGHT) { posX += 23; rectPosX += 23; }
+    }
+
+    if(pState != FALLING)
+    {
+        jumpSpeed *= GRAVITY_FACTOR;
+
+        posY -= (30 * jumpSpeed);
+        rectPosY -= (30 * jumpSpeed);
+
+        if(jumpSpeed <= 0.5f)
         {
-            ascend = true;
-            switch(playerDirection)
-            {
-            case WEST:
-                imagePath = QString("Assets/Jumping/New/Jump1_1.png");
-                changeImage(imagePath);
-                posY -= 60;
-                rectPosY -= 60;
-                break;
-            case EAST:
-                imagePath = QString("Assets/Jumping/New/Jump0_1.png");
-                changeImage(imagePath);
-                posY -= 60;
-                rectPosY -= 60;
-                break;
-            case STAND:
-                break;
-            }
-        }
-        else
-        {
-            ascend = false;
-            switch(playerDirection)
-            {
-            case WEST:
-                imagePath = QString("Assets/Jumping/New/Jump1_1.png");
-                changeImage(imagePath);
-                if(lastActionPressed == LEFT)
-                {
-                    posX -= 5;
-                    rectPosX -= 5;
-                }
-                else if(lastActionPressed == RIGHT)
-                {
-                    posX += 5;
-                    rectPosX += 5;
-                    playerDirection = EAST;
-                }
-                break;
-            case EAST:
-                imagePath = QString("Assets/Jumping/New/Jump0_1.png");
-                changeImage(imagePath);
-                if(lastActionPressed == LEFT)
-                {
-                    posX -= 5;
-                    rectPosX -= 5;
-                    playerDirection = WEST;
-                }
-                else if(lastActionPressed == RIGHT)
-                {
-                    posX += 5;
-                    rectPosX += 5;
-                }
-                break;
-            case STAND:
-                break;
-            }
+            frame = 1;
+            pState = FALLING;
+            lastState = JUMPING;
+            jumpSpeed = PLAYER_INITIAL_Y_VELOCITY;
         }
     }
-    else
-    {
-        upPressed = false;
-        standBy();
-    }
+
+    changeImage(jumpImagePath.arg(dir).arg(frame));
 }//Controls Player Jumps
 
-
-void Player::roll()
+void Player::longJump()
 {
-    frame++;
 
-    if(0 < this->getFrame() && 9 > this->getFrame())
+}
+
+void Player::slide()
+{
+    if((posY + size.y) == ground)
     {
-        QString imagePath;
-        rolling = true;
-        if(0 < this->getFrame() && 4 > this->getFrame())
+        speedX *= COEFF_OF_FRICTION;
+
+        jumpSpeed = PLAYER_INITIAL_Y_VELOCITY;
+
+        if(playerDirection == WEST)
         {
-            switch(playerDirection)
-            {
-            case WEST:
-                if((this->getPosX() - speedX - 3 >= leftBound) && !this->isWallCollided())
-                {
-                    this->setPosX(this->getPosX() - speedX - 3);
-                    this->setRectPosX(this->getRectPosX() - speedX - 3);
-                }
-                else
-                {
-                    this->setPosX(this->getPosX());
-                    this->setRectPosX(this->getRectPosX());
-                }
-
-                imagePath = QString("Assets/Images/Rolling/Roll1_%1.png").arg(QString::number(frame));
-                changeImage(imagePath);
-                break;
-            case EAST:
-                if((this->getPosX() + speedX + 28 < rightBound) && !this->isWallCollided())
-                {
-                    this->setPosX(this->getPosX() + speedX + 3);
-                    this->setRectPosX(this->getRectPosX() + speedX + 3);
-                }
-                else
-                {
-                    this->setPosX(this->getPosX());
-                    this->setRectPosX(this->getRectPosX());
-                }
-
-                imagePath = QString("Assets/Images/Rolling/Roll0_%1.png").arg(QString::number(frame));
-                changeImage(imagePath);
-                break;
-            case STAND:
-                break;
-            }
+            posX -= (20 * speedX);
+            rectPosX -= (20 * speedX);
+            changeImage(slideImagePath.arg("Left").arg(frame));
         }
-        else
+        else if(playerDirection == EAST)
         {
-            switch(playerDirection)
-            {
-            case WEST:
-                if((this->getPosX() - speedX + 2 > leftBound) && !this->isWallCollided())
-                {
-                    this->setPosX(this->getPosX() - speedX + 2);
-                    this->setRectPosX(this->getRectPosX() - speedX + 2);
-                }
-                else
-                {
-                    this->setPosX(this->getPosX());
-                    this->setRectPosX(this->getRectPosX());
-                }
+            posX += (20 * speedX);
+            rectPosX += (20 * speedX);
+            changeImage(slideImagePath.arg("Right").arg(frame));
+        }
 
-                imagePath = QString("Assets/Rolling/Roll1_%1.png").arg(QString::number(frame));
-                changeImage(imagePath);
-                break;
-            case EAST:
-                if((this->getPosX() + speedX + 23 < rightBound) && !this->isWallCollided())
-                {
-                    this->setPosX(this->getPosX() + speedX - 2);
-                    this->setRectPosX(this->getRectPosX() + speedX - 2);
-                }
-                else
-                {
-                    this->setPosX(this->getPosX());
-                    this->setRectPosX(this->getRectPosX());
-                }
-
-                imagePath = QString("Assets/Rolling/Roll0_%1.png").arg(QString::number(frame));
-                changeImage(imagePath);
-                break;
-            case STAND:
-                break;
-            }
+        if(speedX <= 0.5f)
+        {
+            pState = IDLE;
         }
     }
     else
     {
-        rolling = false;
-        standBy();
-    }
+        posY += (30 * GRAVITY_FACTOR);
+        rectPosY += (30 * GRAVITY_FACTOR);
 
-}//Controls Player Rolls
+        changeImage(fallImagePath.arg((playerDirection == WEST) ? "Left" : "Right").arg(frame));
+
+        if((posY + size.y) >= ground)
+        {
+            posY = ground - size.y;
+            rectPosY = ground - size.y + 10;
+            pState = IDLE;
+            jumping = false;
+        }
+    }
+}
 
 
 void Player::run()
 {
+    lastState = IDLE;
     running = true;
-    if(this->isJumping() && (!this->isOnGround() && !this->isOnPlatform() && !this->isOnWall()))
+
+    if(jumping && pState == FALLING)
     {
-        if(posX + 26 < rightBound)
-        {
-            posX += 3;
-            rectPosX += 3;
-        }
-        else
-        {
-            posX = posX;
-            rectPosX = rectPosX;
-        }
-
-        if(!upPressed)
-            frame = 5;
-        else
-        {
-            frame = frame;
-            upPressed = true;
-        }
-
-        jump();
+        speedX = PLAYER_FALLING_X_VELOCITY;
     }
-    else
+    else if(!jumping)
     {
-        jumping = false;
-        upPressed = false;
-        QString imagePath = QString("Assets/Running/New/Run0_%1.png").arg(frame);
-        frame++;
+        glideDistance = 0;
+        jumpSpeed = PLAYER_INITIAL_Y_VELOCITY;
 
+        if(speedX < 0.5f)
+            speedX = PLAYER_INITIAL_X_VELOCITY;
 
-        if(0 < this->getFrame() && 6 > this->getFrame())
-        {
-            changeImage(imagePath);
-            moveRight = true;
-            playerDirection = 1;
-        }
-        else
-        {
-            frame = 0;
-            moveRight = false;
-            playerDirection = 1;
-            changeImage("Assets/Running/New/Run0_1.png");
-        }
+        changeImage(runImagePath.arg("Right").arg(frame));
+        moveRight = true;
+        playerDirection = 1;
     }
+
 }//Controls Player Running right
 
 
 void Player::runInverted()
 {
-    if(this->isJumping() && (!this->isOnGround() && !this->isOnPlatform() && !this->isOnWall()))
-    {
-        if(posX - 1 > leftBound)
-        {
-            posX -= 1;
-            rectPosX -= 1;
-        }
-        else
-        {
-            posX = posX;
-            rectPosX = rectPosX;
-        }
+    lastState = IDLE;
+    running = true;
 
-        if(!upPressed)
-            frame = 5;
-        else
-        {
-            frame = frame;
-            upPressed = true;
-        }
-        jump();
+    if(jumping && pState == FALLING)
+    {
+        speedX = PLAYER_FALLING_X_VELOCITY;
     }
-    else
+    else if(!jumping)
     {
-        frame++;
-        jumping = false;
-        upPressed = false;
-        QString imagePath = QString("Assets/Running/New/Run1_%1.png").arg(frame);
+        glideDistance = 0;
 
-        if(0 < this->getFrame() && 4 > this->getFrame())
-        {
-            changeImage(imagePath);
-            moveLeft = true;
-            playerDirection = -1;
-        }
-        else
-        {
-            frame = 0;
-            moveLeft = false;
-            playerDirection = -1;
-            changeImage("Assets/Running/New/Run1_1.png");
-        }
+        if(speedX < 0.5f)
+            speedX = PLAYER_INITIAL_X_VELOCITY;
+
+        jumpSpeed = PLAYER_INITIAL_Y_VELOCITY;
+
+        changeImage(runImagePath.arg("Left").arg(frame));
+        moveLeft = true;
+        playerDirection = -1;
     }
 }//Controls Player Running Left
 
@@ -460,15 +366,16 @@ void Player::runInverted()
 void Player::standBy()
 {
     running = false;
+    glideDistance = 0;
+    jumping = false;
     //Checks which direction the player was moving last then sets the appropiate standing image
     if(1 == playerDirection)
     {
-        changeImage("Assets/Running/New/Run0_1.png");
+        changeImage(idleImagePath.arg("Right").arg(frame++));
     }
-
-    if(-1 == playerDirection)
+    else if(-1 == playerDirection)
     {
-        changeImage("Assets/Running/New/Run1_1.png");
+        changeImage(idleImagePath.arg("Left").arg(frame++));
     }
 }
 
@@ -476,6 +383,37 @@ void Player::pausePlayer()
 {
 
 }//Controls Player Stopped
+
+void Player::fall()
+{
+    posY += (20 * GRAVITY_FACTOR);
+    rectPosY += (20 * GRAVITY_FACTOR);
+
+    changeImage(fallImagePath.arg((playerDirection == WEST) ? "Left" : "Right").arg(frame));
+
+    if((posY + size.y) >= ground)
+    {
+        posY = ground - size.y;
+        rectPosY = ground - size.y + 10;
+        pState = IDLE;
+    }
+
+    if(jumping && abs(glideDistance) < 69)
+    {
+        if(playerDirection == WEST && lastActionPressed == LEFT)
+        {
+            posX -= 23;
+            rectPosX -= 23;
+            glideDistance -= 23;
+        }
+        else if(playerDirection == EAST && lastActionPressed == RIGHT)
+        {
+            posX += 23;
+            rectPosX += 23;
+            glideDistance += 23;
+        }
+    }
+}
 
 
 int Player::getFrame()

@@ -17,8 +17,35 @@ EnemyBase::EnemyBase(int x, int y, EnemyType eType)
 void EnemyBase::DrawEnemy(QPainter &paint)
 {
     paint.drawPixmap(posX, posY, enemySize.x, enemySize.y, *texture);
-    texture = new QPixmap(texturePath.arg(color).arg(frame++));
-    if(frame > 2) { frame = 1; }
+}
+
+void EnemyBase::UpdateEnemy()
+{
+    frame = ((frame + 1) % 2) + 1;
+    texture = new QPixmap(texturePath.arg(color).arg(QString::number(frame)));
+
+    if(direction == EAST)
+        posX += speed;
+    else
+        posX -= speed;
+
+    // Adjust the Direction of the enemy;
+    if((posX + enemySize.x) >= rightBound->GetPosX())
+    {
+        direction = WEST;
+        posX = leftBound->GetRightEdge();
+    }
+    else if(posX <= (leftBound->GetPosX() + leftBound->GetSize().y))
+    {
+        direction = EAST;
+        posX = rightBound->GetPosX();
+    }
+}
+
+void EnemyBase::SetBoundingObstacles(BlockBase *left, BlockBase *right)
+{
+    leftBound = left;
+    rightBound = right;
 }
 
 void EnemyBase::SetEnemyInfo()
@@ -58,6 +85,4 @@ void EnemyBase::SetEnemyInfo()
 
     direction = WEST;
     frame = 1;
-
-
 }

@@ -28,10 +28,38 @@ void BlockBase::DrawBlock(QPainter &paint)
     paint.drawRect(QRect(posX, posY, blockSize.x * x, blockSize.y * y));
 }
 
+void BlockBase::UpdateBlock(int playerDirection)
+{
+    if(playerDirection == EAST)
+        posX -= LEVEL_SCROLL_SPEED;
+    else
+        posX += LEVEL_SCROLL_SPEED;
+}
+
 void BlockBase::SetPosition(int x, int y)
 {
     this->posX = x;
     this->posY = y;
+}
+
+int BlockBase::GetPosX()
+{
+    return posX;
+}
+
+int BlockBase::GetPosY()
+{
+    return posY;
+}
+
+int BlockBase::GetRightEdge()
+{
+    return posX + blockSize.x;
+}
+
+Size BlockBase::GetSize()
+{
+    return blockSize;
 }
 
 void BlockBase::SetBlockInfo()

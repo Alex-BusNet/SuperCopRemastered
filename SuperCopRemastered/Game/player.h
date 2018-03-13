@@ -8,6 +8,18 @@
 #include <QWidget>
 #include <QRect>
 
+#define IDLE_FRAME_COUNT          10
+#define RUN_FRAME_COUNT           8
+#define JUMP_FRAME_COUNT          5
+#define SLIDE_FRAME_COUNT         10
+#define FALLING_FRAME_COUNT       5
+
+#define PLAYER_INITIAL_X_VELOCITY 8.0f
+#define PLAYER_INITIAL_Y_VELOCITY 5.0f
+#define PLAYER_FALLING_X_VELOCITY 2.0f
+#define COEFF_OF_FRICTION         0.5f
+#define GRAVITY_FACTOR            0.75f
+
 class Player
 {
 public:
@@ -19,12 +31,19 @@ public:
     void changeImage(QString str);
     void playerScreenPos();
 
+    PlayerState getState();
+
+    void UpdatePlayer();
+    void UpdateFrame();
+
     void jump();
-    void roll();
+    void longJump();
+    void slide();
     void run();
     void runInverted();
     void standBy();
     void pausePlayer();
+    void fall();
 
     void setPosX(int x);
     void setPosY(int y);
@@ -71,14 +90,28 @@ private:
 
     bool rolling, jumping, moveLeft, moveRight, ascend, upPressed, pause, running;
     bool onGround, playerOnWall, playerOnPlatform, wallCollided;
+
+    PlayerState lastState, pState, nextState;
+
     int rectPosX, rectPosY, rectSizeX, rectSizeY;
     int posX, posY;
+
     Size size;
+
+    float speedX;
+    float jumpSpeed;
+
     int frame;
     int leftBound, rightBound;
-    int ground, speedX;
+    int ground;
     int lastActionPressed;
     int playerDirection;
+    int glideDistance;
+
+    QString PlayerStateStrings[8] = {"IDLE", "RUNNING_RIGHT", "JUMPING", "SLIDING", "RUNNING_LEFT", "LONG_JUMPING", "FALLING", "PAUSED"};
+
+
+    QString idleImagePath, jumpImagePath, runImagePath, slideImagePath, fallImagePath;
     QPixmap *image;
 };
 

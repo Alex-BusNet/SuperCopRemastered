@@ -5,10 +5,11 @@ SuperCopRMGame::SuperCopRMGame(QWidget *parent)
 {
 //    QWidget::setWindowState(Qt::WindowFullScreen);
     QWidget::setFixedSize(1280, 720);
-    qDebug() << "Loading player";
-    player = new Player(this->width(), this->height());
+    qDebug() << "Height: " << this->height();
     qDebug() << "Creating LevelBase...";
     lb = new LevelBase(this->width(), this->height());
+    qDebug() << "Loading player";
+    player = new Player(this->width(), lb->getGround());
     qDebug() << "Loading Level...";
     lb->LoadLevel(1);
 
@@ -45,6 +46,23 @@ SuperCopRMGame::SuperCopRMGame(QWidget *parent)
     gamescore=0;
     location=0;
 
+    //------------------------------------------------------------------------------------------
+    // Gamepad configuration
+    gpm = QGamepadManager::instance();
+
+    gpkn = new QGamepadKeyNavigation();
+    gpkn->setUpKey(Qt::Key_Up);
+    gpkn->setDownKey(Qt::Key_Down);
+    gpkn->setLeftKey(Qt::Key_Left);
+    gpkn->setRightKey(Qt::Key_Right);
+
+    connect(gpkn, &QGamepadKeyNavigation::upKeyChanged, this, &SuperCopRMGame::actionInput);
+    connect(gpkn, &QGamepadKeyNavigation::downKeyChanged, this, &SuperCopRMGame::actionInput);
+    connect(gpkn, &QGamepadKeyNavigation::leftKeyChanged, this, &SuperCopRMGame::actionInput);
+    connect(gpkn, &QGamepadKeyNavigation::rightKeyChanged, this, &SuperCopRMGame::actionInput);
+
+    //------------------------------------------------------------------------------------------
+
     //Initializes all Vector Elements;
     qDebug() << "Loading vectors from file...";
     this->setVecs();
@@ -75,6 +93,8 @@ SuperCopRMGame::SuperCopRMGame(QWidget *parent)
     vLayout->addLayout(hLayout);
 
     setLayout(vLayout);
+
+    showDevOpts = true;
 
     timer->start();
     keyTimer->start();
@@ -281,22 +301,7 @@ void SuperCopRMGame::pollKey()
         lastKeyPress = 4;
     else
     {
-        //Checks if none of the keys are pressed before checking if some of the keys are pressed.
-        if(!isUpPressed && !isDownPressed && !isLeftPressed && !isRightPressed && !gamePaused)
-        {
-            if(3 == lastKeyPress && player->isRolling())
-                lastKeyPress = 3;
-            else if(2 == lastKeyPress && player->isJumping())
-                lastKeyPress = 2;
-            else if(1 == lastKeyPress && player->isMoveRight())
-                lastKeyPress = 1;
-            else if (4 == lastKeyPress && player->isMoveLeft())
-                lastKeyPress = 4;
-            else
-                lastKeyPress = 0;
-        }
-        else
-            lastKeyPress = 0;
+        lastKeyPress = 0;
     }
 }
 
@@ -305,7 +310,9 @@ void SuperCopRMGame::updateField()
     if(!gamePaused)
     {
         player->playerAction(lastKeyPress);
-        obstacleMovement();
+        player->UpdateFrame();
+        player->UpdatePlayer();
+//        obstacleMovement();
     }
 
     this->update();
@@ -324,9 +331,35 @@ void SuperCopRMGame::exitGame()
     this->close();
 }
 
+void SuperCopRMGame::actionInput(Qt::Key key)
+{
+    qDebug() << "Action Input";
+    switch(key)
+    {
+    case Qt::Key_Left:
+        player->playerAction(LEFT);
+        break;
+    case Qt::Key_Right:
+        player->playerAction(RIGHT);
+        break;
+    case Qt::Key_Up:
+        player->playerAction(UP);
+        break;
+    case Qt::Key_Down:
+        player->playerAction(DOWN);
+        break;
+    default:
+        player->playerAction(NONE);
+        break;
+    }
+}
+
 void SuperCopRMGame::paintEvent(QPaintEvent *e)
 {
+    Q_UNUSED(e)
+
     QPainter painter(this);
+    lb->UpdateLevel(player->getPlayerDirection(), player->getState());
     player->drawPlayer(painter);
     lb->drawLevelBase(painter);
 
@@ -425,106 +458,110 @@ void SuperCopRMGame::paintEvent(QPaintEvent *e)
 
 //    }//Handles all wall objects
 
-    for(unsigned int i = 0; i < platforms.size(); i++)
+//    for(unsigned int i = 0; i < platforms.size(); i++)
+//    {
+//        platRect = QRect((*(platforms.at(i))).getPlatformPosX(), (*(platforms.at(i))).getPlatformPosY(), (*(platforms.at(i))).getPlatformSize().x, (*(platforms.at(i))).getPlatformSize().y);
+
+//        if(platSpawn.at(i) <= location)
+//        {
+//            (*(platforms.at(i))).setActive(true);
+//        }//Spawns platform of each read location
+
+//        if((*platforms.at(i)).isActive())
+//        {
+//            (*(platforms.at(i))).drawPlatform(painter);
+
+//        }//Controls whether platform is drawn on screen
+
+//        if(playerRect.intersects(platRect) && (player->getPosY() < 315) && !player->isAscending())
+//        {
+//            player->setPosY(270);
+//            player->setRectPosY(270);
+//            player->setJumping(false);
+//            player->setOnPlatform(true);
+//            player->setOnWall(false);
+//            player->setOnGround(false);
+//        }
+//    }//handles all platform objects
+
+//    if(playerRect.intersects(platRect) && (player->getPosY() < 315) && !player->isAscending())
+//    {
+//        player->setPosY(270);
+//        player->setRectPosY(270);
+//        player->setJumping(false);
+//        player->setOnPlatform(true);
+//        player->setOnWall(false);
+//        player->setOnGround(false);
+//    }//Platform Collision handler
+
+//    for(unsigned int i=0;i<walls.size();i++)
+//    {
+//        wallRect = QRect((*(walls.at(i))).getWallPosX(), (*(walls.at(i))).getWallPosY(), (*(walls.at(i))).getWallSize().x, (*(walls.at(i))).getWallSize().y);
+
+//        if(wallSpawn.at(i)==location){
+//            (*(walls.at(i))).setActive(true);
+//        }//spawns a wall at each read location
+
+//        if((*(walls.at(i))).isActive())
+//        {
+//            (*(walls.at(i))).drawWall(painter);
+//        }//Controls whether wall is painted
+
+//        if(playerRect.intersects(wallRect) && (player->getPosY() < 340) && !player->isAscending())
+//        {
+//            player->setPosY(290);
+//            player->setRectPosY(290);
+//            player->setJumping(false);
+//            player->setOnPlatform(false);
+//            player->setOnWall(true);
+//            player->setOnGround(false);
+//        }
+//    }//Wall Collison handler
+
+//    if((player->getPosY() + player->getSize().y) >= lb->getGround())
+//    {
+//        player->setPosY(lb->getGround() - player->getSize().y);
+//        player->setOnGround(true);
+//    }
+//    else
+//        player->fall();
+
+    if(((player->getRectPosY() + player->getRectSizeY()) >= player->getGround()) && !player->isAscending() && !player->isOnWall() && !player->isOnPlatform())
     {
-        platRect = QRect((*(platforms.at(i))).getPlatformPosX(), (*(platforms.at(i))).getPlatformPosY(), (*(platforms.at(i))).getPlatformSize().x, (*(platforms.at(i))).getPlatformSize().y);
-
-        if(platSpawn.at(i) <= location)
-        {
-            (*(platforms.at(i))).setActive(true);
-        }//Spawns platform of each read location
-
-        if((*platforms.at(i)).isActive())
-        {
-            (*(platforms.at(i))).drawPlatform(painter);
-
-        }//Controls whether platform is drawn on screen
-
-        if(playerRect.intersects(platRect) && (player->getPosY() < 315) && !player->isAscending())
-        {
-            player->setPosY(270);
-            player->setRectPosY(270);
-            player->setJumping(false);
-            player->setOnPlatform(true);
-            player->setOnWall(false);
-            player->setOnGround(false);
-        }
-    }//handles all platform objects
-
-    if(playerRect.intersects(platRect) && (player->getPosY() < 315) && !player->isAscending())
-    {
-        player->setPosY(270);
-        player->setRectPosY(270);
-        player->setJumping(false);
-        player->setOnPlatform(true);
-        player->setOnWall(false);
-        player->setOnGround(false);
-    }//Platform Collision handler
-
-    for(unsigned int i=0;i<walls.size();i++)
-    {
-        wallRect = QRect((*(walls.at(i))).getWallPosX(), (*(walls.at(i))).getWallPosY(), (*(walls.at(i))).getWallSize().x, (*(walls.at(i))).getWallSize().y);
-
-        if(wallSpawn.at(i)==location){
-            (*(walls.at(i))).setActive(true);
-        }//spawns a wall at each read location
-
-        if((*(walls.at(i))).isActive())
-        {
-            (*(walls.at(i))).drawWall(painter);
-        }//Controls whether wall is painted
-
-        if(playerRect.intersects(wallRect) && (player->getPosY() < 340) && !player->isAscending())
-        {
-            player->setPosY(290);
-            player->setRectPosY(290);
-            player->setJumping(false);
-            player->setOnPlatform(false);
-            player->setOnWall(true);
-            player->setOnGround(false);
-        }
-    }//Wall Collison handler
-
-    if((player->getPosY() >= player->getGround()) && !player->isAscending() && !player->isOnWall() && !player->isOnPlatform())
-    {
-        player->setPosY(player->getGround());
-        player->setRectPosY(player->getGround());
-        player->setJumping(false);
+        player->setPosY(lb->getGround() - player->getRectSizeY());
+        player->setRectPosY(player->getPosY() + 8);
         player->setOnPlatform(false);
         player->setOnWall(false);
         player->setOnGround(true);
     }//Ground Collision handler
     else
     {
-        player->setPosY(player->getPosY() + 10);
-        player->setRectPosY(player->getRectPosY() + 10);
-        //        player->setJumping(true);
         player->setOnPlatform(false);
         player->setOnWall(false);
         player->setOnGround(false);
     }//Lowers Player until collision occurs
 
-    for(unsigned int i=0;i<walls.size();i++)
-    {
-        wallRect = QRect((*(walls.at(i))).getWallPosX(), (*(walls.at(i))).getWallPosY(), (*(walls.at(i))).getWallSize().x, (*(walls.at(i))).getWallSize().y);
+//    for(unsigned int i=0;i<walls.size();i++)
+//    {
+//        wallRect = QRect((*(walls.at(i))).getWallPosX(), (*(walls.at(i))).getWallPosY(), (*(walls.at(i))).getWallSize().x, (*(walls.at(i))).getWallSize().y);
 
-        if((player->getPosY() + 40 > (*(walls.at(i))).getWallPosY()) && (playerRect.intersects(wallRect)) && (1 == player->getPlayerDirection()))
-        {
-            player->setPosX((*(walls.at(i))).getWallPosX() - player->getSize().x);
-            player->setRectPosX((*(walls.at(i))).getWallPosX() - player->getSize().x);
-            player->setWallCollided(true);
-        }//Checks for player colliding with the left side of a wall
-        else if((player->getPosY() + 40 > (*(walls.at(i))).getWallPosY()) && (playerRect.intersects(wallRect)) && (-1 == player->getPlayerDirection()))
-        {
-            player->setPosX((*(walls.at(i))).getWallPosX()+(*(walls.at(i))).getWallSize().x);
-            player->setRectPosX((*(walls.at(i))).getWallPosX()+(*(walls.at(i))).getWallSize().x + (player->getSize().x - player->getRectSizeX()));
-            player->setWallCollided(true);
-        }//Checks for player colliding with the left side of a wall
-        else
-        {
-            player->setWallCollided(false);
-        }//Sets flag for when player is not colliding with a wall
-    }
+//        if((player->getPosY() + 40 > (*(walls.at(i))).getWallPosY()) && (playerRect.intersects(wallRect)) && (1 == player->getPlayerDirection()))
+//        {
+//            player->setPosX((*(walls.at(i))).getWallPosX() - player->getSize().x);
+//            player->setRectPosX((*(walls.at(i))).getWallPosX() - player->getSize().x);
+//            player->setWallCollided(true);
+//        }//Checks for player colliding with the left side of a wall
+//        else if((player->getPosY() + 40 > (*(walls.at(i))).getWallPosY()) && (playerRect.intersects(wallRect)) && (-1 == player->getPlayerDirection()))
+//        {
+//            player->setPosX((*(walls.at(i))).getWallPosX()+(*(walls.at(i))).getWallSize().x);
+//            player->setRectPosX((*(walls.at(i))).getWallPosX()+(*(walls.at(i))).getWallSize().x + (player->getSize().x - player->getRectSizeX()));
+//            player->setWallCollided(true);
+//        }//Checks for player colliding with the left side of a wall
+//        else
+//        {
+//            player->setWallCollided(false);
+//        }//Sets flag for when player is not colliding with a wall
+//    }
 
     //===========================================================
     //    END PHYSICS
@@ -540,7 +577,8 @@ void SuperCopRMGame::paintEvent(QPaintEvent *e)
 
     if(playerRect.intersects(levelEndRect))
     {
-        if(true==timer->isActive()){
+        if(true==timer->isActive())
+        {
             gamescore += 100;
             timer->stop();
             player->setPosX(player->getPosX() + 1);

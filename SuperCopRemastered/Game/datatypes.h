@@ -1,5 +1,6 @@
 #ifndef DATATYPES_H
 #define DATATYPES_H
+#include <QString>
 
 struct Size { int x; int y; };
 
@@ -12,6 +13,9 @@ enum LevelType {GRASS, INDUSTRIAL, MEDIEVIL, CAVE, NO_LEVEL_TYPE};
 enum ItemType {DONUT, ONE_UP};
 
 enum EnemyType {NORMAL, FAST, JUMPER, TURRET};
+
+enum PlayerState {IDLE, RUNNING_RIGHT, JUMPING, SLIDING, RUNNING_LEFT, LONG_JUMPING, FALLING, PAUSED};
+
 
 enum BlockType {
     BLOCK,           // 1x1 Block

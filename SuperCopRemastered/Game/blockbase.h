@@ -7,6 +7,8 @@
 #include <QString>
 #include "datatypes.h"
 
+#define LEVEL_SCROLL_SPEED 10 // px;
+
 class BlockBase
 {
 public:
@@ -14,7 +16,15 @@ public:
     BlockBase(LevelType lType, BlockType bType);
 
     void DrawBlock(QPainter &paint);
+    void UpdateBlock(int playerDirection);
+
     void SetPosition(int x, int y);
+
+    int GetPosX();
+    int GetPosY();
+    int GetRightEdge();
+    Size GetSize();
+
 private:
     LevelType lt;
     BlockType bt;

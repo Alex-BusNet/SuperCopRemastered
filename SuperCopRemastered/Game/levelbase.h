@@ -23,8 +23,12 @@ public:
     void LoadLevel(int levelNum);
     void drawLevelBase(QPainter &painter);
 
+    void UpdateLevel(int playerDir, PlayerState ps);
+
     void ShiftBoundsForward();
     void ShiftBoundsReverse();
+
+    int getGround();
 
 private:
     // The floor of the level. A NO_LEVEL_TYPE represents a gap
@@ -41,6 +45,7 @@ private:
     int leftWindowBound, rightWindowBound;
     int leftObstacleBound, rightObstacleBound;
     int leftEnemyBound, rightEnemyBound;
+    int windowWidth;
 
     QPixmap *floor;
     QRect *rect;

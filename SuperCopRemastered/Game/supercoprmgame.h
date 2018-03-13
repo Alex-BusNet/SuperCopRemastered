@@ -9,6 +9,8 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QHBoxLayout>
+#include <QGamepadKeyNavigation>
+#include <QGamepadManager>
 
 #include <vector>
 #include <QElapsedTimer>
@@ -53,6 +55,10 @@ private:
     QMessageBox *pbox;
     QFont *scoreFont;
     QFont *pausedFont;
+
+    QGamepadKeyNavigation *gpkn;
+    QGamepadManager *gpm;
+
     int picX,picY;
     int picHeight, picWidth;
     int lastKeyPress;
@@ -85,6 +91,7 @@ public slots:
     void updateField();
     void resumeGame();
     void exitGame();
+    void actionInput(Qt::Key key);
 };
 
 #endif // SUPERCOPRMGAME_H

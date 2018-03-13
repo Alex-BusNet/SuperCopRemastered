@@ -5,6 +5,7 @@
 #include <QPixmap>
 #include <QPainter>
 #include <QString>
+#include "blockbase.h"
 
 #include "datatypes.h"
 
@@ -15,6 +16,9 @@ public:
     EnemyBase(int x, int y, EnemyType eType);
 
     void DrawEnemy(QPainter &paint);
+    void UpdateEnemy();
+
+    void SetBoundingObstacles(BlockBase *left, BlockBase *right);
 
 private:
 
@@ -23,6 +27,8 @@ private:
     QString texturePath, color;
     QPixmap *texture;
     QRect *boundingBox;
+
+    BlockBase *leftBound, *rightBound;
 
     int posX, posY;
     Size enemySize;

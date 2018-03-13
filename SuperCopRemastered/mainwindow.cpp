@@ -6,6 +6,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    scrmg = NULL;
 }
 
 MainWindow::~MainWindow()
@@ -31,7 +32,9 @@ void MainWindow::on_settingsPB_clicked()
 void MainWindow::on_playSCPB_clicked()
 {
     if(scrmg != NULL)
-        scrmg = new SuperCopRMGame();
+        delete scrmg;
+
+    scrmg = new SuperCopRMGame();
 
     scrmg->show();
 }
