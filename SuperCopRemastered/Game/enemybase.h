@@ -5,6 +5,8 @@
 #include <QPixmap>
 #include <QPainter>
 #include <QString>
+#include <QGraphicsPixmapItem>
+#include <QGraphicsRectItem>
 #include "blockbase.h"
 
 #include "datatypes.h"
@@ -16,9 +18,22 @@ public:
     EnemyBase(int x, int y, EnemyType eType);
 
     void DrawEnemy(QPainter &paint);
-    void UpdateEnemy();
+    void UpdateEnemy(PlayerState playerState);
 
-    void SetBoundingObstacles(BlockBase *left, BlockBase *right);
+    void SetBounds(int left, int right);
+
+    int GetPosX();
+    int GetPosY();
+    int GetRightEdge();
+
+    QPixmap* GetTexture();
+    QRect* GetBoundingBox();
+
+    void SetGPixmapPtr(QGraphicsPixmapItem *ptr);
+    void SetGRectPtr(QGraphicsRectItem *ptr);
+
+    QGraphicsPixmapItem* GetGPixmapPtr();
+    QGraphicsRectItem* GetGRectPtr();
 
 private:
 
@@ -28,9 +43,11 @@ private:
     QPixmap *texture;
     QRect *boundingBox;
 
-    BlockBase *leftBound, *rightBound;
+    QGraphicsPixmapItem *viewPixmap;
+    QGraphicsRectItem *viewBB;
 
     int posX, posY;
+    int boundLeft, boundRight;
     Size enemySize;
 
     int speed, frame;

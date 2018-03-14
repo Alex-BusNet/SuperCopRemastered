@@ -14,9 +14,9 @@ Player::Player(int parentWidth, int parentHeight)
     posY = parentHeight - 100;
 
     idleImagePath = QString("Assets/Idle/%1/Idle(%2).png");
-    runImagePath = QString("Assets/Running/Test/%1/Run(%2).png");
-    jumpImagePath = QString("Assets/Jumping/Test/%1/Jump(%2).png");
-    slideImagePath = QString("Assets/Sliding/%1/Slide(%2).png");
+    runImagePath = QString("Assets/Running/%1/Run(%2).png");
+    jumpImagePath = QString("Assets/Jumping/%1/Jump(%2).png");
+    slideImagePath = QString("Assets/Rolling/%1/Roll(%2).png");
     fallImagePath = QString("Assets/Falling/%1/Fall(%2).png");
 
     frame = 1;
@@ -55,6 +55,8 @@ Player::Player(int parentWidth, int parentHeight)
 Player::~Player()
 {
     delete image;
+    delete playerPixmap;
+    delete playerBB;
 }//Destructor
 
 Size Player::getSize()
@@ -64,13 +66,13 @@ Size Player::getSize()
 
 void Player::drawPlayer(QPainter &painter)
 {
-    painter.drawPixmap(posX, posY, size.x, size.y, *image);
-    painter.drawRect(posX, posY, size.x, size.y);
-    painter.drawRect(rectPosX, rectPosY, rectSizeX, rectSizeY);
-    painter.drawText(10, 80, QString("Player state: %1").arg(PlayerStateStrings[pState]));
-    painter.drawText(10, 90, QString("Jump Speed:   %1").arg(jumpSpeed));
-    painter.drawText(10, 100, QString("Glide Distance: %1").arg(glideDistance));
-    painter.drawText(10, 110, QString("X Speed:  %1").arg(speedX));
+//    painter.drawPixmap(posX, posY, size.x, size.y, *image);
+//    painter.drawRect(posX, posY, size.x, size.y);
+//    painter.drawRect(rectPosX, rectPosY, rectSizeX, rectSizeY);
+    painter.drawText(15, 80, QString("Player state: %1").arg(PlayerStateStrings[pState]));
+    painter.drawText(15, 90, QString("Jump Speed:   %1").arg(jumpSpeed));
+    painter.drawText(15, 100, QString("Glide Distance: %1").arg(glideDistance));
+    painter.drawText(15, 110, QString("X Speed:  %1").arg(speedX));
 }//Draws the player
 
 
@@ -78,6 +80,7 @@ void Player::changeImage(QString str)
 {
     delete image;
     image = new QPixmap(str);
+    playerPixmap->setPixmap(*image);
 }//Allows the player icon to be changed
 
 
@@ -85,12 +88,13 @@ void Player::playerScreenPos()
 {
     //Check where player is on screen. If within a predefined rect, do not scroll screen.
     //If on edge of rect, move camera in direction player is running
-    if(!jumping && 1 == lastActionPressed && (this->posX + 25 < rightBound) && !wallCollided)
+    if(!jumping && 1 == lastActionPressed /*&& (this->posX + 25 < rightBound)*/ && !wallCollided)
     {
         this->setPosX(this->getPosX() + speedX);
         this->setRectPosX(this->getRectPosX() + speedX);
+
     }
-    else if(!jumping && 4 == lastActionPressed && (this->posX > leftBound) && !wallCollided)
+    else if(!jumping && 4 == lastActionPressed /*&& (this->posX > leftBound)*/ && !wallCollided)
     {
         this->setPosX(this->getPosX() - speedX);
         this->setRectPosX(this->getRectPosX() - speedX);
@@ -100,14 +104,34 @@ void Player::playerScreenPos()
         this->setPosX(this->getPosX());
         this->setRectPosX(this->getRectPosX());
     }
+
+    playerPixmap->setPos(posX, posY);
+//    playerPixmap->mapToScene(posX, posY);
+    playerBB->setPos(rectPosX, rectPosY);
 }
 
 PlayerState Player::getState()
 {
     return pState;
+}
+
+QPixmap *Player::GetImage()
+{
+    return image;
+}
+
+void Player::SetViewPixmap(QGraphicsPixmapItem *item)
+{
+    this->playerPixmap = item;
+    playerPixmap->setScale(0.5);
+}
+
+void Player::SetViewBB(QGraphicsRectItem *item)
+{
+    this->playerBB = item;
 }//Controls whether the screen moves or the player does
 
-void Player::UpdatePlayer()
+void Player::UpdatePlayer(GameView *view)
 {
     switch(pState)
     {
@@ -138,6 +162,8 @@ void Player::UpdatePlayer()
         standBy();
         break;
     }
+
+    view->ensureVisible(playerPixmap, 200, 10);
 }
 
 void Player::UpdateFrame()
@@ -146,23 +172,23 @@ void Player::UpdateFrame()
 
     if(pState == JUMPING || pState == LONG_JUMPING)
     {
-        if(frame >= JUMP_FRAME_COUNT) { frame = 1; }
+        if(frame > JUMP_FRAME_COUNT) { frame = 1; }
     }
     else if(pState == RUNNING_LEFT || pState == RUNNING_RIGHT)
     {
-        if(frame >= RUN_FRAME_COUNT) { frame = 1; }
+        if(frame > RUN_FRAME_COUNT) { frame = 1; }
     }
     else if(pState == IDLE)
     {
-        if(frame >= IDLE_FRAME_COUNT) { frame = 1; }
+        if(frame > IDLE_FRAME_COUNT) { frame = 1; }
     }
     else if (pState == SLIDING)
     {
-        if(frame >= SLIDE_FRAME_COUNT) { frame = 1; pState = IDLE; lastState = SLIDING;}
+        if(frame > SLIDE_FRAME_COUNT) { frame = 1; pState = IDLE; lastState = SLIDING;}
     }
     else if (pState == FALLING)
     {
-        if(frame >= FALLING_FRAME_COUNT) { frame = FALLING_FRAME_COUNT; pState = FALLING; }
+        if(frame > FALLING_FRAME_COUNT) { frame = FALLING_FRAME_COUNT; pState = FALLING; }
     }
 }
 
@@ -241,8 +267,8 @@ void Player::jump()
 
     if(pState == JUMPING)
     {
-        if(playerDirection == WEST && lastActionPressed == LEFT) { posX -= 23; rectPosX -= 23;}
-        else if(playerDirection == EAST && lastActionPressed == RIGHT) { posX += 23; rectPosX += 23; }
+        if(playerDirection == WEST && lastActionPressed == LEFT) { posX -= 20; rectPosX -= 20;}
+        else if(playerDirection == EAST && lastActionPressed == RIGHT) { posX += 20; rectPosX += 20; }
     }
 
     if(pState != FALLING)
@@ -279,14 +305,14 @@ void Player::slide()
 
         if(playerDirection == WEST)
         {
-            posX -= (20 * speedX);
-            rectPosX -= (20 * speedX);
+            posX -= (10 * speedX);
+            rectPosX -= (10 * speedX);
             changeImage(slideImagePath.arg("Left").arg(frame));
         }
         else if(playerDirection == EAST)
         {
-            posX += (20 * speedX);
-            rectPosX += (20 * speedX);
+            posX += (10 * speedX);
+            rectPosX += (10 * speedX);
             changeImage(slideImagePath.arg("Right").arg(frame));
         }
 
@@ -297,8 +323,8 @@ void Player::slide()
     }
     else
     {
-        posY += (30 * GRAVITY_FACTOR);
-        rectPosY += (30 * GRAVITY_FACTOR);
+        posY += (40 * GRAVITY_FACTOR);
+        rectPosY += (40 * GRAVITY_FACTOR);
 
         changeImage(fallImagePath.arg((playerDirection == WEST) ? "Left" : "Right").arg(frame));
 
@@ -368,6 +394,7 @@ void Player::standBy()
     running = false;
     glideDistance = 0;
     jumping = false;
+    speedX = PLAYER_INITIAL_X_VELOCITY;
     //Checks which direction the player was moving last then sets the appropiate standing image
     if(1 == playerDirection)
     {
@@ -386,8 +413,8 @@ void Player::pausePlayer()
 
 void Player::fall()
 {
-    posY += (20 * GRAVITY_FACTOR);
-    rectPosY += (20 * GRAVITY_FACTOR);
+    posY += (30 * GRAVITY_FACTOR);
+    rectPosY += (30 * GRAVITY_FACTOR);
 
     changeImage(fallImagePath.arg((playerDirection == WEST) ? "Left" : "Right").arg(frame));
 
@@ -396,21 +423,23 @@ void Player::fall()
         posY = ground - size.y;
         rectPosY = ground - size.y + 10;
         pState = IDLE;
+        jumping = false;
+        glideDistance = 0;
     }
 
-    if(jumping && abs(glideDistance) < 69)
+    if(jumping && abs(glideDistance) < 140)
     {
         if(playerDirection == WEST && lastActionPressed == LEFT)
         {
-            posX -= 23;
-            rectPosX -= 23;
-            glideDistance -= 23;
+            posX -= 20;
+            rectPosX -= 20;
+            glideDistance -= 20;
         }
         else if(playerDirection == EAST && lastActionPressed == RIGHT)
         {
-            posX += 23;
-            rectPosX += 23;
-            glideDistance += 23;
+            posX += 20;
+            rectPosX += 20;
+            glideDistance += 20;
         }
     }
 }

@@ -36,7 +36,9 @@ SOURCES += \
     Game/blockbase.cpp \
     Game/bonusblock.cpp \
     Game/itembase.cpp \
-    Game/enemybase.cpp
+    Game/enemybase.cpp \
+    Game/gamescene.cpp \
+    Game/gameview.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -52,7 +54,9 @@ HEADERS += \
     Game/bonusblock.h \
     Game/itembase.h \
     Game/blockrenders.h \
-    Game/enemybase.h
+    Game/enemybase.h \
+    Game/gamescene.h \
+    Game/gameview.h
 
 FORMS += \
         mainwindow.ui

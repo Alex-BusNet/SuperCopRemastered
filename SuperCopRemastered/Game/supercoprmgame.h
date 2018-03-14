@@ -19,6 +19,7 @@
 #include <fstream>
 
 #include "datatypes.h"
+#include "gameview.h"
 #include "levelbase.h"
 #include "platform.h"
 #include "player.h"
@@ -46,7 +47,11 @@ public:
 
 private:
     Player *player;
+    QGraphicsPixmapItem *playerPixmap;
+    QGraphicsRectItem *playerBB;
     LevelBase *lb;
+
+    GameView *view;
 
     QWidget* parent;
     QTimer *timer;

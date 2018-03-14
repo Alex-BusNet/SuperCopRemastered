@@ -11,7 +11,11 @@ SuperCopRMGame::SuperCopRMGame(QWidget *parent)
     qDebug() << "Loading player";
     player = new Player(this->width(), lb->getGround());
     qDebug() << "Loading Level...";
-    lb->LoadLevel(1);
+    view = new GameView(this);
+    lb->LoadLevel(1, view);
+    qDebug() << "Loading player to Scene...";
+    player->SetViewPixmap(view->addPixmap(*(player->GetImage())));
+    player->SetViewBB(view->addRect(QRect(player->getPosX(), player->getPosY(), player->getSize().x, player->getSize().y)));
 
     msg = new QMessageBox();
     pbox = new QMessageBox();
@@ -30,7 +34,7 @@ SuperCopRMGame::SuperCopRMGame(QWidget *parent)
 
     qDebug() << "Creating Timers...";
     timer = new QTimer();
-    timer->setInterval(50);
+    timer->setInterval(65);
     connect(timer, &QTimer::timeout, this, &SuperCopRMGame::updateField);
 
     keyTimer = new QTimer();
@@ -83,6 +87,9 @@ SuperCopRMGame::SuperCopRMGame(QWidget *parent)
     hLayout = new QHBoxLayout();
     hLayout2 = new QHBoxLayout();
     vLayout = new QVBoxLayout();
+
+    hLayout->addWidget(view);
+//    view->show();
 
     hLayout->addWidget(resume);
     hLayout->addWidget(exit);
@@ -311,11 +318,10 @@ void SuperCopRMGame::updateField()
     {
         player->playerAction(lastKeyPress);
         player->UpdateFrame();
-        player->UpdatePlayer();
-//        obstacleMovement();
+        player->UpdatePlayer(view);
+        this->update();
     }
 
-    this->update();
 }
 
 void SuperCopRMGame::resumeGame()
@@ -595,7 +601,7 @@ void SuperCopRMGame::paintEvent(QPaintEvent *e)
         QPen debugPen;
         debugPen.setColor(Qt::red);
         devPaint.setPen(debugPen);
-        devPaint.drawRect(playerRect);
+//        devPaint.drawRect(playerRect);
 
         //Game input info
         devPaint.drawText(10, 60, QString("lastActionPressed: %1").arg(QString::number(lastKeyPress)));

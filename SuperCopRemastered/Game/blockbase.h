@@ -7,7 +7,7 @@
 #include <QString>
 #include "datatypes.h"
 
-#define LEVEL_SCROLL_SPEED 10 // px;
+#define LEVEL_SCROLL_SPEED 5 // px;
 
 class BlockBase
 {
@@ -22,14 +22,20 @@ public:
 
     int GetPosX();
     int GetPosY();
+    int GetXDim();
+    int GetYDim();
     int GetRightEdge();
     Size GetSize();
+
+    QRect* GetBoundingBox();
+
+    QPixmap* GetTexture();
 
 private:
     LevelType lt;
     BlockType bt;
     Size blockSize; // px dimensions of image
-    int x,y; // Number of blocks in X and Y direction
+    int xDim,yDim; // Number of blocks in X and Y direction
     int posX, posY;
     QRect *boundingBox;
     QPixmap *texture;

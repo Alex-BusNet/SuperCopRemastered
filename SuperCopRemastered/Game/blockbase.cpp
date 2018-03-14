@@ -17,15 +17,15 @@ BlockBase::BlockBase(LevelType lType, BlockType bType)
 
 void BlockBase::DrawBlock(QPainter &paint)
 {
-    for(int i = 0; i < x; i++)
+    for(int i = 0; i < xDim; i++)
     {
-        for(int j = 0; j < y; j++)
+        for(int j = 0; j < yDim; j++)
         {
             paint.drawPixmap(posX + (blockSize.x * i), posY + (blockSize.y * j), blockSize.x, blockSize.y, *texture);
         }
     }
 
-    paint.drawRect(QRect(posX, posY, blockSize.x * x, blockSize.y * y));
+    paint.drawRect(QRect(posX, posY, blockSize.x * xDim, blockSize.y * yDim));
 }
 
 void BlockBase::UpdateBlock(int playerDirection)
@@ -39,7 +39,8 @@ void BlockBase::UpdateBlock(int playerDirection)
 void BlockBase::SetPosition(int x, int y)
 {
     this->posX = x;
-    this->posY = y;
+    this->posY = y;    
+    boundingBox = new QRect(posX, posY, blockSize.x * xDim, blockSize.y * yDim);
 }
 
 int BlockBase::GetPosX()
@@ -52,14 +53,34 @@ int BlockBase::GetPosY()
     return posY;
 }
 
+int BlockBase::GetXDim()
+{
+    return xDim;
+}
+
+int BlockBase::GetYDim()
+{
+    return yDim;
+}
+
 int BlockBase::GetRightEdge()
 {
-    return posX + blockSize.x;
+    return posX + (blockSize.x * xDim);
 }
 
 Size BlockBase::GetSize()
 {
     return blockSize;
+}
+
+QRect *BlockBase::GetBoundingBox()
+{
+    return boundingBox;
+}
+
+QPixmap *BlockBase::GetTexture()
+{
+    return texture;
 }
 
 void BlockBase::SetBlockInfo()
@@ -83,69 +104,70 @@ void BlockBase::SetBlockInfo()
         break;
     }
 
-    blockSize = Size{35, 35};
+    blockSize = Size{70, 70};
 
     switch(bt)
     {
     case BLOCK:
-        x = y = 1;
+        xDim = yDim = 1;
         texture = new QPixmap(texturePath + "/edge_block.png");
         break;
     case SHORT_PLATFORM:
-        x = 3;
-        y = 1;
+        xDim = 3;
+        yDim = 1;
         texture = new QPixmap(texturePath + "/platform_mid.png");
         break;
     case MEDIUM_PLATFORM:
-        x = 4;
-        y = 1;
+        xDim = 4;
+        yDim = 1;
         texture = new QPixmap(texturePath + "/platform_mid.png");
         break;
     case LONG_PLATFORM:
-        x = 5;
-        y = 1;
+        xDim = 5;
+        yDim = 1;
         texture = new QPixmap(texturePath + "/platform_mid.png");
         break;
     case SHORT_WALL:
-        x = 2;
-        y = 2;
+        xDim = 2;
+        yDim = 2;
         texture = new QPixmap(texturePath + "/internal_block.png");
         break;
     case TALL_WALL:
-        x = 2;
-        y = 4;
+        xDim = 2;
+        yDim = 4;
         texture = new QPixmap(texturePath + "/internal_block.png");
         break;
     case SHORT_DEEP_WALL:
-        x = 4;
-        y = 2;
+        xDim = 4;
+        yDim = 2;
         texture = new QPixmap(texturePath + "/internal_block.png");
         break;
     case TALL_DEEP_WALL:
-        x = 4;
-        y = 4;
+        xDim = 4;
+        yDim = 4;
         texture = new QPixmap(texturePath + "/internal_block.png");
         break;
     case SHORT_STAIR:
-        x = 3;
-        y = 3;
+        xDim = 3;
+        yDim = 3;
         texture = new QPixmap(texturePath + "/internal_block.png");
         break;
     case TALL_STAIR:
-        x = 6;
-        y = 6;
+        xDim = 6;
+        yDim = 6;
         texture = new QPixmap(texturePath + "/internal_block.png");
         break;
     case GOAL:
-        x = 1;
-        y = 3;
+        xDim = 1;
+        yDim = 3;
         texture = new QPixmap(texturePath + "/Goal/goal_empty_top.png");
         break;
     case BONUS:
-        x = y = 1;
+        xDim = yDim = 1;
         texture = new QPixmap(texturePath + "/Block/bonus_block.png");
         break;
     }
+
 
     texture->scaled(blockSize.x, blockSize.y);
 }

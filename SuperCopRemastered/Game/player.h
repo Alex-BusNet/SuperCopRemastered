@@ -2,23 +2,26 @@
 #define PLAYER_H
 
 #include "datatypes.h"
+#include "gameview.h"
 #include <QLabel>
 #include <QPainter>
 #include <QPixmap>
 #include <QWidget>
 #include <QRect>
+#include <QGraphicsPixmapItem>
+#include <QGraphicsRectItem>
 
-#define IDLE_FRAME_COUNT          10
-#define RUN_FRAME_COUNT           8
-#define JUMP_FRAME_COUNT          5
-#define SLIDE_FRAME_COUNT         10
-#define FALLING_FRAME_COUNT       5
+#define IDLE_FRAME_COUNT          1
+#define RUN_FRAME_COUNT           3
+#define JUMP_FRAME_COUNT          4
+#define SLIDE_FRAME_COUNT         8
+#define FALLING_FRAME_COUNT       4
 
-#define PLAYER_INITIAL_X_VELOCITY 8.0f
+#define PLAYER_INITIAL_X_VELOCITY 20.0f
 #define PLAYER_INITIAL_Y_VELOCITY 5.0f
 #define PLAYER_FALLING_X_VELOCITY 2.0f
 #define COEFF_OF_FRICTION         0.5f
-#define GRAVITY_FACTOR            0.75f
+#define GRAVITY_FACTOR            0.8f
 
 class Player
 {
@@ -32,8 +35,12 @@ public:
     void playerScreenPos();
 
     PlayerState getState();
+    QPixmap* GetImage();
 
-    void UpdatePlayer();
+    void SetViewPixmap(QGraphicsPixmapItem* item);
+    void SetViewBB(QGraphicsRectItem* item);
+
+    void UpdatePlayer(GameView *view);
     void UpdateFrame();
 
     void jump();
@@ -92,6 +99,8 @@ private:
     bool onGround, playerOnWall, playerOnPlatform, wallCollided;
 
     PlayerState lastState, pState, nextState;
+    QGraphicsPixmapItem *playerPixmap;
+    QGraphicsRectItem *playerBB;
 
     int rectPosX, rectPosY, rectSizeX, rectSizeY;
     int posX, posY;

@@ -8,6 +8,7 @@
 #include <QVector>
 
 #include "datatypes.h"
+#include "gameview.h"
 #include "blockbase.h"
 #include "enemybase.h"
 
@@ -20,13 +21,10 @@ public:
 
     ~LevelBase();
 
-    void LoadLevel(int levelNum);
+    void LoadLevel(int levelNum, GameView *view);
     void drawLevelBase(QPainter &painter);
 
     void UpdateLevel(int playerDir, PlayerState ps);
-
-    void ShiftBoundsForward();
-    void ShiftBoundsReverse();
 
     int getGround();
 
@@ -35,9 +33,15 @@ private:
     QVector<BlockBase*> levelFloor;
     // All non-floor objects in level.
     QVector<BlockBase*> obstacles;
-
     QVector<EnemyBase*> enemies;
 
+    QVector<QGraphicsPixmapItem*> floorItems;
+    QVector<QGraphicsPixmapItem*> obstacleItems;
+    QVector<QGraphicsPixmapItem*> enemyItems;
+
+    QVector<QGraphicsRectItem*> obstacleBBs;
+    QVector<QGraphicsRectItem*> floorBBs;
+    QVector<QGraphicsRectItem*> enemyBBs;
     int floorHeight; // Y value for where to start drawing the floor (x=0)
     Size imageSize;
 
