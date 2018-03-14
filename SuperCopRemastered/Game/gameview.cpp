@@ -9,7 +9,7 @@ GameView::GameView(QWidget *parent)
     this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     this->setDragMode(QGraphicsView::NoDrag);
-    this->setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
+    this->setViewportUpdateMode(QGraphicsView::MinimalViewportUpdate);
     this->setStyleSheet(QString("QGraphicsView { background-color: transparent; }"));
 }
 

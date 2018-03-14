@@ -54,7 +54,7 @@ private:
     GameView *view;
 
     QWidget* parent;
-    QTimer *timer;
+    QTimer *timer, *renderTimer;
     QTimer *keyTimer;
     QMessageBox *msg;
     QMessageBox *pbox;
@@ -97,6 +97,7 @@ public slots:
     void resumeGame();
     void exitGame();
     void actionInput(Qt::Key key);
+    void updateRender();
 };
 
 #endif // SUPERCOPRMGAME_H

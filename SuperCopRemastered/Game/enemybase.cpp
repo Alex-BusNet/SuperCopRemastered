@@ -24,27 +24,14 @@ void EnemyBase::DrawEnemy(QPainter &paint)
 void EnemyBase::UpdateEnemy(PlayerState playerState)
 {
     frame = ((frame + 1) % 2) + 1;
-    texture = new QPixmap(texturePath.arg(color).arg(QString::number(frame)));
 
     if(direction == EAST)
     {
         posX += speed;
-//        if(playerState == RUNNING_RIGHT)
-//            posX += speed / 2;
-//        else if(playerState == RUNNING_LEFT)
-//            posX += speed * 2;
-//        else
-//            posX += speed;
     }
     else if(direction == WEST)
     {
         posX -= speed;
-//        if(playerState == RUNNING_RIGHT)
-//            posX -= speed * 2;
-//        else if(playerState == RUNNING_LEFT)
-//            posX -= speed / 2;
-//        else
-//            posX -= speed;
     }
 
     // Adjust the Direction of the enemy;
@@ -63,6 +50,8 @@ void EnemyBase::UpdateEnemy(PlayerState playerState)
             direction = EAST;
         }
     }
+
+    texture = new QPixmap(texturePath.arg(direction == WEST ? "Left" : "Right" ).arg(color).arg(QString::number(frame)));
 
     viewPixmap->setPos(posX, posY);
     viewPixmap->setPixmap(*texture);
@@ -122,36 +111,36 @@ QGraphicsRectItem *EnemyBase::GetGRectPtr()
 
 void EnemyBase::SetEnemyInfo()
 {
-    texturePath = QString("Assets/Enemy/robot_%1Drive%2.png");
+    texturePath = QString("Assets/Enemy/%1/robot_%2Drive%3.png");
 
     switch(et)
     {
     case NORMAL:
-        speed = 1; // px per update
+        speed = 15; // px per update
         pointValue = 10;
         direction = WEST;
         color = "green";
-        texture = new QPixmap(texturePath.arg(color).arg("1"));
+        texture = new QPixmap(texturePath.arg(direction == WEST ? "Left" : "Right" ).arg(color).arg("1"));
         break;
     case FAST:
-        speed = 10;
+        speed = 25;
         pointValue = 15;
         direction = WEST;
         color = "red";
-        texture = new QPixmap(texturePath.arg(color).arg("1"));
+        texture = new QPixmap(texturePath.arg(direction == WEST ? "Left" : "Right" ).arg(color).arg("1"));
         break;
     case JUMPER:
         speed = 5;
         pointValue = 20;
         direction = WEST;
         color = "yellow";
-        texture = new QPixmap(texturePath.arg(color).arg("1"));
+        texture = new QPixmap(texturePath.arg(direction == WEST ? "Left" : "Right" ).arg(color).arg("1"));
         break;
     case TURRET:
         speed = 3;
         pointValue = 25;
         color = "blue";
-        texture = new QPixmap(texturePath.arg(color).arg("1"));
+        texture = new QPixmap(texturePath.arg(direction == WEST ? "Left" : "Right" ).arg(color).arg("1"));
         break;
     }
 

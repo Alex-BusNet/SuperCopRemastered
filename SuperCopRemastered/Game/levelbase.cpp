@@ -13,6 +13,7 @@ LevelBase::LevelBase(int width, int height)
     leftWindowBound = 0;
     rightWindowBound = (width / 70.0) + 1;
     windowWidth = width;
+    updateStatus = false;
     qDebug() << "Ground: " << floorHeight;
 }
 
@@ -111,12 +112,14 @@ void LevelBase::drawLevelBase(QPainter &painter)
     painter.drawText(15, 170, QString("LeftEnemyBound: %1").arg(leftEnemyBound));
     painter.drawText(15, 180, QString("RightEnemyBound: %1").arg(rightEnemyBound));
     painter.drawText(15, 200, QString("Enemy Viewport pos: %1, %2").arg(enemies.at(0)->GetGPixmapPtr()->pos().x()).arg(enemies.at(0)->GetGPixmapPtr()->pos().y()));
-
+    painter.drawText(15, 190, QString("Level Update: %1").arg(updateStatus));
 }
 
 void LevelBase::UpdateLevel(int playerDir, PlayerState ps)
 {
-//    if(false/*ps == RUNNING_LEFT || ps == RUNNING_RIGHT*/)
+    updateStatus = !updateStatus;
+
+    //    if(false/*ps == RUNNING_LEFT || ps == RUNNING_RIGHT*/)
 //    {
 //        // -----------------
 //        //  FLOOR UPDATES
@@ -259,8 +262,6 @@ void LevelBase::UpdateLevel(int playerDir, PlayerState ps)
         if(enemies.at(i) != NULL)
             enemies.at(i)->UpdateEnemy(ps);
     }
-
-
 }
 
 int LevelBase::getGround()

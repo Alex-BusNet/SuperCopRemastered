@@ -54,6 +54,8 @@ private:
     QPixmap *floor;
     QRect *rect;
 
+    bool updateStatus;
+
 public slots:
     void generatePiece();
 };

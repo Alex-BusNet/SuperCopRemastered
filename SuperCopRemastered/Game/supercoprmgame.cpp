@@ -37,6 +37,10 @@ SuperCopRMGame::SuperCopRMGame(QWidget *parent)
     timer->setInterval(65);
     connect(timer, &QTimer::timeout, this, &SuperCopRMGame::updateField);
 
+    renderTimer = new QTimer();
+    renderTimer->setInterval(17);
+    connect(renderTimer, &QTimer::timeout, this, &SuperCopRMGame::updateRender);
+
     keyTimer = new QTimer();
     keyTimer->setInterval(5);
     connect(keyTimer, &QTimer::timeout, this, &SuperCopRMGame::pollKey);
@@ -89,7 +93,6 @@ SuperCopRMGame::SuperCopRMGame(QWidget *parent)
     vLayout = new QVBoxLayout();
 
     hLayout->addWidget(view);
-//    view->show();
 
     hLayout->addWidget(resume);
     hLayout->addWidget(exit);
@@ -319,7 +322,7 @@ void SuperCopRMGame::updateField()
         player->playerAction(lastKeyPress);
         player->UpdateFrame();
         player->UpdatePlayer(view);
-        this->update();
+        lb->UpdateLevel(player->getPlayerDirection(), player->getState());
     }
 
 }
@@ -360,12 +363,16 @@ void SuperCopRMGame::actionInput(Qt::Key key)
     }
 }
 
+void SuperCopRMGame::updateRender()
+{
+    this->update();
+}
+
 void SuperCopRMGame::paintEvent(QPaintEvent *e)
 {
     Q_UNUSED(e)
 
     QPainter painter(this);
-    lb->UpdateLevel(player->getPlayerDirection(), player->getState());
     player->drawPlayer(painter);
     lb->drawLevelBase(painter);
 

@@ -106,7 +106,6 @@ void Player::playerScreenPos()
     }
 
     playerPixmap->setPos(posX, posY);
-//    playerPixmap->mapToScene(posX, posY);
     playerBB->setPos(rectPosX, rectPosY);
 }
 
