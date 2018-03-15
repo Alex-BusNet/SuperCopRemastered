@@ -389,11 +389,23 @@ void LevelBase::UpdateLevel(Player* p, GameView *view)
         {
             qDebug() << "idx: " << idx;
             BlockBase *nearestObsY = obstacles.at(idx);
-            if(nearestObsY->GetBoundingBox()->intersects(*p->GetBoundingBox()))
+            if(nearestObsY->GetBoundingBox()->intersects(p->GetViewBB()->rect().toRect()))
             {
                 qDebug() << "Collision with " << idx;
                 p->SetOnObstactle(true);
+                p->setOnGround(false);
                 p->setPosY(obstacleItems.at(idx)->y() - p->getSize().y);
+            }
+        }
+    }
+    else
+    {
+        if(p->getState() == SLIDING && p->isOnObstacle())
+        {
+            if(p->GetPosY() + p->getSize().y < this->getGround())
+            {
+                p->playerAction(DOWN);
+                p->SetOnObstactle(false);
             }
         }
     }

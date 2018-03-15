@@ -95,25 +95,19 @@ void Player::playerScreenPos()
 {
     //Check where player is on screen. If within a predefined rect, do not scroll screen.
     //If on edge of rect, move camera in direction player is running
-    if(!jumping && 1 == lastActionPressed && (this->posX + speedX < rightBound) && !wallCollided)
+    if(!jumping && RIGHT == lastActionPressed && (this->posX + speedX < rightBound) && !wallCollided)
     {
         this->setPosX(this->GetPosX() + speedX);
-//        this->setRectPosX(this->getRectPosX() + speedX);
 
     }
-    else if(!jumping && 4 == lastActionPressed && (this->posX > leftBound) && !wallCollided)
+    else if(!jumping && LEFT == lastActionPressed && (this->posX > leftBound) && !wallCollided)
     {
         this->setPosX(this->GetPosX() - speedX);
-//        this->setRectPosX(this->getRectPosX() - speedX);
     }
     else
     {
         this->setPosX(this->GetPosX());
-//        this->setRectPosX(this->getRectPosX());
     }
-
-//    playerPixmap->setPos(posX, posY);
-//    playerBB->setPos(rectPosX, rectPosY);
 }
 
 PlayerState Player::getState()
@@ -244,7 +238,7 @@ void Player::playerAction(int action)
     case DOWN:
         if(lastState != SLIDING)
             pState = SLIDING;
-        else if((posY + size.y) < ground && !playerOnObstacle)
+        else if((posY + size.y) < ground)
             pState = FALLING;
         else
             pState = IDLE;
@@ -286,13 +280,9 @@ void Player::playerAction(int action)
 
 void Player::jump()
 {
-//    if(frame == 1)
-//    {
-        jumping = true;
-        playerOnObstacle = false;
-        onGround = false;
-//        glideDistance = 0;
-//    }
+    jumping = true;
+    playerOnObstacle = false;
+    onGround = false;
 
     QString dir = (playerDirection == EAST) ? "Right" : "Left";
 
@@ -361,9 +351,10 @@ void Player::slide()
 
         if((posY + size.y) >= ground)
         {
-            posY = ground - size.y - 10;
-            rectPosY = ground - size.y + 10;
+            posY = ground - size.y;
+            rectPosY = ground - size.y + 5;
             pState = IDLE;
+            speedX = PLAYER_INITIAL_X_VELOCITY;
             jumping = false;
         }
     }
@@ -382,7 +373,6 @@ void Player::run()
     }
     else if(!jumping)
     {
-//        glideDistance = 0;
         jumpSpeed = PLAYER_INITIAL_Y_VELOCITY;
 
         if(speedX < 0.5f)
@@ -408,8 +398,6 @@ void Player::runInverted()
     }
     else if(!jumping)
     {
-//        glideDistance = 0;
-
         if(speedX < 0.5f)
             speedX = PLAYER_INITIAL_X_VELOCITY;
 
@@ -425,7 +413,6 @@ void Player::runInverted()
 void Player::standBy()
 {
     running = false;
-//    glideDistance = 0;
     jumping = false;
     speedX = PLAYER_INITIAL_X_VELOCITY;
     //Checks which direction the player was moving last then sets the appropiate standing image
@@ -446,7 +433,7 @@ void Player::pausePlayer()
 
 void Player::fall()
 {
-    if(playerOnObstacle || onGround) { return; }
+    if(onGround) { return; }
 
     posY += (30 * GRAVITY_FACTOR);
     rectPosY += (30 * GRAVITY_FACTOR);
@@ -456,26 +443,26 @@ void Player::fall()
     if((posY + size.y) >= ground)
     {
         posY = ground - size.y;
-        rectPosY = ground - size.y + 10;
+        rectPosY = ground - size.y;
         pState = IDLE;
+        jumpSpeed = PLAYER_INITIAL_Y_VELOCITY;
         jumping = false;
         onGround = true;
-//        glideDistance = 0;
     }
 
-    if(jumping /*&& abs(glideDistance) < 140*/)
+    if(jumping)
     {
-        if(playerDirection == WEST && lastActionPressed == LEFT)
+        if(/*playerDirection == WEST && */lastActionPressed == LEFT)
         {
             posX -= 20;
             rectPosX -= 20;
-//            glideDistance -= 20;
+            playerDirection = WEST;
         }
-        else if(playerDirection == EAST && lastActionPressed == RIGHT)
+        else if(/*playerDirection == EAST && */lastActionPressed == RIGHT)
         {
             posX += 20;
             rectPosX += 20;
-//            glideDistance += 20;
+            playerDirection = EAST;
         }
     }
 }
