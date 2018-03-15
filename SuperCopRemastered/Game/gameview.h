@@ -14,6 +14,7 @@ public:
 
     QGraphicsPixmapItem *addPixmap(const QPixmap &pixmap);
     QGraphicsRectItem *addRect(const QRect &rect = QRect(), const QPen &pen = QPen(Qt::black), const QPixmap &texture = QPixmap());
+    QGraphicsTextItem *addText(QString text);
 
     void removePixmap(QGraphicsPixmapItem *pixmap);
     void removeRect(QGraphicsRectItem *rect);

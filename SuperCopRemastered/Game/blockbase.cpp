@@ -73,6 +73,16 @@ Size BlockBase::GetSize()
     return blockSize;
 }
 
+BlockType BlockBase::GetType()
+{
+    return bt;
+}
+
+LevelType BlockBase::GetLevelType()
+{
+    return lt;
+}
+
 QRect *BlockBase::GetBoundingBox()
 {
     return boundingBox;
@@ -85,6 +95,8 @@ QPixmap *BlockBase::GetTexture()
 
 void BlockBase::SetBlockInfo()
 {
+    QString texturePath;
+
     switch(lt)
     {
     case GRASS:
@@ -99,8 +111,10 @@ void BlockBase::SetBlockInfo()
     case CAVE:
         texturePath = QString("Assets/Block/Caves");
         break;
-    case NO_LEVEL_TYPE: // Used only with BonusBlock objects and gaps in floor
-        texturePath = QString("Assets");
+    case NO_LEVEL_TYPE: // Used only with BonusBlock objects, gaps in floor, and the goal
+        texturePath = QString("Assets/Block/Special");
+        break;
+    default:
         break;
     }
 
@@ -109,65 +123,64 @@ void BlockBase::SetBlockInfo()
     switch(bt)
     {
     case BLOCK:
-        xDim = yDim = 1;
-        texture = new QPixmap(texturePath + "/edge_block.png");
+        texturePath += "/block.png";
         break;
-    case SHORT_PLATFORM:
-        xDim = 3;
-        yDim = 1;
-        texture = new QPixmap(texturePath + "/platform_mid.png");
+    case BLOCK_EDGE_TOP:
+        texturePath += "/block_edge_top.png";
         break;
-    case MEDIUM_PLATFORM:
-        xDim = 4;
-        yDim = 1;
-        texture = new QPixmap(texturePath + "/platform_mid.png");
+    case WALL_CORNER_LEFT:
+        texturePath += "/wall_corner_left.png";
         break;
-    case LONG_PLATFORM:
-        xDim = 5;
-        yDim = 1;
-        texture = new QPixmap(texturePath + "/platform_mid.png");
+    case WALL_CORNER_RIGHT:
+        texturePath += "/wall_corner_right.png";
         break;
-    case SHORT_WALL:
-        xDim = 2;
-        yDim = 2;
-        texture = new QPixmap(texturePath + "/internal_block.png");
+    case WALL_SIDE_LEFT:
+        texturePath += "/wall_side_left.png";
         break;
-    case TALL_WALL:
-        xDim = 2;
-        yDim = 4;
-        texture = new QPixmap(texturePath + "/internal_block.png");
+    case WALL_SIDE_RIGHT:
+        texturePath += "/wall_side_right.png";
         break;
-    case SHORT_DEEP_WALL:
-        xDim = 4;
-        yDim = 2;
-        texture = new QPixmap(texturePath + "/internal_block.png");
+    case INTERNAL_BLOCK:
+        texturePath += "/internal_block.png";
         break;
-    case TALL_DEEP_WALL:
-        xDim = 4;
-        yDim = 4;
-        texture = new QPixmap(texturePath + "/internal_block.png");
+    case PLATFORM_LEFT:
+        texturePath += "/platform_left.png";
         break;
-    case SHORT_STAIR:
-        xDim = 3;
-        yDim = 3;
-        texture = new QPixmap(texturePath + "/internal_block.png");
-        break;
-    case TALL_STAIR:
-        xDim = 6;
-        yDim = 6;
-        texture = new QPixmap(texturePath + "/internal_block.png");
+    case PLATFORM_RIGHT:
+        texturePath += "/platform_right.png";
         break;
     case GOAL:
-        xDim = 1;
-        yDim = 3;
-        texture = new QPixmap(texturePath + "/Goal/goal_empty_top.png");
+        texturePath += "/goal_flag.png";
+        break;
+    case GOAL_BASE:
+        texturePath += "/goal_base.png";
+        break;
+    case GOAL_MIDDLE:
+        texturePath += "/goal_middle.png";
         break;
     case BONUS:
-        xDim = yDim = 1;
-        texture = new QPixmap(texturePath + "/Block/bonus_block.png");
+        texturePath += "/bonus_block.png";
+        break;
+    case FLOOR_COVERED_CORNER_LEFT:
+        texturePath += "/floor_covered_corner_left.png";
+        break;
+    case FLOOR_COVERED_CORNER_RIGHT:
+        texturePath += "/floor_covered_corner_right.png";
+        break;
+    case NO_BLOCK_TYPE:
+        texturePath += "/empty_block.png";
+        break;
+    default:
+        texturePath += "/empty_block.png";
         break;
     }
 
+    texture = new QPixmap(texturePath);
 
-    texture->scaled(blockSize.x, blockSize.y);
+    xDim = yDim = 1;
+
+    if(!texture->isNull())
+        texture->scaled(blockSize.x, blockSize.y);
+    else
+        qDebug() << "NULL texture for block: " << bt << texturePath;
 }

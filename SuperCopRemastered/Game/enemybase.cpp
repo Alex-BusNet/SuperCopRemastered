@@ -13,6 +13,8 @@ EnemyBase::EnemyBase(int x, int y, EnemyType eType)
     this->posY = y;
     this->enemySize = Size{158, 120};
     this->boundingBox = new QRect(posX, posY, enemySize.x, enemySize.y);
+    this->boundLeft = 0;
+    this->boundRight = 70 * 205;
     SetEnemyInfo();
 }
 
@@ -21,7 +23,7 @@ void EnemyBase::DrawEnemy(QPainter &paint)
 //    paint.drawPixmap(posX, posY, enemySize.x, enemySize.y, *texture);
 }
 
-void EnemyBase::UpdateEnemy(PlayerState playerState)
+void EnemyBase::UpdateEnemy()
 {
     frame = ((frame + 1) % 2) + 1;
 
@@ -62,6 +64,21 @@ void EnemyBase::SetBounds(int left, int right)
 {
     boundLeft = left;
     boundRight = right;
+}
+
+void EnemyBase::SetDirection(Direction dir)
+{
+    direction = dir;
+}
+
+void EnemyBase::FlipDirection()
+{
+    if(direction == WEST)
+        direction = EAST;
+    else
+        direction = WEST;
+
+    UpdateEnemy();
 }
 
 int EnemyBase::GetPosX()

@@ -23,6 +23,11 @@ QGraphicsRectItem *GameView::addRect(const QRect &rect, const QPen &pen, const Q
     return this->scene->addRect(rect, pen, QBrush(texture));
 }
 
+QGraphicsTextItem *GameView::addText(QString text)
+{
+    return this->scene->addText(text);
+}
+
 void GameView::removePixmap(QGraphicsPixmapItem *pixmap)
 {
     this->scene->removeItem(pixmap);

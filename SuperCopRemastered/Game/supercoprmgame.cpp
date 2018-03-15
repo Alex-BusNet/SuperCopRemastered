@@ -14,8 +14,10 @@ SuperCopRMGame::SuperCopRMGame(QWidget *parent)
     view = new GameView(this);
     lb->LoadLevel(1, view);
     qDebug() << "Loading player to Scene...";
+    player->setPosX(lb->GetPlayerStart().x());
+    player->setPosY(lb->GetPlayerStart().y());
     player->SetViewPixmap(view->addPixmap(*(player->GetImage())));
-    player->SetViewBB(view->addRect(QRect(player->getPosX(), player->getPosY(), player->getSize().x, player->getSize().y)));
+    player->SetViewBB(view->addRect(QRect(player->GetPosX(), player->GetPosY(), player->getSize().x, player->getSize().y)));
 
     msg = new QMessageBox();
     pbox = new QMessageBox();
@@ -72,8 +74,8 @@ SuperCopRMGame::SuperCopRMGame(QWidget *parent)
     //------------------------------------------------------------------------------------------
 
     //Initializes all Vector Elements;
-    qDebug() << "Loading vectors from file...";
-    this->setVecs();
+//    qDebug() << "Loading vectors from file...";
+//    this->setVecs();
 
     showDevOpts = false;
     resume = new QPushButton("RESUME");
@@ -113,7 +115,12 @@ SuperCopRMGame::SuperCopRMGame(QWidget *parent)
 
 SuperCopRMGame::~SuperCopRMGame()
 {
+    lb->ClearView(view);
+    delete lb;
 
+    delete player;
+
+    delete view;
 }
 
 void SuperCopRMGame::keyPressEvent(QKeyEvent *evt)
@@ -222,7 +229,7 @@ void SuperCopRMGame::obstacleMovement()
         }//enemy moves based on time
     }
 
-    if((1 == lastKeyPress || 2 == lastKeyPress) && (player->getPosX() + player->getSize().x) >= player->getRightBound()&& levelEnd->getPosX() >= 0)
+    if((1 == lastKeyPress || 2 == lastKeyPress) && (player->GetPosX() + player->getSize().x) >= player->getRightBound()&& levelEnd->getPosX() >= 0)
     {
         for(unsigned int i = 0; i < enemies.size(); i++)
         {
@@ -259,7 +266,7 @@ void SuperCopRMGame::obstacleMovement()
         levelEnd->setPosX(levelEnd->getPosX() - moveSpeed);
     }
 
-    if((4 == lastKeyPress || 2 == lastKeyPress) && (player->getPosX() <= player->getLeftBound()) && 0 < location)
+    if((4 == lastKeyPress || 2 == lastKeyPress) && (player->GetPosX() <= player->getLeftBound()) && 0 < location)
     {
         for(unsigned int i = 0; i < enemies.size(); i++)
         {
@@ -322,7 +329,8 @@ void SuperCopRMGame::updateField()
         player->playerAction(lastKeyPress);
         player->UpdateFrame();
         player->UpdatePlayer(view);
-        lb->UpdateLevel(player->getPlayerDirection(), player->getState());
+        lb->UpdateLevel(player, view);
+        this->update();
     }
 
 }
@@ -381,6 +389,7 @@ void SuperCopRMGame::paintEvent(QPaintEvent *e)
     //===========================================================
     QRect enemyRect, playerRect, donutRect, levelEndRect, platRect, wallRect;
     playerRect = QRect(player->getRectPosX(),player->getRectPosY(),player->getRectSizeX(),player->getRectSizeY());
+
 
 
 //    for(unsigned int i = 0; i < donuts.size(); i++)
@@ -539,12 +548,13 @@ void SuperCopRMGame::paintEvent(QPaintEvent *e)
 //    else
 //        player->fall();
 
-    if(((player->getRectPosY() + player->getRectSizeY()) >= player->getGround()) && !player->isAscending() && !player->isOnWall() && !player->isOnPlatform())
+    if(((player->getRectPosY() + player->getRectSizeY()) >= lb->getGround()) /*&& !player->isAscending()*/ && !player->isOnObstacle())
     {
         player->setPosY(lb->getGround() - player->getRectSizeY());
-        player->setRectPosY(player->getPosY() + 8);
-        player->setOnPlatform(false);
-        player->setOnWall(false);
+        player->setRectPosY(player->GetPosY() + 8);
+//        player->setOnPlatform(false);
+//        player->setOnWall(false);
+        player->SetOnObstactle(false);
         player->setOnGround(true);
     }//Ground Collision handler
     else
@@ -585,21 +595,21 @@ void SuperCopRMGame::paintEvent(QPaintEvent *e)
     painter.setFont(*scoreFont);
     painter.drawText(10, 30, QString("Score: %1").arg(QString::number(gamescore)));
 
-    levelEnd->drawDonut(painter);
-    levelEndRect = QRect(levelEnd->getPosX(), levelEnd->getPosY(), levelEnd->getSize().x, levelEnd->getSize().y);
+//    levelEnd->drawDonut(painter);
+//    levelEndRect = QRect(levelEnd->getPosX(), levelEnd->getPosY(), levelEnd->getSize().x, levelEnd->getSize().y);
 
-    if(playerRect.intersects(levelEndRect))
-    {
-        if(true==timer->isActive())
-        {
-            gamescore += 100;
-            timer->stop();
-            player->setPosX(player->getPosX() + 1);
-            msg->setText("Level Beaten");
-            msg->exec();
-            this->setHighScores();
-        }
-    }//Handles game winning scenario
+//    if(playerRect.intersects(levelEndRect))
+//    {
+//        if(true==timer->isActive())
+//        {
+//            gamescore += 100;
+//            timer->stop();
+//            player->setPosX(player->getPosX() + 1);
+//            msg->setText("Level Beaten");
+//            msg->exec();
+//            this->setHighScores();
+//        }
+//    }//Handles game winning scenario
 
     if(showDevOpts)
     {
@@ -697,10 +707,10 @@ void SuperCopRMGame::setVecs(){
         platforms.push_back(plat);
     }//Platform Vector Initialization
 
-    levelEnd = new Donut(620, this->height() - 140);
+    levelEnd = new Donut(200 * 70, this->height() - 140);
     levelEnd->setSize(Size{40, 40});
     levelEnd->setPosX(6500);
-    levelEnd->setPosY(this->height() - 200);
+    levelEnd->setPosY(this->height());
     //Initializes game ending Donut
 
 }//Initializes vectors

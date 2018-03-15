@@ -10,7 +10,7 @@ enum Direction {WEST = -1, STAND = 0, EAST = 1};
 
 enum LevelType {GRASS, INDUSTRIAL, MEDIEVIL, CAVE, NO_LEVEL_TYPE};
 
-enum ItemType {DONUT, ONE_UP};
+enum ItemType {DONUT, ONE_UP, NO_ITEM_TYPE = -1};
 
 enum EnemyType {NORMAL, FAST, JUMPER, TURRET};
 
@@ -18,17 +18,21 @@ enum PlayerState {IDLE, RUNNING_RIGHT, JUMPING, SLIDING, RUNNING_LEFT, LONG_JUMP
 
 
 enum BlockType {
-    BLOCK,           // 1x1 Block
-    SHORT_PLATFORM,  // 3 Blocks long
-    MEDIUM_PLATFORM, // 4 Blocks long
-    LONG_PLATFORM,   // 5 Blocks long
-    SHORT_WALL,      // 2x2
-    TALL_WALL,       // 4x2
-    SHORT_DEEP_WALL, // 2x4
-    TALL_DEEP_WALL,  // 4x4
-    SHORT_STAIR,     // 3x3
-    TALL_STAIR,      // 6x6
-    GOAL,            // Flag
-    BONUS            // 1x1 Block (Special)
+    BLOCK               = 0,
+    BLOCK_EDGE_TOP      = 1,
+    WALL_CORNER_LEFT    = 2,
+    WALL_CORNER_RIGHT   = 3,
+    WALL_SIDE_LEFT      = 4,
+    WALL_SIDE_RIGHT     = 5,
+    PLATFORM_LEFT       = 6,
+    PLATFORM_RIGHT      = 7,
+    INTERNAL_BLOCK      = 8,
+    GOAL                = 9,
+    GOAL_BASE           = 10,
+    GOAL_MIDDLE         = 11,
+    BONUS               = 12,
+    FLOOR_COVERED_CORNER_LEFT = 13,
+    FLOOR_COVERED_CORNER_RIGHT = 14,
+    NO_BLOCK_TYPE       = -1
 };
 #endif // DATATYPES_H

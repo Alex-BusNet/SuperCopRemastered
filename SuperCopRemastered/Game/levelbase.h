@@ -6,11 +6,19 @@
 #include <QRect>
 #include <QTimer>
 #include <QVector>
+#include <QPoint>
+
+#include <QFile>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QByteArray>
 
 #include "datatypes.h"
 #include "gameview.h"
 #include "blockbase.h"
 #include "enemybase.h"
+#include "player.h"
 
 class LevelBase
 {
@@ -24,9 +32,12 @@ public:
     void LoadLevel(int levelNum, GameView *view);
     void drawLevelBase(QPainter &painter);
 
-    void UpdateLevel(int playerDir, PlayerState ps);
+    void UpdateLevel(Player *p, GameView *view);
 
     int getGround();
+    QPoint GetPlayerStart();
+
+    void ClearView(GameView *view);
 
 private:
     // The floor of the level. A NO_LEVEL_TYPE represents a gap
@@ -50,11 +61,16 @@ private:
     int leftObstacleBound, rightObstacleBound;
     int leftEnemyBound, rightEnemyBound;
     int windowWidth;
+    int posIdx;
+    int pxPerItem;
+    int pXCenter, pYFeet;
 
     QPixmap *floor;
     QRect *rect;
 
     bool updateStatus;
+
+    QPoint playerStart;
 
 public slots:
     void generatePiece();

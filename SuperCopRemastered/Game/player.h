@@ -36,6 +36,9 @@ public:
 
     PlayerState getState();
     QPixmap* GetImage();
+    QRect *GetBoundingBox();
+
+    QGraphicsPixmapItem* GetViewPixmap();
 
     void SetViewPixmap(QGraphicsPixmapItem* item);
     void SetViewBB(QGraphicsRectItem* item);
@@ -65,8 +68,16 @@ public:
     void setRectPosX(int x);
     void setRectPosY(int y);
 
-    int getPosX();
-    int getPosY();
+    void SetOnObstactle(bool onObs);
+
+    int GetPosX();
+    int GetPosY();
+
+    int GetPixmapX();
+    int GetPixmapY();
+    int GetBBX();
+    int GetBBY();
+
     int getFrame();
     int getLeftBound();
     int getRightBound();
@@ -89,6 +100,7 @@ public:
     bool isOnPlatform();
     bool isOnWall();
     bool isWallCollided();
+    bool isOnObstacle();
 
 public slots:
     void playerAction(int action);
@@ -97,6 +109,7 @@ private:
 
     bool rolling, jumping, moveLeft, moveRight, ascend, upPressed, pause, running;
     bool onGround, playerOnWall, playerOnPlatform, wallCollided;
+    bool playerOnObstacle;
 
     PlayerState lastState, pState, nextState;
     QGraphicsPixmapItem *playerPixmap;

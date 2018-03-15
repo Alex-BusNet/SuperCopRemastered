@@ -18,9 +18,11 @@ public:
     EnemyBase(int x, int y, EnemyType eType);
 
     void DrawEnemy(QPainter &paint);
-    void UpdateEnemy(PlayerState playerState);
+    void UpdateEnemy();
 
     void SetBounds(int left, int right);
+    void SetDirection(Direction dir);
+    void FlipDirection();
 
     int GetPosX();
     int GetPosY();

@@ -1,0 +1,2412 @@
+[
+	{
+		"blockdefinitions": [
+			{
+			"unitX": 0,
+			"unitY": 0,
+			"blocktype": 1,
+			"leveltype": 0
+			},
+			{
+			"unitX": 1,
+			"unitY": 0,
+			"blocktype": 1,
+			"leveltype": 0
+			},
+			{
+			"unitX": 2,
+			"unitY": 0,
+			"blocktype": 1,
+			"leveltype": 0
+			},
+			{
+			"unitX": 3,
+			"unitY": 0,
+			"blocktype": 1,
+			"leveltype": 0
+			},
+			{
+			"unitX": 4,
+			"unitY": 0,
+			"blocktype": 1,
+			"leveltype": 0
+			},
+			{
+			"unitX": 5,
+			"unitY": 0,
+			"blocktype": 1,
+			"leveltype": 0
+			},
+			{
+			"unitX": 6,
+			"unitY": 0,
+			"blocktype": 1,
+			"leveltype": 0
+			},
+			{
+			"unitX": 7,
+			"unitY": 0,
+			"blocktype": 1,
+			"leveltype": 0
+			},
+			{
+			"unitX": 8,
+			"unitY": 0,
+			"blocktype": 1,
+			"leveltype": 0
+			},
+			{
+			"unitX": 9,
+			"unitY": 0,
+			"blocktype": 1,
+			"leveltype": 0
+			},
+			{
+			"unitX": 10,
+			"unitY": 0,
+			"blocktype": 1,
+			"leveltype": 0
+			},
+			{
+			"unitX": 11,
+			"unitY": 0,
+			"blocktype": 1,
+			"leveltype": 0
+			},
+			{
+			"unitX": 12,
+			"unitY": 0,
+			"blocktype": 1,
+			"leveltype": 0
+			},
+			{
+			"unitX": 13,
+			"unitY": 0,
+			"blocktype": 1,
+			"leveltype": 0
+			},
+			{
+			"unitX": 14,
+			"unitY": 0,
+			"blocktype": 1,
+			"leveltype": 0
+			},
+			{
+			"unitX": 15,
+			"unitY": 0,
+			"blocktype": 1,
+			"leveltype": 0
+			},
+			{
+			"unitX": 16,
+			"unitY": 0,
+			"blocktype": 1,
+			"leveltype": 0
+			},
+			{
+			"unitX": 17,
+			"unitY": 0,
+			"blocktype": 1,
+			"leveltype": 0
+			},
+			{
+			"unitX": 18,
+			"unitY": 0,
+			"blocktype": 1,
+			"leveltype": 0
+			},
+			{
+			"unitX": 19,
+			"unitY": 0,
+			"blocktype": 1,
+			"leveltype": 0
+			},
+			{
+			"unitX": 20,
+			"unitY": 0,
+			"blocktype": 1,
+			"leveltype": 0
+			},
+			{
+			"unitX": 21,
+			"unitY": 0,
+			"blocktype": 1,
+			"leveltype": 0
+			},
+			{
+			"unitX": 22,
+			"unitY": 0,
+			"blocktype": 1,
+			"leveltype": 0
+			},
+			{
+			"unitX": 23,
+			"unitY": 0,
+			"blocktype": 1,
+			"leveltype": 0
+			},
+			{
+			"unitX": 24,
+			"unitY": 0,
+			"blocktype": 1,
+			"leveltype": 0
+			},
+			{
+			"unitX": 25,
+			"unitY": 0,
+			"blocktype": 1,
+			"leveltype": 0
+			},
+			{
+			"unitX": 26,
+			"unitY": 0,
+			"blocktype": 1,
+			"leveltype": 0
+			},
+			{
+			"unitX": 27,
+			"unitY": 0,
+			"blocktype": 1,
+			"leveltype": 0
+			},
+			{
+			"unitX": 28,
+			"unitY": 0,
+			"blocktype": 1,
+			"leveltype": 0
+			},
+			{
+			"unitX": 29,
+			"unitY": 0,
+			"blocktype": 13,
+			"leveltype": 0
+			},
+			{
+			"unitX": 30,
+			"unitY": 0,
+			"blocktype": 14,
+			"leveltype": 0
+			},
+			{
+			"unitX": 31,
+			"unitY": 0,
+			"blocktype": 1,
+			"leveltype": 0
+			},
+			{
+			"unitX": 32,
+			"unitY": 0,
+			"blocktype": 1,
+			"leveltype": 0
+			},
+			{
+			"unitX": 33,
+			"unitY": 0,
+			"blocktype": 1,
+			"leveltype": 0
+			},
+			{
+			"unitX": 34,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0
+			},
+			{
+			"unitX": 35,
+			"unitY": 0,
+			"blocktype": 1,
+			"leveltype": 0			
+			},
+			{
+			"unitX": 36,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 37,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 38,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 39,
+			"unitY": 0,
+			"blocktype": 13,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 40,
+			"unitY": 0,
+			"blocktype": 14,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 41,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 42,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 43,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 44,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 45,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 46,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 47,
+			"unitY": 0,
+			"blocktype": 13,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 48,
+			"unitY": 0,
+			"blocktype": 14,			
+			"leveltype": 0		
+			},
+			{
+			"unitX": 49,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 50,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 51,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 52,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 53,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 54,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 55,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 56,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},		
+			{
+			"unitX": 57,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 58,
+			"unitY": 0,
+			"blocktype": 13,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 59,
+			"unitY": 0,
+			"blocktype": 14,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 60,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 61,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 62,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 63,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 64,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 65,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 66,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 67,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 68,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 69,
+			"unitY": 0,
+			"blocktype": 3,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 70,
+			"unitY": 0,
+			"blocktype": -1,			
+			"leveltype": 4			
+			},
+			{
+			"unitX": 71,
+			"unitY": 0,
+			"blocktype": -1,			
+			"leveltype": 4			
+			},
+			{
+			"unitX": 72,
+			"unitY": 0,
+			"blocktype": 2,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 73,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 74,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0
+			},
+			{
+			"unitX": 75,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 76,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 77,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 78,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 79,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 80,
+			"unitY": 0,
+			"blocktype": 1,
+			"leveltype": 0			
+			},
+			{
+			"unitX": 81,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 82,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 83,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 84,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 85,
+			"unitY": 0,
+			"blocktype": 3,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 86,
+			"unitY": 0,
+			"blocktype": -1,			
+			"leveltype": 4			
+			},
+			{
+			"unitX": 87,
+			"unitY": 0,
+			"blocktype": -1,			
+			"leveltype": 4			
+			},
+			{
+			"unitX": 88,
+			"unitY": 0,
+			"blocktype": -1,			
+			"leveltype": 4			
+			},
+			{
+			"unitX": 89,
+			"unitY": 0,
+			"blocktype": 2,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 90,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 91,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 92,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 93,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 94,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 95,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 96,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 97,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 98,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 99,
+			"unitY": 0,
+			"blocktype": 1,
+			"leveltype": 0			
+			},
+			{
+			"unitX": 100,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 101,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 102,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 103,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 104,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 105,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 106,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 107,
+			"unitY": 0,
+			"blocktype": 1,
+			"leveltype": 0			
+			},
+			{
+			"unitX": 108,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 109,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 110,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 111,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 112,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 113,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 114,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 115,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 116,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 117,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 118,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 119,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 120,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 121,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 122,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 123,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 124,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 125,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 126,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 127,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0
+			},
+			{
+			"unitX": 128,
+			"unitY": 0,
+			"blocktype": 1,
+			"leveltype": 0			
+			},
+			{
+			"unitX": 129,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0	
+			},
+			{
+			"unitX": 130,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 131,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0		
+			},		
+			{
+			"unitX": 132,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 133,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 134,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 135,
+			"unitY": 0,
+			"blocktype": 13,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 136,
+			"unitY": 0,
+			"blocktype": 8,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 137,
+			"unitY": 0,
+			"blocktype": 8,			
+			"leveltype": 0		
+			},
+			{
+			"unitX": 138,
+			"unitY": 0,
+			"blocktype": 14,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 139,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 140,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 141,
+			"unitY": 0,
+			"blocktype": 13,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 142,
+			"unitY": 0,
+			"blocktype": 8,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 143,
+			"unitY": 0,
+			"blocktype": 8,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 144,
+			"unitY": 0,
+			"blocktype": 14,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 145,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 146,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 147,
+			"unitY": 0,
+			"blocktype": 1,
+			"leveltype": 0			
+			},
+			{
+			"unitX": 148,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 149,
+			"unitY": 0,
+			"blocktype": 13,
+			"leveltype": 0			
+			},
+			{
+			"unitX": 150,
+			"unitY": 0,
+			"blocktype": 8,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 151,
+			"unitY": 0,
+			"blocktype": 8,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 152,
+			"unitY": 0,
+			"blocktype": 8,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 153,
+			"unitY": 0,
+			"blocktype": 5,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 154,
+			"unitY": 0,
+			"blocktype": -1,			
+			"leveltype": 4			
+			},
+			{
+			"unitX": 155,
+			"unitY": 0,
+			"blocktype": -1,			
+			"leveltype": 4			
+			},
+			{
+			"unitX": 156,
+			"unitY": 0,
+			"blocktype": 4,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 157,
+			"unitY": 0,
+			"blocktype": 8,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 158,
+			"unitY": 0,
+			"blocktype": 8,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 159,
+			"unitY": 0,
+			"blocktype": 14,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 160,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 161,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 162,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 163,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 164,
+			"unitY": 0,
+			"blocktype": 13,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 165,
+			"unitY": 0,
+			"blocktype": 14,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 166,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 167,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 168,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 169,
+			"unitY": 0,
+			"blocktype": 1,
+			"leveltype": 0			
+			},
+			{
+			"unitX": 170,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 171,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 172,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 173,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 174,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 175,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 176,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 177,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 178,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0
+			},
+			{
+			"unitX": 179,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 180,
+			"unitY": 0,
+			"blocktype": 13,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 181,
+			"unitY": 0,
+			"blocktype": 8,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 182,
+			"unitY": 0,
+			"blocktype": 8,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 183,
+			"unitY": 0,
+			"blocktype": 8,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 184,
+			"unitY": 0,
+			"blocktype": 8,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 185,
+			"unitY": 0,
+			"blocktype": 8,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 186,
+			"unitY": 0,
+			"blocktype": 8,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 187,
+			"unitY": 0,
+			"blocktype": 8,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 188,
+			"unitY": 0,
+			"blocktype": 8,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 189,
+			"unitY": 0,
+			"blocktype": 14,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 190,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 191,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 192,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 193,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 194,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 195,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 196,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 197,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 198,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 199,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 200,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 201,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 202,
+			"unitY": 0,
+			"blocktype": 1,		
+			"leveltype": 0			
+			},
+			{
+			"unitX": 203,
+			"unitY": 0,
+			"blocktype": 1,			
+			"leveltype": 0			
+			},
+			{
+			"unitX": 204,
+			"unitY": 0,
+			"blocktype": 1,
+			"leveltype": 0
+			},
+			{
+			"unitX": 205,
+			"unitY": 0,
+			"blocktype": 1,
+			"leveltype": 0
+			}
+		],
+		"objecttype": 1
+	},
+	{
+		"blockdefinitions": [
+			{
+			"unitX": 3,
+			"unitY": 1,
+			"blocktype": -1,
+			"leveltype": 4,
+			"itemtype": 3
+			},
+			{
+			"unitX": 15,
+			"unitY": 1,
+			"blocktype": -1,
+			"leveltype": 4
+			},
+			{
+			"unitX": 17,
+			"unitY": 4,
+			"blocktype": 12,
+			"leveltype": 4
+			},
+			{
+			"unitX": 21,
+			"unitY": 4,
+			"blocktype": 6,
+			"leveltype": 0
+			},
+			{
+			"unitX": 22,
+			"unitY": 4,
+			"blocktype": 12,
+			"leveltype": 4
+			},
+			{
+			"unitX": 23,
+			"unitY": 4,
+			"blocktype": 1,
+			"leveltype": 0
+			},
+			{
+			"unitX": 23,
+			"unitY": 8,
+			"blocktype": 12,
+			"leveltype": 4
+			},
+			{
+			"unitX": 24,
+			"unitY": 4,
+			"blocktype": 12,
+			"leveltype": 4
+			},
+			{
+			"unitX": 25,
+			"unitY": 4,
+			"blocktype": 7,
+			"leveltype": 0
+			},
+			{
+			"unitX": 29,
+			"unitY": 1,
+			"blocktype": 4,
+			"leveltype": 0
+			},
+			{
+			"unitX": 29,
+			"unitY": 2,
+			"blocktype": 2,
+			"leveltype": 0
+			},
+			{
+			"unitX": 30,
+			"unitY": 1,
+			"blocktype": 5,
+			"leveltype": 0
+			},
+			{
+			"unitX": 30,
+			"unitY": 2,
+			"blocktype": 3,
+			"leveltype": 0
+			},
+			{
+			"unitX": 39,
+			"unitY": 1,
+			"blocktype": 4,
+			"leveltype": 0
+			},
+			{
+			"unitX": 39,
+			"unitY": 2,
+			"blocktype": 4,
+			"leveltype": 0
+			},
+			{
+			"unitX": 39,
+			"unitY": 3,
+			"blocktype": 2,
+			"leveltype": 0
+			},
+			{
+			"unitX": 40,
+			"unitY": 1,
+			"blocktype": 5,
+			"leveltype": 0
+			},
+			{
+			"unitX": 40,
+			"unitY": 2,
+			"blocktype": 5,
+			"leveltype": 0
+			},
+			{
+			"unitX": 40,
+			"unitY": 3,
+			"blocktype": 3,
+			"leveltype": 0
+			},
+			{
+			"unitX": 47,
+			"unitY": 1,
+			"blocktype": 4,
+			"leveltype": 0
+			},
+			{
+			"unitX": 47,
+			"unitY": 2,
+			"blocktype": 4,
+			"leveltype": 0
+			},
+			{
+			"unitX": 47,
+			"unitY": 3,
+			"blocktype": 4,
+			"leveltype": 0
+			},
+			{
+			"unitX": 47,
+			"unitY": 4,
+			"blocktype": 2,
+			"leveltype": 0
+			},
+			{
+			"unitX": 48,
+			"unitY": 1,
+			"blocktype": 5,
+			"leveltype": 0
+			},
+			{
+			"unitX": 48,
+			"unitY": 2,
+			"blocktype": 5,
+			"leveltype": 0
+			},
+			{
+			"unitX": 48,
+			"unitY": 3,
+			"blocktype": 5,
+			"leveltype": 0
+			},
+			{
+			"unitX": 48,
+			"unitY": 4,
+			"blocktype": 3,
+			"leveltype": 0
+			},
+			{
+			"unitX": 58,
+			"unitY": 1,
+			"blocktype": 4,
+			"leveltype": 0
+			},
+			{
+			"unitX": 58,
+			"unitY": 2,
+			"blocktype": 4,
+			"leveltype": 0
+			},
+			{
+			"unitX": 58,
+			"unitY": 3,
+			"blocktype": 4,
+			"leveltype": 0
+			},
+			{
+			"unitX": 58,
+			"unitY": 4,
+			"blocktype": 2,
+			"leveltype": 0
+			},
+			{
+			"unitX": 59,
+			"unitY": 1,
+			"blocktype": 5,
+			"leveltype": 0
+			},
+			{
+			"unitX": 59,
+			"unitY": 2,
+			"blocktype": 5,
+			"leveltype": 0
+			},
+			{
+			"unitX": 59,
+			"unitY": 3,
+			"blocktype": 5,
+			"leveltype": 0
+			},
+			{
+			"unitX": 59,
+			"unitY": 4,
+			"blocktype": 3,
+			"leveltype": 0
+			},
+			{
+			"unitX": 65,
+			"unitY": 5,
+			"blocktype": 12,
+			"leveltype": 4
+			},
+			{
+			"unitX": 70,
+			"unitY": 1,
+			"blocktype": -1,
+			"leveltype": 4
+			},
+			{
+			"unitX": 71,
+			"unitY": 1,
+			"blocktype": -1,
+			"leveltype": 4
+			},
+			{
+			"unitX": 77,
+			"unitY": 4,
+			"blocktype": 6,
+			"leveltype": 0
+			},
+			{
+			"unitX": 78,
+			"unitY": 4,
+			"blocktype": 12,
+			"leveltype": 4
+			},
+			{
+			"unitX": 79,
+			"unitY": 4,
+			"blocktype": 7,
+			"leveltype": 0
+			},
+			{
+			"unitX": 80,
+			"unitY": 8,
+			"blocktype": 6,
+			"leveltype": 0
+			},
+			{
+			"unitX": 81,
+			"unitY": 8,
+			"blocktype": 1,
+			"leveltype": 0
+			},
+			{
+			"unitX": 82,
+			"unitY": 8,
+			"blocktype": 1,
+			"leveltype": 0
+			},
+			{
+			"unitX": 83,
+			"unitY": 8,
+			"blocktype": 1,
+			"leveltype": 0
+			},
+			{
+			"unitX": 84,
+			"unitY": 8,
+			"blocktype": 1,
+			"leveltype": 0
+			},
+			{
+			"unitX": 85,
+			"unitY": 8,
+			"blocktype": 1,
+			"leveltype": 0
+			},
+			{
+			"unitX": 86,
+			"unitY": 8,
+			"blocktype": 1,
+			"leveltype": 0
+			},
+			{
+			"unitX": 87,
+			"unitY": 8,
+			"blocktype": 7,
+			"leveltype": 0
+			},
+			{
+			"unitX": 86,
+			"unitY": 1,
+			"blocktype": -1,
+			"leveltype": 4
+			},
+			{
+			"unitX": 88,
+			"unitY": 1,
+			"blocktype": -1,
+			"leveltype": 4
+			},
+			{
+			"unitX": 91,
+			"unitY": 8,
+			"blocktype": 6,
+			"leveltype": 0
+			},
+			{
+			"unitX": 92,
+			"unitY": 8,
+			"blocktype": 1,
+			"leveltype": 0
+			},
+			{
+			"unitX": 93,
+			"unitY": 8,
+			"blocktype": 1,
+			"leveltype": 0
+			},
+			{
+			"unitX": 94,
+			"unitY": 8,
+			"blocktype": 12,
+			"leveltype": 4
+			},
+			{
+			"unitX": 94,
+			"unitY": 4,
+			"blocktype": 12,
+			"leveltype": 4
+			},
+			{
+			"unitX": 100,
+			"unitY": 4,
+			"blocktype": 6,
+			"leveltype": 0
+			},
+			{
+			"unitX": 101,
+			"unitY": 4,
+			"blocktype": 12,
+			"leveltype": 4
+			},
+			{
+			"unitX": 107,
+			"unitY": 4,
+			"blocktype": 12,
+			"leveltype": 4
+			},
+			{
+			"unitX": 110,
+			"unitY": 4,
+			"blocktype": 12,
+			"leveltype": 4
+			},
+			{
+			"unitX": 110,
+			"unitY": 8,
+			"blocktype": 12,
+			"leveltype": 4
+			},
+			{
+			"unitX": 113,
+			"unitY": 4,
+			"blocktype": 12,
+			"leveltype": 4
+			},
+			{
+			"unitX": 119,
+			"unitY": 4,
+			"blocktype": 1,
+			"leveltype": 0
+			},
+			{
+			"unitX": 122,
+			"unitY": 8,
+			"blocktype": 6,
+			"leveltype": 0
+			},
+			{
+			"unitX": 123,
+			"unitY": 8,
+			"blocktype": 1,
+			"leveltype": 0
+			},
+			{
+			"unitX": 124,
+			"unitY": 8,
+			"blocktype": 7,
+			"leveltype": 0
+			},
+			{
+			"unitX": 129,
+			"unitY": 8,
+			"blocktype": 6,
+			"leveltype": 0
+			},
+			{
+			"unitX": 130,
+			"unitY": 8,
+			"blocktype": 12,
+			"leveltype": 4
+			},
+			{
+			"unitX": 130,
+			"unitY": 4,
+			"blocktype": 6,
+			"leveltype": 0
+			},
+			{
+			"unitX": 131,
+			"unitY": 8,
+			"blocktype": 12,
+			"leveltype": 4
+			},
+			{
+			"unitX": 131,
+			"unitY": 4,
+			"blocktype": 7,
+			"leveltype": 0
+			},
+			{
+			"unitX": 132,
+			"unitY": 8,
+			"blocktype": 7,
+			"leveltype": 0
+			},
+			{
+			"unitX": 135,
+			"unitY": 1,
+			"blocktype": 2,
+			"leveltype": 0
+			},
+			{
+			"unitX": 136,
+			"unitY": 1,
+			"blocktype": 8,
+			"leveltype": 0
+			},
+			{
+			"unitX": 137,
+			"unitY": 1,
+			"blocktype": 8,
+			"leveltype": 0
+			},
+			{
+			"unitX": 138,
+			"unitY": 1,
+			"blocktype": 5,
+			"leveltype": 0
+			},
+			{
+			"unitX": 136,
+			"unitY": 2,
+			"blocktype": 2,
+			"leveltype": 0
+			},
+			{
+			"unitX": 137,
+			"unitY": 2,
+			"blocktype": 8,
+			"leveltype": 0
+			},
+			{
+			"unitX": 138,
+			"unitY": 2,
+			"blocktype": 5,
+			"leveltype": 0
+			},
+			{
+			"unitX": 137,
+			"unitY": 3,
+			"blocktype": 2,
+			"leveltype": 0
+			},
+			{
+			"unitX": 138,
+			"unitY": 3,
+			"blocktype": 5,
+			"leveltype": 0
+			},
+			{
+			"unitX": 138,
+			"unitY": 4,
+			"blocktype": 1,
+			"leveltype": 0
+			},
+			{
+			"unitX": 141,
+			"unitY": 1,
+			"blocktype": 4,
+			"leveltype": 0
+			},
+			{
+			"unitX": 141,
+			"unitY": 2,
+			"blocktype": 4,
+			"leveltype": 0
+			},
+			{
+			"unitX": 141,
+			"unitY": 3,
+			"blocktype": 4,
+			"leveltype": 0
+			},
+			{
+			"unitX": 141,
+			"unitY": 4,
+			"blocktype": 1,
+			"leveltype": 0
+			},
+			{
+			"unitX": 142,
+			"unitY": 3,
+			"blocktype": 3,
+			"leveltype": 0
+			},
+			{
+			"unitX": 142,
+			"unitY": 2,
+			"blocktype": 8,
+			"leveltype": 0
+			},
+			{
+			"unitX": 142,
+			"unitY": 1,
+			"blocktype": 8,
+			"leveltype": 0
+			},
+			{
+			"unitX": 143,
+			"unitY": 2,
+			"blocktype": 3,
+			"leveltype": 0
+			},
+			{
+			"unitX": 143,
+			"unitY": 1,
+			"blocktype": 8,
+			"leveltype": 0
+			},
+			{
+			"unitX": 144,
+			"unitY": 1,
+			"blocktype": 3,
+			"leveltype": 0
+			},
+			{
+			"unitX": 149,
+			"unitY": 1,
+			"blocktype": 2,
+			"leveltype": 0
+			},
+			{
+			"unitX": 150,
+			"unitY": 1,
+			"blocktype": 8,
+			"leveltype": 0
+			},
+			{
+			"unitX": 150,
+			"unitY": 2,
+			"blocktype": 2,
+			"leveltype": 0
+			},
+			{
+			"unitX": 151,
+			"unitY": 1,
+			"blocktype": 8,
+			"leveltype": 0
+			},
+			{
+			"unitX": 151,
+			"unitY": 2,
+			"blocktype": 8,
+			"leveltype": 0
+			},
+			{
+			"unitX": 151,
+			"unitY": 3,
+			"blocktype": 2,
+			"leveltype": 0
+			},
+			{
+			"unitX": 152,
+			"unitY": 1,
+			"blocktype": 8,
+			"leveltype": 0
+			},
+			{
+			"unitX": 152,
+			"unitY": 2,
+			"blocktype": 8,
+			"leveltype": 0
+			},
+			{
+			"unitX": 152,
+			"unitY": 3,
+			"blocktype": 8,
+			"leveltype": 0
+			},
+			{
+			"unitX": 152,
+			"unitY": 4,
+			"blocktype": 2,
+			"leveltype": 0
+			},
+			{
+			"unitX": 153,
+			"unitY": 1,
+			"blocktype": 5,
+			"leveltype": 0
+			},
+			{
+			"unitX": 153,
+			"unitY": 2,
+			"blocktype": 5,
+			"leveltype": 0
+			},
+			{
+			"unitX": 153,
+			"unitY": 3,
+			"blocktype": 5,
+			"leveltype": 0
+			},
+			{
+			"unitX": 153,
+			"unitY": 4,
+			"blocktype": 3,
+			"leveltype": 0
+			},
+			{
+			"unitX": 156,
+			"unitY": 4,
+			"blocktype": 3,
+			"leveltype": 0
+			},
+			{
+			"unitX": 156,
+			"unitY": 3,
+			"blocktype": 4,
+			"leveltype": 0
+			},
+			{
+			"unitX": 156,
+			"unitY": 2,
+			"blocktype": 4,
+			"leveltype": 0
+			},
+			{
+			"unitX": 156,
+			"unitY": 1,
+			"blocktype": 4,
+			"leveltype": 0
+			},
+			{
+			"unitX": 157,
+			"unitY": 3,
+			"blocktype": 3,
+			"leveltype": 0
+			},
+			{
+			"unitX": 157,
+			"unitY": 2,
+			"blocktype": 8,
+			"leveltype": 0
+			},
+			{
+			"unitX": 157,
+			"unitY": 1,
+			"blocktype": 8,
+			"leveltype": 0
+			},
+			{
+			"unitX": 158,
+			"unitY": 2,
+			"blocktype": 3,
+			"leveltype": 0
+			},
+			{
+			"unitX": 158,
+			"unitY": 1,
+			"blocktype": 8,
+			"leveltype": 0
+			},
+			{
+			"unitX": 159,
+			"unitY": 1,
+			"blocktype": 3,
+			"leveltype": 0
+			},
+			{
+			"unitX": 164,
+			"unitY": 1,
+			"blocktype": 4,
+			"leveltype": 0
+			},
+			{
+			"unitX": 164,
+			"unitY": 2,
+			"blocktype": 2,
+			"leveltype": 0
+			},
+			{
+			"unitX": 165,
+			"unitY": 1,
+			"blocktype": 5,
+			"leveltype": 0
+			},
+			{
+			"unitX": 165,
+			"unitY": 2,
+			"blocktype": 3,
+			"leveltype": 0
+			},
+			{
+			"unitX": 169,
+			"unitY": 4,
+			"blocktype": 6,
+			"leveltype": 0
+			},
+			{
+			"unitX": 170,
+			"unitY": 4,
+			"blocktype": 1,
+			"leveltype": 0
+			},
+			{
+			"unitX": 171,
+			"unitY": 4,
+			"blocktype": 12,
+			"leveltype": 4
+			},
+			{
+			"unitX": 172,
+			"unitY": 4,
+			"blocktype": 7,
+			"leveltype": 0
+			},
+			{
+			"unitX": 180,
+			"unitY": 1,
+			"blocktype": 4,
+			"leveltype": 0
+			},
+			{
+			"unitX": 180,
+			"unitY": 2,
+			"blocktype": 2,
+			"leveltype": 0
+			},
+			{
+			"unitX": 181,
+			"unitY": 1,
+			"blocktype": 14,
+			"leveltype": 0
+			},
+			{
+			"unitX": 181,
+			"unitY": 2,
+			"blocktype": 3,
+			"leveltype": 0
+			},
+			{
+			"unitX": 182,
+			"unitY": 1,
+			"blocktype": 1,
+			"leveltype": 0
+			},
+			{
+			"unitX": 183,
+			"unitY": 1,
+			"blocktype": 13,
+			"leveltype": 0
+			},
+			{
+			"unitX": 183,
+			"unitY": 2,
+			"blocktype": 2,
+			"leveltype": 0
+			},
+			{
+			"unitX": 184,
+			"unitY": 1,
+			"blocktype": 8,
+			"leveltype": 0
+			},
+			{
+			"unitX": 184,
+			"unitY": 2,
+			"blocktype": 8,
+			"leveltype": 0
+			},
+			{
+			"unitX": 184,
+			"unitY": 3,
+			"blocktype": 2,
+			"leveltype": 0
+			},
+			{
+			"unitX": 185,
+			"unitY": 1,
+			"blocktype": 8,
+			"leveltype": 0
+			},
+			{
+			"unitX": 185,
+			"unitY": 2,
+			"blocktype": 8,
+			"leveltype": 0
+			},
+			{
+			"unitX": 185,
+			"unitY": 3,
+			"blocktype": 8,
+			"leveltype": 0
+			},
+			{
+			"unitX": 185,
+			"unitY": 4,
+			"blocktype": 2,
+			"leveltype": 0
+			},
+			{
+			"unitX": 186,
+			"unitY": 1,
+			"blocktype": 8,
+			"leveltype": 0
+			},
+			{
+			"unitX": 186,
+			"unitY": 2,
+			"blocktype": 8,
+			"leveltype": 0
+			},
+			{
+			"unitX": 186,
+			"unitY": 3,
+			"blocktype": 8,
+			"leveltype": 0
+			},
+			{
+			"unitX": 186,
+			"unitY": 4,
+			"blocktype": 8,
+			"leveltype": 0
+			},
+			{
+			"unitX": 186,
+			"unitY": 5,
+			"blocktype": 2,
+			"leveltype": 0
+			},
+			{
+			"unitX": 187,
+			"unitY": 1,
+			"blocktype": 8,
+			"leveltype": 0
+			},
+			{
+			"unitX": 187,
+			"unitY": 2,
+			"blocktype": 8,
+			"leveltype": 0
+			},
+			{
+			"unitX": 187,
+			"unitY": 3,
+			"blocktype": 8,
+			"leveltype": 0
+			},
+			{
+			"unitX": 187,
+			"unitY": 4,
+			"blocktype": 8,
+			"leveltype": 0
+			},
+			{
+			"unitX": 187,
+			"unitY": 5,
+			"blocktype": 8,
+			"leveltype": 0
+			},
+			{
+			"unitX": 187,
+			"unitY": 6,
+			"blocktype": 2,
+			"leveltype": 0
+			},
+			{
+			"unitX": 188,
+			"unitY": 1,
+			"blocktype": 8,
+			"leveltype": 0
+			},
+			{
+			"unitX": 188,
+			"unitY": 2,
+			"blocktype": 8,
+			"leveltype": 0
+			},
+			{
+			"unitX": 188,
+			"unitY": 3,
+			"blocktype": 8,
+			"leveltype": 0
+			},
+			{
+			"unitX": 188,
+			"unitY": 4,
+			"blocktype": 8,
+			"leveltype": 0
+			},
+			{
+			"unitX": 188,
+			"unitY": 5,
+			"blocktype": 8,
+			"leveltype": 0
+			},
+			{
+			"unitX": 188,
+			"unitY": 6,
+			"blocktype": 8,
+			"leveltype": 0
+			},
+			{
+			"unitX": 188,
+			"unitY": 7,
+			"blocktype": 2,
+			"leveltype": 0
+			},
+			{
+			"unitX": 189,
+			"unitY": 1,
+			"blocktype": 5,
+			"leveltype": 0
+			},
+			{
+			"unitX": 189,
+			"unitY": 2,
+			"blocktype": 5,
+			"leveltype": 0
+			},
+			{
+			"unitX": 189,
+			"unitY": 3,
+			"blocktype": 5,
+			"leveltype": 0
+			},
+			{
+			"unitX": 189,
+			"unitY": 4,
+			"blocktype": 5,
+			"leveltype": 0
+			},
+			{
+			"unitX": 189,
+			"unitY": 5,
+			"blocktype": 5,
+			"leveltype": 0
+			},
+			{
+			"unitX": 189,
+			"unitY": 6,
+			"blocktype": 5,
+			"leveltype": 0
+			},
+			{
+			"unitX": 189,
+			"unitY": 7,
+			"blocktype": 5,
+			"leveltype": 0
+			},
+			{
+			"unitX": 189,
+			"unitY": 8,
+			"blocktype": 3,
+			"leveltype": 0
+			},
+			{
+			"unitX": 198,
+			"unitY": 1,
+			"blocktype": 10,
+			"leveltype": 4
+			},
+			{
+			"unitX": 198,
+			"unitY": 2,
+			"blocktype": 11,
+			"leveltype": 4
+			},
+			{
+			"unitX": 198,
+			"unitY": 3,
+			"blocktype": 11,
+			"leveltype": 4
+			},
+			{
+			"unitX": 198,
+			"unitY": 4,
+			"blocktype": 11,
+			"leveltype": 4
+			},
+			{
+			"unitX": 198,
+			"unitY": 5,
+			"blocktype": 11,
+			"leveltype": 4
+			},
+			{
+			"unitX": 198,
+			"unitY": 6,
+			"blocktype": 11,
+			"leveltype": 4
+			},
+			{
+			"unitX": 198,
+			"unitY": 7,
+			"blocktype": 11,
+			"leveltype": 4
+			},
+			{
+			"unitX": 198,
+			"unitY": 8,
+			"blocktype": 11,
+			"leveltype": 4
+			},
+			{
+			"unitX": 198,
+			"unitY": 9,
+			"blocktype": 9,
+			"leveltype": 4
+			}
+		],		
+		"objecttype": 2
+	},
+	{
+		"blockdefinitions": [
+			{
+			"unitX": 23,
+			"unitY": 1,
+			"enemytype":0,
+			"direction": 1,
+			"leftbound": 16,
+			"rightbound": 29
+			},
+			{
+			"unitX": 43,
+			"unitY": 1,
+			"enemytype":0,
+			"direction": 1,
+			"leftbound": 41,
+			"rightbound": 47
+			},
+			{
+			"unitX": 51,
+			"unitY": 1,
+			"enemytype":0,
+			"direction": -1,
+			"leftbound": 49,
+			"rightbound": 58
+			},
+			{
+			"unitX": 55,
+			"unitY": 1,
+			"enemytype":0,
+			"direction": 1,
+			"leftbound": 49,
+			"rightbound": 58
+			},
+			{
+			"unitX": 96,
+			"unitY": 1,
+			"enemytype":0,
+			"direction": 1,
+			"leftbound": 89,
+			"rightbound": 135
+			},
+			{
+			"unitX": 98,
+			"unitY": 1,
+			"enemytype":0,
+			"direction": -1,
+			"leftbound": 89,
+			"rightbound": 135
+			},
+			{
+			"unitX": 110,
+			"unitY": 1,
+			"enemytype":1,
+			"direction": -1,
+			"leftbound": 89,
+			"rightbound": 135
+			},
+			{
+			"unitX": 115,
+			"unitY": 1,
+			"enemytype":0,
+			"direction": 1,
+			"leftbound": 89,
+			"rightbound": 135
+			},
+			{
+			"unitX": 118,
+			"unitY": 1,
+			"enemytype":0,
+			"direction": -1,
+			"leftbound": 89,
+			"rightbound": 135
+			},
+			{
+			"unitX": 126,
+			"unitY": 1,
+			"enemyType": 0,
+			"direction": 1,
+			"leftbound": 89,
+			"rightbound": 135
+			},
+			{
+			"unitX": 128,
+			"unitY": 1,
+			"enemyType": 0,
+			"direction": -1,
+			"leftbound": 89,
+			"rightbound": 135
+			},
+			{
+			"unitX": 130,
+			"unitY": 1,
+			"enemytype":0,
+			"direction": 1,
+			"leftbound": 89,
+			"rightbound": 135
+			},
+			{
+			"unitX": 133,
+			"unitY": 1,
+			"enemytype":0,
+			"direction": -1,
+			"leftbound": 89,
+			"rightbound": 135
+			},
+			{
+			"unitX": 175,
+			"unitY": 1,
+			"enemytype":0,
+			"direction": -1,
+			"leftbound": 166,
+			"rightbound": 179
+			},
+			{
+			"unitX": 177,
+			"unitY": 1,
+			"enemytype":0,
+			"direction": 1,
+			"leftbound": 166,
+			"rightbound": 179
+			}
+		],
+		"objecttype": 3
+	}
+]

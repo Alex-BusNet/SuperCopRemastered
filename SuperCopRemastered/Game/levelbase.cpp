@@ -19,63 +19,153 @@ LevelBase::LevelBase(int width, int height)
 
 LevelBase::~LevelBase()
 {
-    if(floor != NULL)
-        delete floor;
+//    if(levelFloor != NULL)
+//        delete levelFloor;
 }
 
 void LevelBase::LoadLevel(int levelNum, GameView *view)
 {
-    // This is currently for Testing purposes.
 
     view->addRect(QRect(0, 0, 70*200, 5), QPen(Qt::transparent));
 
-    int x = 0;
-    for(int i = 0; i < 200; i++)
+    QFile levelData(QString("Assets/Level/World1_%1.json").arg(levelNum));
+
+    if(levelData.open(QIODevice::ReadOnly))
     {
-        levelFloor.push_back(new BlockBase(GRASS, BLOCK));
-        levelFloor.last()->SetPosition(x, floorHeight);
+        QByteArray byteArr = levelData.readAll();
+        QJsonDocument doc = QJsonDocument::fromJson(byteArr);
+        QJsonArray arr = doc.array();
+        QJsonArray defArr;
+        QJsonObject topObject, subObj;
 
-        floorItems.push_back(view->addPixmap(*(levelFloor.last()->GetTexture())));
-        floorItems.last()->setPos(x, floorHeight);
+        int lastXPos = 0;
 
-        floorBBs.push_back(view->addRect(*(levelFloor.last()->GetBoundingBox())));
-        x += 70;
-    }
+        qDebug() << "Array size: " << arr.size();
 
-    obstacles.push_back(new BlockBase(GRASS, SHORT_PLATFORM));
-    obstacles.last()->SetPosition(20 * 70, floorHeight - (70*4));
-    obstacles.push_back(new BlockBase(GRASS, SHORT_WALL));
-    obstacles.last()->SetPosition(29 * 70, floorHeight - (70*2));
-    obstacles.push_back(new BlockBase(GRASS, TALL_DEEP_WALL));
-    obstacles.last()->SetPosition(39 * 70, floorHeight - (70*4));
-
-    foreach(BlockBase *bb, obstacles)
-    {
-        for(int i = 0; i < bb->GetXDim(); i++)
+        for(int i = 0; i < arr.size(); i++)
         {
-            for(int j = 0; j < bb->GetYDim(); j++)
+            topObject = arr.at(i).toObject();
+            if(topObject.contains("objecttype"))
             {
-                obstacleItems.push_back(view->addPixmap(*(bb->GetTexture())));
-                obstacleItems.last()->setPos(bb->GetPosX() + (i * bb->GetSize().x), bb->GetPosY() + (j * bb->GetSize().y));
+                int type = topObject["objecttype"].toInt();
+                if(type == 1)
+                {
+                    // Floor definition
+                    qDebug() << "Loading floor definition...";
+
+                    defArr = topObject["blockdefinitions"].toArray();
+                    for(int j = 0; j < defArr.size(); j++)
+                    {
+                        subObj = defArr.at(j).toObject();
+                        BlockType bt = (BlockType)subObj["blocktype"].toInt();
+                        LevelType lt = (LevelType)subObj["leveltype"].toInt();
+                        int xPos = subObj["unitX"].toInt();
+                        int yPos = subObj["unitY"].toInt();
+
+                        levelFloor.push_back(new BlockBase(lt, bt));
+                        levelFloor.last()->SetPosition(xPos * 70, floorHeight - (yPos * 70));
+
+                        floorItems.push_back(view->addPixmap(*(levelFloor.last()->GetTexture())));
+                        floorItems.last()->setPos(xPos * 70, floorHeight - (yPos * 70));
+
+//                        floorBBs.push_back(view->addRect(*(levelFloor.last()->GetBoundingBox())));
+                    }
+                }
+                else if (type == 2)
+                {
+                    // Obstacle definition
+                    qDebug() << "Loading obstacle definition...";
+
+                    defArr = topObject["blockdefinitions"].toArray();
+                    for(int j = 0; j < defArr.size(); j++)
+                    {
+                        subObj = defArr.at(j).toObject();
+                        BlockType bt = (BlockType)subObj["blocktype"].toInt();
+                        LevelType lt = (LevelType)subObj["leveltype"].toInt();
+                        ItemType it = (ItemType)subObj["itemtype"].toInt();
+                        int xPos = subObj["unitX"].toInt();
+                        int yPos = subObj["unitY"].toInt();
+
+                        if(xPos != (lastXPos + 1))
+                        {
+                            for(int k = lastXPos; k < xPos; k++)
+                            {
+                                obstacles.push_back(new BlockBase(NO_LEVEL_TYPE, NO_BLOCK_TYPE));
+                                obstacles.last()->SetPosition(0,0);
+                            }
+                        }
+
+                        obstacles.push_back(new BlockBase(lt, bt));
+
+                        // Obstacle is the player start location
+                        if(it == 3)
+                        {
+                            playerStart.setX(xPos * 70);
+                            playerStart.setY(floorHeight - (yPos * 93));
+                            qDebug() << "Player start: " << playerStart;
+                        }
+                        else
+                        {
+                            obstacles.last()->SetPosition(xPos * 70, floorHeight - (yPos * 70));
+                        }
+
+                        lastXPos = xPos;
+                    }
+                    qDebug() << "Adding Obstacles to view...";
+                    // Add the obstacles to the GraphicsView
+                    foreach(BlockBase *bb, obstacles)
+                    {
+                        if(bb != NULL)
+                        {
+                            obstacleItems.push_back(view->addPixmap(*(bb->GetTexture())));
+                            obstacleItems.last()->setPos(bb->GetPosX(), bb->GetPosY());
+                            view->addText(QString("%1").arg(obstacleItems.size() - 1))->setPos(obstacleItems.last()->x() + 28, obstacleItems.last()->y() + 28);
+
+//                            obstacleBBs.push_back(view->addRect(*(bb->GetBoundingBox())));
+                        }
+                    }
+                }
+                else if(type == 3)
+                {
+                    // Enemy definition
+                    qDebug() << "Loading enemy definition...";
+
+                    defArr = topObject["blockdefinitions"].toArray();
+                    for(int j = 0; j < defArr.size(); j++)
+                    {
+                        subObj = defArr.at(j).toObject();
+                        EnemyType et = (EnemyType)subObj["enemytype"].toInt();
+                        Direction dir = (Direction)subObj["direction"].toInt();
+                        int xPos = subObj["unitX"].toInt();
+                        int yPos = subObj["unitY"].toInt();
+                        int lbound = subObj["leftbound"].toInt();
+                        int rbound = subObj["rightbound"].toInt();
+
+                        enemies.push_back(new EnemyBase(xPos * 70, floorHeight - (yPos * 70), et));
+                        enemies.last()->SetDirection(dir);
+                        enemies.last()->SetBounds(lbound * 70, rbound * 70);
+                    }
+
+                    foreach(EnemyBase *eb, enemies)
+                    {
+                        enemyItems.push_back(view->addPixmap(*(eb->GetTexture())));
+                        enemyItems.last()->setPos(eb->GetPosX(), eb->GetPosY());
+                        enemyItems.last()->setScale(0.5);
+
+                        enemyBBs.push_back(view->addRect(*(eb->GetBoundingBox())));
+
+                        eb->SetGPixmapPtr(enemyItems.last());
+                        eb->SetGRectPtr(enemyBBs.last());
+                    }
+                }
             }
+            else
+                qDebug() << "[objecttype] key not found.";
         }
-
-        obstacleBBs.push_back(view->addRect(*(bb->GetBoundingBox())));
     }
-
-    enemies.push_back(new EnemyBase(18*70, floorHeight - 70, NORMAL));
-    enemies.last()->SetBounds(18 * 70, 29 * 70);
-
-    foreach(EnemyBase *eb, enemies)
+    else
     {
-        enemyItems.push_back(view->addPixmap(*(eb->GetTexture())));
-        enemyItems.last()->setPos(eb->GetPosX(), eb->GetPosY());
-        enemyItems.last()->setScale(0.5);
-
-        enemyBBs.push_back(view->addRect(*(eb->GetBoundingBox())));
-
-        eb->SetGPixmapPtr(enemyItems.last());
-        eb->SetGRectPtr(enemyBBs.last());
+        qDebug() << "Failed to open: " << levelData.fileName();
     }
 
 //    leftObstacleBound = 0;
@@ -111,11 +201,14 @@ void LevelBase::drawLevelBase(QPainter &painter)
     painter.drawText(15, 160, QString("RightObstacleBound: %1").arg(rightObstacleBound));
     painter.drawText(15, 170, QString("LeftEnemyBound: %1").arg(leftEnemyBound));
     painter.drawText(15, 180, QString("RightEnemyBound: %1").arg(rightEnemyBound));
-    painter.drawText(15, 200, QString("Enemy Viewport pos: %1, %2").arg(enemies.at(0)->GetGPixmapPtr()->pos().x()).arg(enemies.at(0)->GetGPixmapPtr()->pos().y()));
     painter.drawText(15, 190, QString("Level Update: %1").arg(updateStatus));
+//    painter.drawText(15, 200, QString("Player position idx: %1").arg(posIdx));
+//    painter.drawText(15, 210, QString("pXCenter: %1").arg(pXCenter));
+//    painter.drawText(15, 220, QString("pYFeet: %1").arg(pYFeet));
+//    painter.drawText(15, 200, QString("Enemy Viewport pos: %1, %2").arg(enemies.at(0)->GetGPixmapPtr()->pos().x()).arg(enemies.at(0)->GetGPixmapPtr()->pos().y()));
 }
 
-void LevelBase::UpdateLevel(int playerDir, PlayerState ps)
+void LevelBase::UpdateLevel(Player* p, GameView *view)
 {
     updateStatus = !updateStatus;
 
@@ -260,11 +353,81 @@ void LevelBase::UpdateLevel(int playerDir, PlayerState ps)
     for(int i = 0; i < enemies.size(); i++)
     {
         if(enemies.at(i) != NULL)
-            enemies.at(i)->UpdateEnemy(ps);
+            enemies.at(i)->UpdateEnemy();
+    }
+
+
+    //========================
+    // Player Physics
+    //========================
+
+    pXCenter = p->GetPixmapX() + (p->getSize().x / 2);
+    pYFeet = p->GetPixmapY() + p->getSize().y;
+
+    if(p->GetViewPixmap()->collidingItems().size() > 0)
+    {
+        int idx = obstacleItems.indexOf((QGraphicsPixmapItem*)p->GetViewPixmap()->collidingItems()[0]);
+        if(idx != -1)
+        {
+            qDebug() << "idx: " << idx;
+            BlockBase *nearestObsY = obstacles.at(idx);
+
+            if(nearestObsY->GetBoundingBox()->intersects(*p->GetBoundingBox()))
+            {
+                p->SetOnObstactle(true);
+                p->setPosY(obstacleItems.at(idx)->y() - p->getSize().y);
+            }
+        }
     }
 }
 
 int LevelBase::getGround()
 {
     return floorHeight;
+}
+
+QPoint LevelBase::GetPlayerStart()
+{
+    return playerStart;
+}
+
+void LevelBase::ClearView(GameView *view)
+{
+    foreach(QGraphicsPixmapItem *i, floorItems)
+    {
+        view->removePixmap(i);
+        delete i;
+    }
+
+    foreach(QGraphicsPixmapItem *i, obstacleItems)
+    {
+        view->removePixmap(i);
+        delete i;
+    }
+
+    foreach(QGraphicsPixmapItem *i, enemyItems)
+    {
+        view->removePixmap(i);
+        delete i;
+    }
+
+    foreach(QGraphicsRectItem *r, floorBBs)
+    {
+        view->removeRect(r);
+        delete r;
+    }
+
+    foreach(QGraphicsRectItem *r, obstacleBBs)
+    {
+        view->removeRect(r);
+        delete r;
+    }
+
+    foreach(QGraphicsRectItem *r, enemyBBs)
+    {
+        view->removeRect(r);
+        delete r;
+    }
+
+
 }//Draws the floor

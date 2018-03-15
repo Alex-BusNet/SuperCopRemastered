@@ -27,6 +27,9 @@ public:
     int GetRightEdge();
     Size GetSize();
 
+    BlockType GetType();
+    LevelType GetLevelType();
+
     QRect* GetBoundingBox();
 
     QPixmap* GetTexture();
@@ -40,7 +43,7 @@ private:
     QRect *boundingBox;
     QPixmap *texture;
 
-    QString texturePath;
+//    QString texturePath;
 
     void SetBlockInfo();
 };

@@ -46,6 +46,7 @@ Player::Player(int parentWidth, int parentHeight)
     onGround = true;
     upPressed = false;
     wallCollided = false;
+    playerOnObstacle = false;
 
     qDebug() << "Ground: " << ground;
     qDebug() << "Player height: " << size.y;
@@ -90,18 +91,18 @@ void Player::playerScreenPos()
     //If on edge of rect, move camera in direction player is running
     if(!jumping && 1 == lastActionPressed /*&& (this->posX + 25 < rightBound)*/ && !wallCollided)
     {
-        this->setPosX(this->getPosX() + speedX);
+        this->setPosX(this->GetPosX() + speedX);
         this->setRectPosX(this->getRectPosX() + speedX);
 
     }
     else if(!jumping && 4 == lastActionPressed /*&& (this->posX > leftBound)*/ && !wallCollided)
     {
-        this->setPosX(this->getPosX() - speedX);
+        this->setPosX(this->GetPosX() - speedX);
         this->setRectPosX(this->getRectPosX() - speedX);
     }
     else
     {
-        this->setPosX(this->getPosX());
+        this->setPosX(this->GetPosX());
         this->setRectPosX(this->getRectPosX());
     }
 
@@ -119,10 +120,21 @@ QPixmap *Player::GetImage()
     return image;
 }
 
+QRect *Player::GetBoundingBox()
+{
+    return new QRect(rectPosX, rectPosY, rectSizeX, rectSizeY);
+}
+
+QGraphicsPixmapItem *Player::GetViewPixmap()
+{
+    return playerPixmap;
+}
+
 void Player::SetViewPixmap(QGraphicsPixmapItem *item)
 {
     this->playerPixmap = item;
     playerPixmap->setScale(0.5);
+    playerPixmap->setPos(posX, posY);
 }
 
 void Player::SetViewBB(QGraphicsRectItem *item)
@@ -198,7 +210,7 @@ void Player::playerAction(int action)
     switch (action)
     {
     case RIGHT:
-        if((posY + size.y) < ground)
+        if((posY + size.y) < ground && !playerOnObstacle)
             pState = FALLING;
         else
             pState = RUNNING_RIGHT;
@@ -214,19 +226,19 @@ void Player::playerAction(int action)
     case DOWN:
         if(lastState != SLIDING)
             pState = SLIDING;
-        else if((posY + size.y) < ground)
+        else if((posY + size.y) < ground && !playerOnObstacle)
             pState = FALLING;
         else
             pState = IDLE;
         break;
     case LEFT:
-        if((posY + size.y) < ground)
+        if((posY + size.y) < ground && !playerOnObstacle)
             pState = FALLING;
         else
             pState = RUNNING_LEFT;
         break;
     case NONE:
-        if((posY + size.y) < ground)
+        if((posY + size.y) < ground && !playerOnObstacle)
             pState = FALLING;
         else
             pState = IDLE;
@@ -256,11 +268,12 @@ void Player::playerAction(int action)
 
 void Player::jump()
 {
-    if(frame == 1)
-    {
+//    if(frame == 1)
+//    {
         jumping = true;
+        playerOnObstacle = false;
         glideDistance = 0;
-    }
+//    }
 
     QString dir = (playerDirection == EAST) ? "Right" : "Left";
 
@@ -296,7 +309,7 @@ void Player::longJump()
 
 void Player::slide()
 {
-    if((posY + size.y) == ground)
+    if((posY + size.y) == ground || playerOnObstacle)
     {
         speedX *= COEFF_OF_FRICTION;
 
@@ -412,6 +425,8 @@ void Player::pausePlayer()
 
 void Player::fall()
 {
+    if(playerOnObstacle) { return; }
+
     posY += (30 * GRAVITY_FACTOR);
     rectPosY += (30 * GRAVITY_FACTOR);
 
@@ -426,7 +441,7 @@ void Player::fall()
         glideDistance = 0;
     }
 
-    if(jumping && abs(glideDistance) < 140)
+    if(jumping /*&& abs(glideDistance) < 140*/)
     {
         if(playerDirection == WEST && lastActionPressed == LEFT)
         {
@@ -540,6 +555,11 @@ bool Player::isOnWall()
 bool Player::isWallCollided()
 {
     return wallCollided;
+}
+
+bool Player::isOnObstacle()
+{
+    return playerOnObstacle;
 }//Accessor
 
 void Player::setSpeedX(int spd)
@@ -555,17 +575,60 @@ void Player::setRectPosX(int x)
 void Player::setRectPosY(int y)
 {
     this->rectPosY = y;
+}
+
+void Player::SetOnObstactle(bool onObs)
+{
+    playerOnObstacle = onObs;
+    frame = 1;
+
+    if(onObs)
+    {
+        speedX = PLAYER_INITIAL_X_VELOCITY;
+        jumpSpeed = PLAYER_INITIAL_Y_VELOCITY;
+    }
+
+    if(lastActionPressed == LEFT) { pState = RUNNING_LEFT; }
+    else if(lastActionPressed == RIGHT) { pState = RUNNING_RIGHT; }
+    else { pState = IDLE; }
+}
+
+int Player::GetPixmapX()
+{
+    return playerPixmap->x();
+}
+
+int Player::GetPixmapY()
+{
+    return playerPixmap->y();
+}
+
+int Player::GetBBX()
+{
+    return playerBB->x();
+}
+
+int Player::GetBBY()
+{
+    return playerBB->y();
 }//Accessor
 
 void Player::setPosX(int x)
 {
     posX=x;
+
+    if(playerPixmap != NULL)
+        playerPixmap->setPos(posX, posY);
+
 }//Mutator
 
 
 void Player::setPosY(int y)
 {
     posY=y;
+
+    if(playerPixmap != NULL)
+        playerPixmap->setPos(posX, posY);
 }
 
 void Player::setSize(Size s)
@@ -600,13 +663,14 @@ void Player::setWallCollided(bool wallCollided)
     this->wallCollided = wallCollided;
 }//Mutator
 
-int Player::getPosX()
+int Player::GetPosX()
 {
+//    return playerPixmap->x();
     return posX;
 }//Accessor
 
 
-int Player::getPosY()
+int Player::GetPosY()
 {
     return posY;
 }//Accessor
