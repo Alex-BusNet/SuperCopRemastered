@@ -34,6 +34,8 @@ public:
 
     void UpdateLevel(Player *p, GameView *view);
 
+    int GetLevelRightBound();
+
     int getGround();
     QPoint GetPlayerStart();
 
@@ -53,6 +55,9 @@ private:
     QVector<QGraphicsRectItem*> obstacleBBs;
     QVector<QGraphicsRectItem*> floorBBs;
     QVector<QGraphicsRectItem*> enemyBBs;
+
+    QVector<QGraphicsTextItem*> enemyTextItems;
+    QVector<QGraphicsTextItem*> enemyBBText;
     int floorHeight; // Y value for where to start drawing the floor (x=0)
     Size imageSize;
 

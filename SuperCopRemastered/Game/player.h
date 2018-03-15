@@ -39,6 +39,9 @@ public:
     QRect *GetBoundingBox();
 
     QGraphicsPixmapItem* GetViewPixmap();
+    QGraphicsRectItem* GetViewBB();
+
+    void SetLevelBounds(int l, int r);
 
     void SetViewPixmap(QGraphicsPixmapItem* item);
     void SetViewBB(QGraphicsRectItem* item);
@@ -119,6 +122,7 @@ private:
     int posX, posY;
 
     Size size;
+    QRect *boundingBox;
 
     float speedX;
     float jumpSpeed;

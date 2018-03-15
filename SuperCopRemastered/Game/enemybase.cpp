@@ -57,7 +57,10 @@ void EnemyBase::UpdateEnemy()
 
     viewPixmap->setPos(posX, posY);
     viewPixmap->setPixmap(*texture);
-    viewBB->setPos(posX, posY);
+    viewBB->setRect(posX, posY, enemySize.x, enemySize.y);
+    viewBB->setPos(0, 0);
+//    pixText->setPos(posX + 30, posY + 2);
+//    bbText->setPos(posX + 30, posY + 12);
 }
 
 void EnemyBase::SetBounds(int left, int right)
@@ -114,6 +117,16 @@ void EnemyBase::SetGPixmapPtr(QGraphicsPixmapItem *ptr)
 void EnemyBase::SetGRectPtr(QGraphicsRectItem *ptr)
 {
     viewBB = ptr;
+}
+
+void EnemyBase::SetGPixmapText(QGraphicsTextItem *ptr)
+{
+    pixText = ptr;
+}
+
+void EnemyBase::SetGRectText(QGraphicsTextItem *ptr)
+{
+    bbText = ptr;
 }
 
 QGraphicsPixmapItem *EnemyBase::GetGPixmapPtr()

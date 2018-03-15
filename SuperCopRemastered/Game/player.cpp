@@ -32,6 +32,9 @@ Player::Player(int parentWidth, int parentHeight)
     rectSizeX = size.x - 30;// - 5;
     rectSizeY = size.y - 15;
 
+//    boundingBox = new QRect(rectPosX, rectPosY, rectSizeX, rectSizeY);
+    boundingBox = new QRect(posX, posY, size.x, size.y);
+
     leftBound = parentWidth / 6;
     rightBound = parentWidth - (parentWidth / 5);
     ground = parentHeight;
@@ -47,6 +50,9 @@ Player::Player(int parentWidth, int parentHeight)
     upPressed = false;
     wallCollided = false;
     playerOnObstacle = false;
+
+    playerPixmap = NULL;
+    playerBB = NULL;
 
     qDebug() << "Ground: " << ground;
     qDebug() << "Player height: " << size.y;
@@ -89,25 +95,25 @@ void Player::playerScreenPos()
 {
     //Check where player is on screen. If within a predefined rect, do not scroll screen.
     //If on edge of rect, move camera in direction player is running
-    if(!jumping && 1 == lastActionPressed /*&& (this->posX + 25 < rightBound)*/ && !wallCollided)
+    if(!jumping && 1 == lastActionPressed && (this->posX + speedX < rightBound) && !wallCollided)
     {
         this->setPosX(this->GetPosX() + speedX);
-        this->setRectPosX(this->getRectPosX() + speedX);
+//        this->setRectPosX(this->getRectPosX() + speedX);
 
     }
-    else if(!jumping && 4 == lastActionPressed /*&& (this->posX > leftBound)*/ && !wallCollided)
+    else if(!jumping && 4 == lastActionPressed && (this->posX > leftBound) && !wallCollided)
     {
         this->setPosX(this->GetPosX() - speedX);
-        this->setRectPosX(this->getRectPosX() - speedX);
+//        this->setRectPosX(this->getRectPosX() - speedX);
     }
     else
     {
         this->setPosX(this->GetPosX());
-        this->setRectPosX(this->getRectPosX());
+//        this->setRectPosX(this->getRectPosX());
     }
 
-    playerPixmap->setPos(posX, posY);
-    playerBB->setPos(rectPosX, rectPosY);
+//    playerPixmap->setPos(posX, posY);
+//    playerBB->setPos(rectPosX, rectPosY);
 }
 
 PlayerState Player::getState()
@@ -122,12 +128,23 @@ QPixmap *Player::GetImage()
 
 QRect *Player::GetBoundingBox()
 {
-    return new QRect(rectPosX, rectPosY, rectSizeX, rectSizeY);
+    return boundingBox;
 }
 
 QGraphicsPixmapItem *Player::GetViewPixmap()
 {
     return playerPixmap;
+}
+
+QGraphicsRectItem *Player::GetViewBB()
+{
+    return playerBB;
+}
+
+void Player::SetLevelBounds(int l, int r)
+{
+    leftBound = l;
+    rightBound = r;
 }
 
 void Player::SetViewPixmap(QGraphicsPixmapItem *item)
@@ -174,7 +191,8 @@ void Player::UpdatePlayer(GameView *view)
         break;
     }
 
-    view->ensureVisible(playerPixmap, 200, 10);
+    if((posX - 200 > leftBound) && (posX + 200 < rightBound))
+        view->ensureVisible(playerPixmap, 200, 10);
 }
 
 void Player::UpdateFrame()
@@ -272,7 +290,8 @@ void Player::jump()
 //    {
         jumping = true;
         playerOnObstacle = false;
-        glideDistance = 0;
+        onGround = false;
+//        glideDistance = 0;
 //    }
 
     QString dir = (playerDirection == EAST) ? "Right" : "Left";
@@ -342,7 +361,7 @@ void Player::slide()
 
         if((posY + size.y) >= ground)
         {
-            posY = ground - size.y;
+            posY = ground - size.y - 10;
             rectPosY = ground - size.y + 10;
             pState = IDLE;
             jumping = false;
@@ -359,10 +378,11 @@ void Player::run()
     if(jumping && pState == FALLING)
     {
         speedX = PLAYER_FALLING_X_VELOCITY;
+        playerDirection = EAST;
     }
     else if(!jumping)
     {
-        glideDistance = 0;
+//        glideDistance = 0;
         jumpSpeed = PLAYER_INITIAL_Y_VELOCITY;
 
         if(speedX < 0.5f)
@@ -384,10 +404,11 @@ void Player::runInverted()
     if(jumping && pState == FALLING)
     {
         speedX = PLAYER_FALLING_X_VELOCITY;
+        playerDirection = WEST;
     }
     else if(!jumping)
     {
-        glideDistance = 0;
+//        glideDistance = 0;
 
         if(speedX < 0.5f)
             speedX = PLAYER_INITIAL_X_VELOCITY;
@@ -404,7 +425,7 @@ void Player::runInverted()
 void Player::standBy()
 {
     running = false;
-    glideDistance = 0;
+//    glideDistance = 0;
     jumping = false;
     speedX = PLAYER_INITIAL_X_VELOCITY;
     //Checks which direction the player was moving last then sets the appropiate standing image
@@ -425,7 +446,7 @@ void Player::pausePlayer()
 
 void Player::fall()
 {
-    if(playerOnObstacle) { return; }
+    if(playerOnObstacle || onGround) { return; }
 
     posY += (30 * GRAVITY_FACTOR);
     rectPosY += (30 * GRAVITY_FACTOR);
@@ -438,7 +459,8 @@ void Player::fall()
         rectPosY = ground - size.y + 10;
         pState = IDLE;
         jumping = false;
-        glideDistance = 0;
+        onGround = true;
+//        glideDistance = 0;
     }
 
     if(jumping /*&& abs(glideDistance) < 140*/)
@@ -447,13 +469,13 @@ void Player::fall()
         {
             posX -= 20;
             rectPosX -= 20;
-            glideDistance -= 20;
+//            glideDistance -= 20;
         }
         else if(playerDirection == EAST && lastActionPressed == RIGHT)
         {
             posX += 20;
             rectPosX += 20;
-            glideDistance += 20;
+//            glideDistance += 20;
         }
     }
 }
@@ -620,6 +642,12 @@ void Player::setPosX(int x)
     if(playerPixmap != NULL)
         playerPixmap->setPos(posX, posY);
 
+    if(playerBB != NULL)
+    {
+        playerBB->setRect(posX, posY, size.x, size.y);
+        playerBB->setPos(0, 0);
+    }
+
 }//Mutator
 
 
@@ -629,6 +657,12 @@ void Player::setPosY(int y)
 
     if(playerPixmap != NULL)
         playerPixmap->setPos(posX, posY);
+
+    if(playerBB != NULL)
+    {
+        playerBB->setRect(posX, posY, size.x, size.y);
+        playerBB->setPos(0, 0);
+    }
 }
 
 void Player::setSize(Size s)
@@ -665,7 +699,6 @@ void Player::setWallCollided(bool wallCollided)
 
 int Player::GetPosX()
 {
-//    return playerPixmap->x();
     return posX;
 }//Accessor
 

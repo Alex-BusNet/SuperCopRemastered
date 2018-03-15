@@ -5,6 +5,7 @@ BlockBase::BlockBase()
 {
     this->lt = GRASS;
     this->bt = BLOCK;
+    boundingBox = NULL;
     SetBlockInfo();
 }
 
@@ -12,6 +13,7 @@ BlockBase::BlockBase(LevelType lType, BlockType bType)
 {
     this->lt = lType;
     this->bt = bType;
+    boundingBox = NULL;
     SetBlockInfo();
 }
 

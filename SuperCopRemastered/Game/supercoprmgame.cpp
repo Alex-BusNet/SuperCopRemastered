@@ -14,10 +14,13 @@ SuperCopRMGame::SuperCopRMGame(QWidget *parent)
     view = new GameView(this);
     lb->LoadLevel(1, view);
     qDebug() << "Loading player to Scene...";
+    player->SetViewPixmap(view->addPixmap(*(player->GetImage())));
+    player->SetViewBB(view->addRect(*player->GetBoundingBox()));
+    qDebug() << "Setting player start position...";
     player->setPosX(lb->GetPlayerStart().x());
     player->setPosY(lb->GetPlayerStart().y());
-    player->SetViewPixmap(view->addPixmap(*(player->GetImage())));
-    player->SetViewBB(view->addRect(QRect(player->GetPosX(), player->GetPosY(), player->getSize().x, player->getSize().y)));
+
+    player->SetLevelBounds(0, lb->GetLevelRightBound());
 
     msg = new QMessageBox();
     pbox = new QMessageBox();
@@ -27,6 +30,7 @@ SuperCopRMGame::SuperCopRMGame(QWidget *parent)
 
     pausedFont = new QFont(this->font());
     pausedFont->setPointSize(48);
+
     qDebug() << "Setting Background...";
     QPixmap bkgnd("Assets/UI/background.png");
     bkgnd = bkgnd.scaled(this->width(), this->height(), Qt::IgnoreAspectRatio);
