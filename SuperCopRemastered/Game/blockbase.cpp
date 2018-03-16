@@ -90,6 +90,26 @@ QRect *BlockBase::GetBoundingBox()
     return boundingBox;
 }
 
+QRect *BlockBase::GetLeftBoundingBox()
+{
+    return new QRect(boundingBox->x(), boundingBox->y() + 5, 5, boundingBox->height() - 10);
+}
+
+QRect *BlockBase::GetRightBoundingBox()
+{
+    return new QRect(boundingBox->x() + boundingBox->width() - 5, boundingBox->y() + 5, 5, boundingBox->height() - 10);
+}
+
+QRect *BlockBase::GetTopBoundingBox()
+{
+    return new QRect(boundingBox->x() + 5, boundingBox->y(), boundingBox->width() - 10, 5);
+}
+
+QRect *BlockBase::GetBottomBoundingBox()
+{
+    return new QRect(boundingBox->x() + 5, boundingBox->y() + boundingBox->height() - 5, boundingBox->width() - 10, 5);
+}
+
 QPixmap *BlockBase::GetTexture()
 {
     return texture;

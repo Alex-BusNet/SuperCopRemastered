@@ -86,15 +86,6 @@ void LevelBase::LoadLevel(int levelNum, GameView *view)
                         int xPos = subObj["unitX"].toInt();
                         int yPos = subObj["unitY"].toInt();
 
-//                        if(xPos != (lastXPos + 1))
-//                        {
-//                            for(int k = lastXPos; k < xPos; k++)
-//                            {
-//                                obstacles.push_back(new BlockBase(NO_LEVEL_TYPE, NO_BLOCK_TYPE));
-//                                obstacles.last()->SetPosition(0,0);
-//                            }
-//                        }
-
                         obstacles.push_back(new BlockBase(lt, bt));
 
                         // Obstacle is the player start location
@@ -120,9 +111,15 @@ void LevelBase::LoadLevel(int levelNum, GameView *view)
                         {
                             obstacleItems.push_back(view->addPixmap(*(bb->GetTexture())));
                             obstacleItems.last()->setPos(bb->GetPosX(), bb->GetPosY());
-                            view->addText(QString("%1").arg(obstacleItems.size() - 1))->setPos(obstacleItems.last()->x() + 28, obstacleItems.last()->y() + 28);
+//                            view->addText(QString("%1").arg(obstacleItems.size() - 1))->setPos(obstacleItems.last()->x() + 28, obstacleItems.last()->y() + 28);
 
-//                            if(bb->GetBoundingBox() != NULL)
+                            if(bb->GetBoundingBox() != NULL)
+                            {
+                                view->addRect(*bb->GetTopBoundingBox());
+                                view->addRect(*bb->GetLeftBoundingBox());
+                                view->addRect(*bb->GetRightBoundingBox());
+                                view->addRect(*bb->GetBottomBoundingBox());
+                            }
 //                                obstacleBBs.push_back(view->addRect(*(bb->GetBoundingBox())));
                         }
                     }
@@ -157,18 +154,18 @@ void LevelBase::LoadLevel(int levelNum, GameView *view)
 //                        enemyTextItems.push_back(view->addText(QString("%1").arg(enemyItems.size() - 1)));
 //                        enemyTextItems.last()->setPos(enemyItems.last()->x() + 30, enemyItems.last()->y() + 2);
 
-                        if(eb->GetBoundingBox() != NULL)
-                        {
-                            enemyBBs.push_back(view->addRect(*(eb->GetBoundingBox())));
-                            enemyBBs.last()->setPos(0,0);
-                            enemyBBs.last()->setScale(0.5);
+//                        if(eb->GetBoundingBox() != NULL)
+//                        {
+//                            enemyBBs.push_back(view->addRect(*(eb->GetBoundingBox())));
+//                            enemyBBs.last()->setPos(0,0);
+//                            enemyBBs.last()->setScale(0.5);
 
 //                            enemyBBText.push_back(view->addText(QString("%1").arg(enemyBBs.size() - 1)));
 //                            enemyBBText.last()->setPos(enemyBBs.last()->x() + 30, enemyBBs.last()->y() + 12);
 
-                            eb->SetGRectPtr(enemyBBs.last());
+//                            eb->SetGRectPtr(enemyBBs.last());
 //                            eb->SetGRectText(enemyBBText.last());
-                        }
+//                        }
 
                         eb->SetGPixmapPtr(enemyItems.last());
 //                        eb->SetGPixmapText(enemyTextItems.last());
@@ -216,7 +213,7 @@ void LevelBase::drawLevelBase(QPainter &painter)
 //    painter.drawText(15, 150, QString("LeftObstacleBound: %1").arg(leftObstacleBound));
 //    painter.drawText(15, 160, QString("RightObstacleBound: %1").arg(rightObstacleBound));
 //    painter.drawText(15, 170, QString("LeftEnemyBound: %1").arg(leftEnemyBound));
-//    painter.drawText(15, 180, QString("RightEnemyBound: %1").arg(rightEnemyBound));
+    painter.drawText(15, 180, QString("Player items collided: %1").arg(collidedItems));
     painter.drawText(15, 190, QString("Level Update: %1").arg(updateStatus));
 //    painter.drawText(15, 200, QString("Enemy BB pos: %1, %2").arg(enemyBBs.first()->rect().x()).arg(enemyBBs.first()->rect().y()));
 //    painter.drawText(15, 210, QString("Enemy Pixmap Pos: %1, %2").arg(enemyItems.first()->pos().x()).arg(enemyItems.first()->pos().y()));
@@ -369,7 +366,15 @@ void LevelBase::UpdateLevel(Player* p, GameView *view)
     for(int i = 0; i < enemies.size(); i++)
     {
         if(enemies.at(i) != NULL)
+        {
             enemies.at(i)->UpdateEnemy();
+
+//            if(enemies.at(i)->GetBoundingBox()->intersects(p->GetViewBB(true)->rect().toRect()))
+//            {
+//                emit EndOfGame(false);
+//                return;
+//            }
+        }
     }
 
 
@@ -377,38 +382,102 @@ void LevelBase::UpdateLevel(Player* p, GameView *view)
     // Player Physics
     //========================
 
-//    pXCenter = p->GetPixmapX() + (p->getSize().x / 2);
-//    int pXFeet = (p->getPlayerDirection() == WEST) ? pXCenter - 10 : pXCenter + 10;
-//    pYFeet = p->GetPixmapY() + p->getSize().y;
-    if(p->GetViewPixmap()->collidingItems().size() > 1)
+    collidedItems = p->GetViewPixmap()->collidingItems().size();
+    if(collidedItems > 1)
     {
-        QGraphicsItem* firstNonPlayer = p->GetViewPixmap()->collidingItems()[1];
+        QGraphicsItem* firstNonPlayer;
+
+        foreach(QGraphicsItem* item, p->GetViewPixmap()->collidingItems())
+        {
+            if(item != p->GetViewBB(true) && item != p->GetViewPixmap())
+            {
+                // Check if the item is an instance of QGraphicsPixmapItem
+                // Note: This is mostly useful for when we are debugging with
+                //      obstacle bounding boxes visible
+                if(dynamic_cast<const QGraphicsPixmapItem*>(item) != nullptr)
+                {
+                    firstNonPlayer = item;
+                    break;
+                }
+            }
+        }
 
         int idx = obstacleItems.indexOf((QGraphicsPixmapItem*)firstNonPlayer);
         if(idx != -1)
         {
-            qDebug() << "idx: " << idx;
+            qDebug() << "Obstacle idx: " << idx;
             BlockBase *nearestObsY = obstacles.at(idx);
-            if(nearestObsY->GetBoundingBox()->intersects(p->GetViewBB()->rect().toRect()))
+
+            if(nearestObsY->GetBoundingBox()->intersects(p->GetViewBB(false)->rect().toRect()))
             {
                 qDebug() << "Collision with " << idx;
-                p->SetOnObstactle(true);
-                p->setOnGround(false);
-                p->setPosY(obstacleItems.at(idx)->y() - p->getSize().y);
+                bool leftWallCollision = (((nearestObsY->GetType() == WALL_CORNER_LEFT) || ( nearestObsY->GetType() == WALL_SIDE_LEFT))
+                                          && (nearestObsY->GetLeftBoundingBox()->intersects(p->GetViewBB(true)->rect().toRect())));
+
+                bool rightWallCollision =(((nearestObsY->GetType() == WALL_CORNER_RIGHT) || (nearestObsY->GetType() == WALL_SIDE_RIGHT))
+                                          && (nearestObsY->GetRightBoundingBox()->intersects(p->GetViewBB(true)->rect().toRect())));
+
+                bool topBlockCollision = ((nearestObsY->GetTopBoundingBox()->intersects(p->GetViewBB(true)->rect().toRect())) && p->getState() == FALLING);
+
+                if((leftWallCollision || rightWallCollision) && !topBlockCollision)
+                {
+                    qDebug() << "Wall collision";
+                    p->setWallCollided(p->getPlayerDirection(), true);
+                }
+                else if(nearestObsY->GetType() == GOAL || nearestObsY->GetType() == GOAL_BASE || nearestObsY->GetType() == GOAL_MIDDLE)
+                {
+                    if(!leftWallCollision && !rightWallCollision)
+                        p->clearWallCollided();
+
+                    emit EndOfGame(true);
+                }
+                else if(nearestObsY->GetType() == NO_BLOCK_TYPE)
+                {
+                    qDebug() << "Empty Object collision";
+                    p->setOnGround(false);
+                    p->setInGap(true);
+                    p->playerAction(DOWN);
+
+                }
+                else if(topBlockCollision)
+                {
+                    p->SetOnObstactle(true);
+                    p->setPosY(obstacles.at(idx)->GetPosY() - p->getSize().y);
+
+                    if(!leftWallCollision && !rightWallCollision)
+                        p->clearWallCollided();
+                }
+                else if(!leftWallCollision && !rightWallCollision)
+                        p->clearWallCollided();
             }
         }
+//        else
+//        {
+//            // Enemy collision check
+//            idx = enemyItems.indexOf((QGraphicsPixmapItem*)firstNonPlayer);
+//            if(idx != -1)
+//            {
+//                qDebug() << "Enemy idx: " << idx;
+//                EnemyBase *nearestEnemy = enemies.at(idx);
+//                if((nearestEnemy != NULL) && (nearestEnemy->GetBoundingBox()->intersects(p->GetViewBB(false)->rect().toRect())))
+//                {
+//                    qDebug() << "Collision with: " << idx;
+//                    if((p->getState() == FALLING) || (p->getState() == SLIDING))
+//                    {
+//                        emit EnemyDefeated(nearestEnemy->GetValue());
+//                        delete nearestEnemy;
+//                    }
+//                    else
+//                    {
+//                        emit EndOfGame(false);
+//                        return;
+//                    }
+//                }
+//            }
+//        }
     }
     else
-    {
-        if(p->getState() == SLIDING && p->isOnObstacle())
-        {
-            if(p->GetPosY() + p->getSize().y < this->getGround())
-            {
-                p->playerAction(DOWN);
-                p->SetOnObstactle(false);
-            }
-        }
-    }
+        p->clearWallCollided();
 }
 
 int LevelBase::GetLevelRightBound()
@@ -464,5 +533,10 @@ void LevelBase::ClearView(GameView *view)
         delete r;
     }
 
+
+}
+
+void LevelBase::generatePiece()
+{
 
 }//Draws the floor

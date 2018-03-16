@@ -98,6 +98,8 @@ public slots:
     void exitGame();
     void actionInput(Qt::Key key);
     void updateRender();
+    void scoreUpdate(int value);
+    void GameOver(bool endOfLevel);
 };
 
 #endif // SUPERCOPRMGAME_H

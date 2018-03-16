@@ -15,6 +15,8 @@ EnemyBase::EnemyBase(int x, int y, EnemyType eType)
     this->boundingBox = new QRect(posX, posY, enemySize.x, enemySize.y);
     this->boundLeft = 0;
     this->boundRight = 70 * 205;
+    viewPixmap = NULL;
+    viewBB = NULL;
     SetEnemyInfo();
 }
 
@@ -57,8 +59,14 @@ void EnemyBase::UpdateEnemy()
 
     viewPixmap->setPos(posX, posY);
     viewPixmap->setPixmap(*texture);
-    viewBB->setRect(posX, posY, enemySize.x, enemySize.y);
-    viewBB->setPos(0, 0);
+
+    boundingBox = new QRect(posX, posY, enemySize.x, enemySize.y);
+
+    if(viewBB != NULL)
+        viewBB->setRect(*boundingBox);
+
+//    viewBB->setRect(posX, posY, enemySize.x, enemySize.y);
+//    viewBB->setPos(0, 0);
 //    pixText->setPos(posX + 30, posY + 2);
 //    bbText->setPos(posX + 30, posY + 12);
 }
@@ -97,6 +105,11 @@ int EnemyBase::GetPosY()
 int EnemyBase::GetRightEdge()
 {
     return posX + enemySize.x;
+}
+
+int EnemyBase::GetValue()
+{
+    return pointValue;
 }
 
 QPixmap *EnemyBase::GetTexture()

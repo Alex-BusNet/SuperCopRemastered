@@ -28,6 +28,8 @@ public:
     int GetPosY();
     int GetRightEdge();
 
+    int GetValue();
+
     QPixmap* GetTexture();
     QRect* GetBoundingBox();
 

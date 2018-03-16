@@ -31,6 +31,10 @@ public:
     LevelType GetLevelType();
 
     QRect* GetBoundingBox();
+    QRect* GetLeftBoundingBox();
+    QRect* GetRightBoundingBox();
+    QRect* GetTopBoundingBox();
+    QRect* GetBottomBoundingBox();
 
     QPixmap* GetTexture();
 

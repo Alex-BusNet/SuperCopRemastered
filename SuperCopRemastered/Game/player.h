@@ -39,7 +39,7 @@ public:
     QRect *GetBoundingBox();
 
     QGraphicsPixmapItem* GetViewPixmap();
-    QGraphicsRectItem* GetViewBB();
+    QGraphicsRectItem* GetViewBB(bool enemyCollisionCheck = false);
 
     void SetLevelBounds(int l, int r);
 
@@ -49,15 +49,6 @@ public:
     void UpdatePlayer(GameView *view);
     void UpdateFrame();
 
-    void jump();
-    void longJump();
-    void slide();
-    void run();
-    void runInverted();
-    void standBy();
-    void pausePlayer();
-    void fall();
-
     void setPosX(int x);
     void setPosY(int y);
     void setSize(Size s);
@@ -66,10 +57,12 @@ public:
     void setJumping(bool jump);
     void setOnWall(bool onWall);
     void setOnPlatform(bool onPlat);
-    void setWallCollided(bool wallCollided);
+    void setWallCollided(int side, bool wallCollided);
+    void clearWallCollided();
     void setSpeedX(int spd);
     void setRectPosX(int x);
     void setRectPosY(int y);
+    void setInGap(bool gap);
 
     void SetOnObstactle(bool onObs);
 
@@ -109,10 +102,17 @@ public slots:
     void playerAction(int action);
 
 private:
+    void jump();
+    void slide();
+    void run();
+    void runInverted();
+    void standBy();
+    void pausePlayer();
+    void fall();
 
     bool rolling, jumping, moveLeft, moveRight, ascend, upPressed, pause, running;
     bool onGround, playerOnWall, playerOnPlatform, wallCollided;
-    bool playerOnObstacle;
+    bool playerOnObstacle, leftWallCollided, rightWallCollided, inGap;
 
     PlayerState lastState, pState, nextState;
     QGraphicsPixmapItem *playerPixmap;

@@ -1,6 +1,7 @@
 #ifndef LEVELBASE_H
 #define LEVELBASE_H
 
+#include <QObject>
 #include <QPainter>
 #include <QBrush>
 #include <QRect>
@@ -20,8 +21,9 @@
 #include "enemybase.h"
 #include "player.h"
 
-class LevelBase
+class LevelBase : public QObject
 {
+    Q_OBJECT
 public:
     LevelBase();
     LevelBase(int width, int height);
@@ -66,9 +68,10 @@ private:
     int leftObstacleBound, rightObstacleBound;
     int leftEnemyBound, rightEnemyBound;
     int windowWidth;
-    int posIdx;
-    int pxPerItem;
-    int pXCenter, pYFeet;
+//    int posIdx;
+    int collidedItems;
+//    int pxPerItem;
+//    int pXCenter, pYFeet;
 
     QPixmap *floor;
     QRect *rect;
@@ -76,6 +79,10 @@ private:
     bool updateStatus;
 
     QPoint playerStart;
+
+signals:
+    void EnemyDefeated(int value);
+    void EndOfGame(bool endOfLevel);
 
 public slots:
     void generatePiece();

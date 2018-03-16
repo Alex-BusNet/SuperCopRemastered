@@ -15,7 +15,7 @@ SuperCopRMGame::SuperCopRMGame(QWidget *parent)
     lb->LoadLevel(1, view);
     qDebug() << "Loading player to Scene...";
     player->SetViewPixmap(view->addPixmap(*(player->GetImage())));
-    player->SetViewBB(view->addRect(*player->GetBoundingBox()));
+    player->SetViewBB(view->addRect(*player->GetBoundingBox()/*, QPen(Qt::transparent)*/));
     qDebug() << "Setting player start position...";
     player->setPosX(lb->GetPlayerStart().x());
     player->setPosY(lb->GetPlayerStart().y());
@@ -30,6 +30,9 @@ SuperCopRMGame::SuperCopRMGame(QWidget *parent)
 
     pausedFont = new QFont(this->font());
     pausedFont->setPointSize(48);
+
+    connect(lb, &LevelBase::EnemyDefeated, this, &SuperCopRMGame::scoreUpdate);
+    connect(lb, &LevelBase::EndOfGame, this, &SuperCopRMGame::GameOver);
 
     qDebug() << "Setting Background...";
     QPixmap bkgnd("Assets/UI/background.png");
@@ -380,6 +383,27 @@ void SuperCopRMGame::updateRender()
     this->update();
 }
 
+void SuperCopRMGame::scoreUpdate(int value)
+{
+    gamescore += value;
+}
+
+void SuperCopRMGame::GameOver(bool endOfLevel)
+{
+    if(!endOfLevel)
+    {
+        QMessageBox *gameOverBox = new QMessageBox();
+        gameOverBox->setText("YOU LOSE!");
+        gameOverBox->exec();
+        delete gameOverBox;
+        this->close();
+    }
+    else
+    {
+        // Victory Stuff goes here.
+    }
+}
+
 void SuperCopRMGame::paintEvent(QPaintEvent *e)
 {
     Q_UNUSED(e)
@@ -552,21 +576,21 @@ void SuperCopRMGame::paintEvent(QPaintEvent *e)
 //    else
 //        player->fall();
 
-    if(((player->getRectPosY() + player->getRectSizeY()) >= lb->getGround()) /*&& !player->isAscending()*/ && !player->isOnObstacle())
-    {
-        player->setPosY(lb->getGround() - player->getRectSizeY());
-        player->setRectPosY(player->GetPosY() + 8);
+//    if(((player->getRectPosY() + player->getRectSizeY()) >= lb->getGround()) /*&& !player->isAscending()*/ && !player->isOnObstacle())
+//    {
+//        player->setPosY(lb->getGround() - player->getRectSizeY());
+//        player->setRectPosY(player->GetPosY() + 8);
 //        player->setOnPlatform(false);
 //        player->setOnWall(false);
-        player->SetOnObstactle(false);
-        player->setOnGround(true);
-    }//Ground Collision handler
-    else
-    {
-        player->setOnPlatform(false);
-        player->setOnWall(false);
-        player->setOnGround(false);
-    }//Lowers Player until collision occurs
+//        player->SetOnObstactle(false);
+//        player->setOnGround(true);
+//    }//Ground Collision handler
+//    else
+//    {
+//        player->setOnPlatform(false);
+//        player->setOnWall(false);
+//        player->setOnGround(false);
+//    }//Lowers Player until collision occurs
 
 //    for(unsigned int i=0;i<walls.size();i++)
 //    {
