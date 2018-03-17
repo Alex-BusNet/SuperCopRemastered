@@ -37,14 +37,23 @@ public:
     PlayerState getState();
     QPixmap* GetImage();
     QRect *GetBoundingBox();
+    QRect* GetLeftBB();
+    QRect* GetRightBB();
+    QRect* GetJumpBB();
+    QRect* GetFallBB();
 
     QGraphicsPixmapItem* GetViewPixmap();
-    QGraphicsRectItem* GetViewBB(bool enemyCollisionCheck = false);
+    QGraphicsRectItem* GetViewBB();
+    QGraphicsRectItem* GetFallViewBB();
 
     void SetLevelBounds(int l, int r);
 
     void SetViewPixmap(QGraphicsPixmapItem* item);
     void SetViewBB(QGraphicsRectItem* item);
+    void SetFallBB(QGraphicsRectItem* item);
+    void SetLeftBB(QGraphicsRectItem* item);
+    void SetRightBB(QGraphicsRectItem* item);
+    void SetJumpBB(QGraphicsRectItem* item);
 
     void UpdatePlayer(GameView *view);
     void UpdateFrame();
@@ -116,13 +125,13 @@ private:
 
     PlayerState lastState, pState, nextState;
     QGraphicsPixmapItem *playerPixmap;
-    QGraphicsRectItem *playerBB;
+    QGraphicsRectItem *playerBB, *fallViewBB, *leftViewBB, *rightViewBB, *jumpViewBB;
 
     int rectPosX, rectPosY, rectSizeX, rectSizeY;
     int posX, posY;
 
     Size size;
-    QRect *boundingBox;
+    QRect *boundingBox, *fallBB, *leftBB, *rightBB, *jumpBB;
 
     float speedX;
     float jumpSpeed;

@@ -33,7 +33,11 @@ Player::Player(int parentWidth, int parentHeight)
     rectSizeY = size.y - 15;
 
 //    boundingBox = new QRect(rectPosX, rectPosY, rectSizeX, rectSizeY);
-    boundingBox = new QRect(posX, posY, size.x, size.y);
+    boundingBox = new QRect(posX + 8, posY, 40, size.y);
+//    leftBB = new QRect(posX + 3, posY + 5, 5, size.y - 10);
+//    rightBB = new QRect(posX + 40, posY + 5, 5, size.y - 10);
+//    jumpBB = new QRect(posX + 13, posY - 5, 30, 5);
+    fallBB = new QRect(posX + 13, posY + size.y - 5, 30, 5);
 
     leftBound = parentWidth / 6;
     rightBound = parentWidth - (parentWidth / 5);
@@ -133,41 +137,39 @@ QRect *Player::GetBoundingBox()
     return boundingBox;
 }
 
+QRect *Player::GetLeftBB()
+{
+    return leftBB;
+}
+
+QRect *Player::GetRightBB()
+{
+    return rightBB;
+}
+
+QRect *Player::GetJumpBB()
+{
+    return jumpBB;
+}
+
+QRect *Player::GetFallBB()
+{
+    return fallBB;
+}
+
 QGraphicsPixmapItem *Player::GetViewPixmap()
 {
     return playerPixmap;
 }
 
-QGraphicsRectItem *Player::GetViewBB(bool enemyCollisionCheck)
+QGraphicsRectItem *Player::GetViewBB()
 {
-    if(enemyCollisionCheck || pState == IDLE)
-    {
-        return playerBB;
-    }
-    else if(pState == JUMPING)
-    {
-        return new QGraphicsRectItem(playerBB->rect().x() + 10, playerBB->rect().y(), playerBB->rect().width() - 20, 10);
-    }
-    else if(pState == FALLING)
-    {
-        return new QGraphicsRectItem(playerBB->rect().x() + 10, playerBB->rect().y() + playerBB->rect().height(), playerBB->rect().width() - 20, 10);
-    }
-    else if(pState == RUNNING_LEFT)
-    {
-        return new QGraphicsRectItem(playerBB->rect().x(), playerBB->rect().y() + 10, 10, playerBB->rect().height() + 20);
-    }
-    else if(pState == RUNNING_RIGHT)
-    {
-        return new QGraphicsRectItem(playerBB->rect().x() + playerBB->rect().width() - 10, playerBB->rect().y() + 10, 10, playerBB->rect().height() - 20);
-    }
-    else if(pState == SLIDING)
-    {
-        return new QGraphicsRectItem(playerBB->rect().x(), playerBB->rect().y() + playerBB->rect().height() - 20, playerBB->rect().width(), 20);
-    }
-    else
-    {
-        return playerBB;
-    }
+    return playerBB;
+}
+
+QGraphicsRectItem *Player::GetFallViewBB()
+{
+    return fallViewBB;
 }
 
 void Player::SetLevelBounds(int l, int r)
@@ -179,44 +181,74 @@ void Player::SetLevelBounds(int l, int r)
 void Player::SetViewPixmap(QGraphicsPixmapItem *item)
 {
     this->playerPixmap = item;
-    playerPixmap->setScale(0.5);
+
+    if(pState == JUMPING || pState == SLIDING)
+        playerPixmap->setScale(0.25);
+    else
+        playerPixmap->setScale(0.5);
+
     playerPixmap->setPos(posX, posY);
 }
 
 void Player::SetViewBB(QGraphicsRectItem *item)
 {
     this->playerBB = item;
-    playerBB->setRect(posX, posY, 46, 93);
+    playerBB->setRect(posX, posY, 40, 93);
     playerBB->setPos(0,0);
+}
+
+void Player::SetFallBB(QGraphicsRectItem *item)
+{
+    fallViewBB = item;
+}
+
+void Player::SetLeftBB(QGraphicsRectItem *item)
+{
+    leftViewBB = item;
+}
+
+void Player::SetRightBB(QGraphicsRectItem *item)
+{
+    rightViewBB = item;
+}
+
+void Player::SetJumpBB(QGraphicsRectItem *item)
+{
+    jumpViewBB = item;
 }//Controls whether the screen moves or the player does
 
 void Player::UpdatePlayer(GameView *view)
 {
-    switch(pState)
-    {
-    case IDLE:
-        standBy();
-        break;
-    case RUNNING_RIGHT:
-        run();
-        break;
-    case RUNNING_LEFT:
-        runInverted();
-        break;
-    case JUMPING:
-        jump();
-        break;
-    case FALLING:
+    if(inGap && pState != JUMPING)
         fall();
-        break;
-    case SLIDING:
-        slide();
-        break;
-    case PAUSED:
-        break;
+    else
+    {
+        switch(pState)
+        {
+        case IDLE:
+            standBy();
+            break;
+        case RUNNING_RIGHT:
+            run();
+            break;
+        case RUNNING_LEFT:
+            runInverted();
+            break;
+        case JUMPING:
+            jump();
+            break;
+        case FALLING:
+            fall();
+            break;
+        case SLIDING:
+            slide();
+            break;
+        case PAUSED:
+            break;
+        }
     }
 
-    if((posX - 200 > leftBound) && (posX + 200 < rightBound))
+    if((posX - 200 > leftBound) && (posX + 200 < rightBound) && (posY < ground + 140));
         view->ensureVisible(playerPixmap, 200, 10);
 }
 
@@ -277,20 +309,20 @@ void Player::playerAction(int action)
         }
         break;
     case DOWN:
-        if(pState != SLIDING && lastState != SLIDING)
-        {
-            lastState = pState;
-            pState = SLIDING;
-        }
-        else if((posY + size.y) < ground)
-        {
-            lastState = pState;
-            pState = FALLING;
-        }
-        else
-        {
-            pState = IDLE;
-        }
+//        if(pState != SLIDING && lastState != SLIDING)
+//        {
+//            lastState = pState;
+//            pState = SLIDING;
+//        }
+//        else if((posY + size.y) < ground)
+//        {
+//            lastState = pState;
+//            pState = FALLING;
+//        }
+//        else
+//        {
+//            pState = IDLE;
+//        }
         break;
     case LEFT:
         if((posY + size.y) < ground && !playerOnObstacle && !onGround)
@@ -351,14 +383,13 @@ void Player::jump()
     {
         jumpSpeed *= GRAVITY_FACTOR;
 
-        posY -= (15 * jumpSpeed);
-        rectPosY -= (15 * jumpSpeed);
+        posY -= (18 * jumpSpeed);
+        rectPosY -= (18 * jumpSpeed);
 
         if(jumpSpeed <= 0.5f)
         {
             frame = 1;
             pState = FALLING;
-//            lastState = JUMPING;
             jumpSpeed = PLAYER_INITIAL_Y_VELOCITY;
         }
     }
@@ -654,6 +685,7 @@ void Player::SetOnObstactle(bool onObs)
     playerOnObstacle = onObs;
     onGround = false;
     inGap = false;
+    jumping = false;
     frame = 1;
 
     if(onObs)
@@ -664,6 +696,7 @@ void Player::SetOnObstactle(bool onObs)
 
     if(lastActionPressed == LEFT) { pState = RUNNING_LEFT; }
     else if(lastActionPressed == RIGHT) { pState = RUNNING_RIGHT; }
+    else if (!onObs) { pState = FALLING; speedX = PLAYER_FALLING_X_VELOCITY; }
     else { pState = IDLE; }
 }
 
@@ -696,8 +729,32 @@ void Player::setPosX(int x)
 
     if(playerBB != NULL)
     {
-        playerBB->setRect(posX+5, posY, 50, size.y);
+        playerBB->setRect(posX + 8, posY, 50, size.y);
         playerBB->setPos(0, 0);
+    }
+
+    if(leftViewBB != NULL)
+    {
+        leftViewBB->setRect(posX - 2, posY + 5, 10, size.y - 10);
+        leftViewBB->setPos(0,0);
+    }
+
+    if(rightViewBB != NULL)
+    {
+        rightViewBB->setRect(posX + 58, posY + 5, 10, size.y - 10);
+        rightViewBB->setPos(0,0);
+    }
+
+    if(jumpViewBB != NULL)
+    {
+        jumpViewBB->setRect(posX + 13, posY-5, 40, 10);
+        jumpViewBB->setPos(0,0);
+    }
+
+    if(fallViewBB != NULL)
+    {
+        fallViewBB->setRect(posX + 13, posY + size.y-5, 40, 10);
+        fallViewBB->setPos(0,0);
     }
 
 }//Mutator
@@ -712,9 +769,35 @@ void Player::setPosY(int y)
 
     if(playerBB != NULL)
     {
-        playerBB->setRect(posX+5, posY, 50, size.y);
+        playerBB->setRect(posX + 8, posY, 50, size.y);
         playerBB->setPos(0, 0);
     }
+
+    if(leftViewBB != NULL)
+    {
+        leftViewBB->setRect(posX - 2, posY + 5, 10, size.y - 10);
+        leftViewBB->setPos(0,0);
+    }
+
+    if(rightViewBB != NULL)
+    {
+        rightViewBB->setRect(posX + 58, posY + 5, 10, size.y - 10);
+        rightViewBB->setPos(0,0);
+    }
+
+    if(jumpViewBB != NULL)
+    {
+        jumpViewBB->setRect(posX + 13, posY-5, 40, 10);
+        jumpViewBB->setPos(0,0);
+    }
+
+    if(fallViewBB != NULL)
+    {
+        fallViewBB->setRect(posX + 13, posY + size.y-5, 40, 10);
+        fallViewBB->setPos(0,0);
+    }
+
+
 }
 
 void Player::setSize(Size s)

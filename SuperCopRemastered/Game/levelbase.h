@@ -69,7 +69,7 @@ private:
     int leftEnemyBound, rightEnemyBound;
     int windowWidth;
 //    int posIdx;
-    int collidedItems;
+    int collidedItems, feetItems;
 //    int pxPerItem;
 //    int pXCenter, pYFeet;
 
