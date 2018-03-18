@@ -19,8 +19,7 @@ LevelBase::LevelBase(int width, int height)
 
 LevelBase::~LevelBase()
 {
-//    if(levelFloor != NULL)
-//        delete levelFloor;
+
 }
 
 void LevelBase::LoadLevel(int levelNum, GameView *view)
@@ -39,8 +38,6 @@ void LevelBase::LoadLevel(int levelNum, GameView *view)
         QJsonObject topObject, subObj;
 
         int lastXPos = 0;
-
-        qDebug() << "Array size: " << arr.size();
 
         for(int i = 0; i < arr.size(); i++)
         {
@@ -68,7 +65,32 @@ void LevelBase::LoadLevel(int levelNum, GameView *view)
                         floorItems.push_back(view->addPixmap(*(levelFloor.last()->GetTexture())));
                         floorItems.last()->setPos(xPos * 70, floorHeight - (yPos * 70));
 
-//                        floorBBs.push_back(view->addRect(*(levelFloor.last()->GetBoundingBox())));
+                        // This loop is used to fill in the scene underneath the floor.
+                        for(int k = 0; k < 6; k++)
+                        {
+                            if((bt == BLOCK_EDGE_TOP) || (bt == FLOOR_COVERED_CORNER_LEFT) || (bt == FLOOR_COVERED_CORNER_RIGHT))
+                            {
+                                levelFloor.push_back(new BlockBase(lt, INTERNAL_BLOCK));
+                                levelFloor.last()->SetPosition(xPos * 70, floorHeight + ((k + 1) *70));
+                                floorItems.push_back(view->addPixmap(*levelFloor.last()->GetTexture()));
+                                floorItems.last()->setPos(xPos * 70, floorHeight + ((k + 1) * 70));
+                            }
+                            else if(bt == WALL_CORNER_LEFT)
+                            {
+                                levelFloor.push_back(new BlockBase(lt, WALL_SIDE_LEFT));
+                                levelFloor.last()->SetPosition(xPos * 70, floorHeight + ((k + 1) *70));
+                                floorItems.push_back(view->addPixmap(*levelFloor.last()->GetTexture()));
+                                floorItems.last()->setPos(xPos * 70, floorHeight + ((k + 1) * 70));
+                            }
+                            else if(bt == WALL_CORNER_RIGHT)
+                            {
+                                levelFloor.push_back(new BlockBase(lt, WALL_SIDE_RIGHT));
+                                levelFloor.last()->SetPosition(xPos * 70, floorHeight + ((k + 1) *70));
+                                floorItems.push_back(view->addPixmap(*levelFloor.last()->GetTexture()));
+                                floorItems.last()->setPos(xPos * 70, floorHeight + ((k + 1) * 70));
+                            }
+
+                        }
                     }
                 }
                 else if (type == 2)
@@ -115,12 +137,12 @@ void LevelBase::LoadLevel(int levelNum, GameView *view)
 
                             if(bb->GetBoundingBox() != NULL)
                             {
-                                view->addRect(*bb->GetTopBoundingBox());
-                                view->addRect(*bb->GetLeftBoundingBox());
-                                view->addRect(*bb->GetRightBoundingBox());
-                                view->addRect(*bb->GetBottomBoundingBox());
+                                view->addRect(*bb->GetTopBoundingBox(), QPen(Qt::transparent));
+                                view->addRect(*bb->GetLeftBoundingBox(), QPen(Qt::transparent));
+                                view->addRect(*bb->GetRightBoundingBox(), QPen(Qt::transparent));
+                                view->addRect(*bb->GetBottomBoundingBox(), QPen(Qt::transparent));
                             }
-//                                obstacleBBs.push_back(view->addRect(*(bb->GetBoundingBox())));
+//                            obstacleBBs.push_back(view->addRect(*(bb->GetBoundingBox())));
                         }
                     }
                 }
@@ -151,24 +173,16 @@ void LevelBase::LoadLevel(int levelNum, GameView *view)
                         enemyItems.last()->setPos(eb->GetPosX(), eb->GetPosY());
                         enemyItems.last()->setScale(0.5);
 
-//                        enemyTextItems.push_back(view->addText(QString("%1").arg(enemyItems.size() - 1)));
-//                        enemyTextItems.last()->setPos(enemyItems.last()->x() + 30, enemyItems.last()->y() + 2);
+                        if(eb->GetBoundingBox() != NULL)
+                        {
+                            enemyBBs.push_back(view->addRect(*eb->GetBoundingBox(), QPen(Qt::transparent)));
+                            enemyBBs.last()->setPos(0,0);
+                            enemyBBs.last()->setScale(0.5);
 
-//                        if(eb->GetBoundingBox() != NULL)
-//                        {
-//                            enemyBBs.push_back(view->addRect(*(eb->GetBoundingBox())));
-//                            enemyBBs.last()->setPos(0,0);
-//                            enemyBBs.last()->setScale(0.5);
-
-//                            enemyBBText.push_back(view->addText(QString("%1").arg(enemyBBs.size() - 1)));
-//                            enemyBBText.last()->setPos(enemyBBs.last()->x() + 30, enemyBBs.last()->y() + 12);
-
-//                            eb->SetGRectPtr(enemyBBs.last());
-//                            eb->SetGRectText(enemyBBText.last());
-//                        }
+                            eb->SetGRectPtr(enemyBBs.last());
+                        }
 
                         eb->SetGPixmapPtr(enemyItems.last());
-//                        eb->SetGPixmapText(enemyTextItems.last());
                     }
                 }
             }
@@ -184,27 +198,18 @@ void LevelBase::LoadLevel(int levelNum, GameView *view)
 
 void LevelBase::drawLevelBase(QPainter &painter)
 {
-//    painter.drawText(15, 130, QString("LeftWindowBound: %1").arg(leftWindowBound));
-//    painter.drawText(15, 140, QString("RightWindowBound: %1").arg(rightWindowBound));
-//    painter.drawText(15, 150, QString("LeftObstacleBound: %1").arg(leftObstacleBound));
-//    painter.drawText(15, 160, QString("RightObstacleBound: %1").arg(rightObstacleBound));
-//    painter.drawText(15, 170, QString("LeftEnemyBound: %1").arg(leftEnemyBound));
     painter.drawText(15, 180, QString("Player items collided: %1").arg(collidedItems));
     painter.drawText(15, 190, QString("Player feet collided: %1").arg(feetItems));
     painter.drawText(15, 200, QString("Level Update: %1").arg(updateStatus));
-//    painter.drawText(15, 200, QString("Enemy BB pos: %1, %2").arg(enemyBBs.first()->rect().x()).arg(enemyBBs.first()->rect().y()));
-//    painter.drawText(15, 210, QString("Enemy Pixmap Pos: %1, %2").arg(enemyItems.first()->pos().x()).arg(enemyItems.first()->pos().y()));
-//    painter.drawText(15, 220, QString("pYFeet: %1").arg(pYFeet));
-//    painter.drawText(15, 200, QString("Enemy Viewport pos: %1, %2").arg(enemies.at(0)->GetGPixmapPtr()->pos().x()).arg(enemies.at(0)->GetGPixmapPtr()->pos().y()));
 }
 
 void LevelBase::UpdateLevel(Player* p, GameView *view)
 {
     updateStatus = !updateStatus;
 
-    // ---------------
+    //========================
     // ENEMY UPDATES
-    // ---------------
+    //========================
     for(int i = 0; i < enemies.size(); i++)
     {
         if(enemies.at(i) != NULL)
@@ -221,7 +226,7 @@ void LevelBase::UpdateLevel(Player* p, GameView *view)
     collidedItems = p->GetViewBB()->collidingItems().size();
     feetItems = p->GetFallViewBB()->collidingItems().size();
 
-    if(p->GetPosY() > (getGround() + 70))
+    if(p->GetPosY() > (getGround() + (5*70)))
     {
         emit EndOfGame(false);
         return;
@@ -252,23 +257,23 @@ void LevelBase::UpdateLevel(Player* p, GameView *view)
 
         if(idx != -1)
         {
-            /*
-             * There is currently an issue here where the collision
-             * will always register as a 'defeat' situation even though
-             * the Player is clearly jumping on top of the enemy.
-             */
             qDebug() << "Enemy idx: " << idx;
             EnemyBase *nearestEnemy = enemies.at(idx);
-            if((nearestEnemy != NULL) && (nearestEnemy->GetBoundingBox()->intersects(p->GetFallViewBB()->rect().toRect())))
+            if((nearestEnemy != NULL) && (nearestEnemy->GetGRectPtr()->rect().toRect().intersects(p->GetFallViewBB()->rect().toRect())))
             {
-                qDebug() << "Collision with enemy: " << idx;
-                if((p->getState() == FALLING) || (p->getState() == SLIDING))
+                qDebug() << "Collision with enemy: " << idx  << " | state: " << p->getState() << " lastState: " << p->GetLastState();
+                if(p->isJumping() && (p->getState() == FALLING || p->GetLastState() == FALLING))
                 {
+                    qDebug() << "Enemy Defeated";
                     emit EnemyDefeated(nearestEnemy->GetValue());
+                    view->removeRect(nearestEnemy->GetGRectPtr());
+                    view->removePixmap(nearestEnemy->GetGPixmapPtr());
                     delete nearestEnemy;
+                    enemies.replace(idx, NULL);
                 }
                 else
                 {
+                    qDebug() << "Player Defeated";
                     emit EndOfGame(false);
                     return;
                 }
@@ -280,12 +285,12 @@ void LevelBase::UpdateLevel(Player* p, GameView *view)
 
             if(idx != -1)
             {
-                qDebug() << "Obstacle idx: " << idx;
+//                qDebug() << "Obstacle idx: " << idx;
                 BlockBase *nearestObsY = obstacles.at(idx);
 
                 if(nearestObsY->GetBoundingBox()->intersects(p->GetViewBB()->rect().toRect()))
                 {
-                    qDebug() << "Collision with " << idx;
+//                    qDebug() << "Collision with " << idx;
                     bool leftWallCollision = (((nearestObsY->GetType() == WALL_CORNER_LEFT) || ( nearestObsY->GetType() == WALL_SIDE_LEFT) || (nearestObsY->GetType() == WALL_SIDE_RIGHT) || (nearestObsY->GetType() == WALL_CORNER_RIGHT))
                                               && (nearestObsY->GetLeftBoundingBox()->intersects(p->GetViewBB()->rect().toRect())));
 
@@ -295,11 +300,11 @@ void LevelBase::UpdateLevel(Player* p, GameView *view)
                     bool topBlockCollision = ((nearestObsY->GetType() == WALL_CORNER_LEFT || nearestObsY->GetType() == WALL_CORNER_RIGHT || nearestObsY->GetType() == BLOCK || nearestObsY->GetType() == BONUS || nearestObsY->GetType() == PLATFORM_LEFT || nearestObsY->GetType() == PLATFORM_RIGHT || nearestObsY->GetType() == BLOCK_EDGE_TOP)
                                               && (nearestObsY->GetTopBoundingBox()->intersects(p->GetViewBB()->rect().toRect())) && p->getState() == FALLING);
 
-                    qDebug() << "Left collision: " << leftWallCollision << " Right wall collision: " << rightWallCollision << " Top block collision: " << topBlockCollision << " Block type: " << nearestObsY->GetType();
+//                    qDebug() << "Left collision: " << leftWallCollision << " Right wall collision: " << rightWallCollision << " Top block collision: " << topBlockCollision << " Block type: " << nearestObsY->GetType();
 
                     if((leftWallCollision || rightWallCollision) && !topBlockCollision)
                     {
-                        qDebug() << "Wall collision";
+//                        qDebug() << "Wall collision";
                         p->setWallCollided(p->getPlayerDirection(), true);
                         if(leftWallCollision)
                         {
@@ -319,7 +324,7 @@ void LevelBase::UpdateLevel(Player* p, GameView *view)
                     }
                     else if(nearestObsY->GetType() == NO_BLOCK_TYPE)
                     {
-                        qDebug() << "Empty Object collision";
+//                        qDebug() << "Empty Object collision";
                         p->setOnGround(false);
                         p->setInGap(true);
                     }
@@ -333,15 +338,52 @@ void LevelBase::UpdateLevel(Player* p, GameView *view)
                             p->clearWallCollided();
                 }
             }
+            else
+            {
+                idx = floorItems.indexOf((QGraphicsPixmapItem*)firstNonPlayer);
+                if(idx != -1)
+                {
+                    BlockBase *floorBlock = levelFloor.at(idx);
+
+                    if(floorBlock->GetBoundingBox()->intersects(p->GetViewBB()->rect().toRect()))
+                    {
+                        bool leftWallCollision = (((floorBlock->GetType() == WALL_CORNER_LEFT) || ( floorBlock->GetType() == WALL_SIDE_LEFT) || (floorBlock->GetType() == WALL_SIDE_RIGHT) || (floorBlock->GetType() == WALL_CORNER_RIGHT))
+                                                  && (floorBlock->GetLeftBoundingBox()->intersects(p->GetViewBB()->rect().toRect())));
+
+                        bool rightWallCollision =(((floorBlock->GetType() == WALL_CORNER_RIGHT) || (floorBlock->GetType() == WALL_SIDE_RIGHT) || (floorBlock->GetType() == WALL_CORNER_LEFT) || ( floorBlock->GetType() == WALL_SIDE_LEFT))
+                                                  && (floorBlock->GetRightBoundingBox()->intersects(p->GetViewBB()->rect().toRect())));
+
+                        bool topBlockCollision = ((floorBlock->GetType() == WALL_CORNER_LEFT || floorBlock->GetType() == WALL_CORNER_RIGHT || floorBlock->GetType() == BLOCK || floorBlock->GetType() == BONUS || floorBlock->GetType() == PLATFORM_LEFT || floorBlock->GetType() == PLATFORM_RIGHT || floorBlock->GetType() == BLOCK_EDGE_TOP)
+                                                  && (floorBlock->GetTopBoundingBox()->intersects(p->GetViewBB()->rect().toRect())) && p->getState() == FALLING);
+
+                        if((leftWallCollision || rightWallCollision) && !topBlockCollision)
+                        {
+    //                        qDebug() << "Wall collision";
+                            p->setWallCollided(p->getPlayerDirection(), true);
+                            if(leftWallCollision)
+                            {
+                                p->setPosX(floorBlock->GetPosX() - 50);
+                            }
+                            else if(rightWallCollision)
+                            {
+                                p->setPosX(floorBlock->GetRightEdge());
+                            }
+                        }
+                        else
+                        {
+                            p->setOnGround(true);
+                        }
+                    }
+                }
+            }
         }
     }
     else
     {
         // This controls the player falling when they were previously on an obstacle
-        if((feetItems < 3) && (p->getState() != JUMPING || p->getState() != FALLING))
+        if((feetItems < 3) && (p->getState() != JUMPING || p->getState() != FALLING) && (!p->isJumping()))
         {
-            qDebug() << "Player not on object";
-//            p->setOnGround(false);
+//            qDebug() << "Player not on object";
             p->SetOnObstactle(false);
             p->clearWallCollided();
         }

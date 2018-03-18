@@ -1,5 +1,0 @@
-#ifndef BLOCKRENDERS_H
-#define BLOCKRENDERS_H
-
-
-#endif // BLOCKRENDERS_H

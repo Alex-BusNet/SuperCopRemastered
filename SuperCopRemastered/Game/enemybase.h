@@ -16,6 +16,7 @@ class EnemyBase
 public:
     EnemyBase();
     EnemyBase(int x, int y, EnemyType eType);
+    ~EnemyBase();
 
     void DrawEnemy(QPainter &paint);
     void UpdateEnemy();

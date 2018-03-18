@@ -1,7 +1,7 @@
 #include "enemybase.h"
 #include <QDebug>
 
-EnemyBase::EnemyBase()
+EnemyBase::EnemyBase() : EnemyBase(0, 0, NORMAL)
 {
 
 }
@@ -17,7 +17,27 @@ EnemyBase::EnemyBase(int x, int y, EnemyType eType)
     this->boundRight = 70 * 205;
     viewPixmap = NULL;
     viewBB = NULL;
+    pixText = NULL;
+    bbText = NULL;
     SetEnemyInfo();
+}
+
+EnemyBase::~EnemyBase()
+{
+    if(viewBB != NULL)
+        delete viewBB;
+
+    if(viewPixmap != NULL)
+        delete viewPixmap;
+
+    if(boundingBox != NULL)
+        delete boundingBox;
+
+    if(pixText != NULL)
+        delete pixText;
+
+    if(bbText != NULL)
+        delete bbText;
 }
 
 void EnemyBase::DrawEnemy(QPainter &paint)
@@ -63,10 +83,11 @@ void EnemyBase::UpdateEnemy()
     boundingBox = new QRect(posX, posY, enemySize.x, enemySize.y);
 
     if(viewBB != NULL)
-        viewBB->setRect(*boundingBox);
+    {
+        viewBB->setRect(posX, posY, enemySize.x, enemySize.y);
+        viewBB->setPos(posX / 2, posY / 2);
+    }
 
-//    viewBB->setRect(posX, posY, enemySize.x, enemySize.y);
-//    viewBB->setPos(0, 0);
 //    pixText->setPos(posX + 30, posY + 2);
 //    bbText->setPos(posX + 30, posY + 12);
 }

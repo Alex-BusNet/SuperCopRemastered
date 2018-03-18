@@ -204,5 +204,5 @@ void BlockBase::SetBlockInfo()
     if(!texture->isNull())
         texture->scaled(blockSize.x, blockSize.y);
     else
-        qDebug() << "NULL texture for block: " << bt << texturePath;
+        qDebug() << "NULL texture for block type: " << bt << texturePath;
 }

@@ -19,11 +19,12 @@ SuperCopRMGame::SuperCopRMGame(QWidget *parent)
 
     qDebug() << "Loading player to Scene...";
     player->SetViewPixmap(view->addPixmap(*(player->GetImage())));
-    player->SetViewBB(view->addRect(*player->GetBoundingBox()/*, QPen(Qt::transparent)*/));
+    player->SetViewBB(view->addRect(*player->GetBoundingBox(), QPen(Qt::transparent)));
+    player->SetFallBB(view->addRect(*player->GetFallBB(), QPen(Qt::transparent)));
+
 //    player->SetLeftBB(view->addRect(*player->GetLeftBB()));
 //    player->SetRightBB(view->addRect(*player->GetRightBB()));
 //    player->SetJumpBB(view->addRect(*player->GetJumpBB()));
-    player->SetFallBB(view->addRect(*player->GetFallBB()));
 
     qDebug() << "Setting player start position...";
     player->setPosX(lb->GetPlayerStart().x());
@@ -89,11 +90,8 @@ SuperCopRMGame::SuperCopRMGame(QWidget *parent)
 
     //------------------------------------------------------------------------------------------
 
-    //Initializes all Vector Elements;
-//    qDebug() << "Loading vectors from file...";
-//    this->setVecs();
-
     showDevOpts = false;
+
     resume = new QPushButton("RESUME");
     resume->hide();
     connect(resume, &QPushButton::clicked, this, &SuperCopRMGame::resumeGame);
@@ -110,7 +108,6 @@ SuperCopRMGame::SuperCopRMGame(QWidget *parent)
     hLayout2 = new QHBoxLayout();
     vLayout = new QVBoxLayout();
 
-    hLayout->addWidget(view);
 
     hLayout->addWidget(resume);
     hLayout->addWidget(exit);
@@ -118,11 +115,10 @@ SuperCopRMGame::SuperCopRMGame(QWidget *parent)
     hLayout2->addWidget(paused);
     hLayout2->addSpacing(this->width() / 4);
     vLayout->addLayout(hLayout2);
+    vLayout->addWidget(view);
     vLayout->addLayout(hLayout);
 
     setLayout(vLayout);
-
-    showDevOpts = true;
 
     timer->start();
     keyTimer->start();
@@ -146,9 +142,9 @@ void SuperCopRMGame::keyPressEvent(QKeyEvent *evt)
     case Qt::Key_Right:
         isRightPressed = true;
         break;
-    case Qt::Key_Down:
-        isDownPressed = true;
-        break;
+//    case Qt::Key_Down:
+//        isDownPressed = true;
+//        break;
     case Qt::Key_Up:
         isUpPressed = true;
         break;
@@ -183,9 +179,9 @@ void SuperCopRMGame::keyReleaseEvent(QKeyEvent *evt)
     case Qt::Key_Right:
         isRightPressed = false;
         break;
-    case Qt::Key_Down:
-        isDownPressed = false;
-        break;
+//    case Qt::Key_Down:
+//        isDownPressed = false;
+//        break;
     case Qt::Key_Up:
         isUpPressed = false;
         break;
@@ -427,6 +423,27 @@ void SuperCopRMGame::paintEvent(QPaintEvent *e)
     //    START PHYSICS
     //===========================================================
 
+    /*
+     *           /----------------------------/|
+     *          /----------------------------/ |
+     *          ||          R.I.P           || |
+     *          ||                          || |
+     *          ||                          || |
+     *          ||  Here lies the remnants  || |
+     *          || of the original SuperCop || |
+     *          ||      physics engine.     || |
+     *          ||                          || |
+     *          ||                          || |
+     *          ||    Apr.2015 - Mar.2018   || |
+     *          ||                          ||/
+     *          //==========================//
+     *         //==========================//
+     *        //==========================//
+     *       //==========================//
+     *      //==========================//
+     *     //==========================//
+     */
+
     //===========================================================
     //    END PHYSICS
     //===========================================================
@@ -448,96 +465,6 @@ void SuperCopRMGame::paintEvent(QPaintEvent *e)
         devPaint.drawText(15, 60, QString("lastActionPressed: %1").arg(QString::number(lastKeyPress)));
     }
 }//Handles Painting all elements on screen
-
-
-void SuperCopRMGame::setVecs(){
-    QString enemyfile("Assets/Level/enemy.txt");
-    QString donutfile("Assets/Level/donut.txt");
-    QString wallFile("Assets/Level/wall.txt");
-    QString platFile("Assets/Level/platform.txt");
-
-    ifstream enemyread;
-    enemyread.open(enemyfile.toStdString().c_str());
-    int enemynum;
-    if(enemyread.is_open())
-    {
-        while(enemyread>>enemynum)
-        {
-            enemyspawn.push_back(enemynum);
-        }
-    }
-    enemyread.close();
-
-    for(unsigned int i = 0; i < enemyspawn.size(); i++)
-    {
-        Enemy *enemy;
-        enemy = new Enemy();
-        enemies.push_back(enemy);
-    }//Enemy Vector initialization
-
-    ifstream donutread;
-    donutread.open(donutfile.toStdString().c_str());
-    int donutnum;
-    if(donutread.is_open())
-    {
-        while(donutread >> donutnum)
-        {
-            donutspawn.push_back(donutnum);
-        }
-    }
-    donutread.close();
-
-    for(unsigned int i = 0; i < donutspawn.size(); i++)
-    {
-        Donut *donut;
-        donut= new Donut(620, this->height() - 140);
-        donuts.push_back(donut);
-    }//Donut Vector Initialization
-
-    ifstream wallRead;
-    wallRead.open(wallFile.toStdString().c_str());
-    int wallNum;
-    if(wallRead.is_open())
-    {
-        while(wallRead >> wallNum)
-        {
-            wallSpawn.push_back(wallNum);
-        }
-    }
-    wallRead.close();
-
-    for(unsigned int i = 0; i < wallSpawn.size(); i++)
-    {
-        Wall *wall;
-        wall = new Wall();
-        walls.push_back(wall);
-    }//Wall Vector Initialization
-
-    ifstream platRead;
-    platRead.open(platFile.toStdString().c_str());
-    int platNum;
-    if(platRead.is_open())
-    {
-        while(platRead >> platNum)
-        {
-            platSpawn.push_back(platNum);
-        }
-    }
-    platRead.close();
-
-    for(unsigned int i = 0; i < platSpawn.size(); i ++)
-    {
-        Platform *plat = new Platform(this->width(), this->height());
-        platforms.push_back(plat);
-    }//Platform Vector Initialization
-
-    levelEnd = new Donut(200 * 70, this->height() - 140);
-    levelEnd->setSize(Size{40, 40});
-    levelEnd->setPosX(6500);
-    levelEnd->setPosY(this->height());
-    //Initializes game ending Donut
-
-}//Initializes vectors
 
 void SuperCopRMGame::setHighScores()
 {
@@ -609,13 +536,6 @@ void SuperCopRMGame::setHighScores()
         setscores.close();
     }
 }//resets high scores if new high score acheived
-
-
-void SuperCopRMGame::setMoveSpeed(int spd)
-{
-    moveSpeed = spd;
-    player->setSpeedX(spd);
-}//Sets movement speed
 
 void SuperCopRMGame::setShowDevOpts(bool devOpts)
 {

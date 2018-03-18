@@ -28,10 +28,7 @@ SOURCES += \
         mainwindow.cpp \
     Game/supercoprmgame.cpp \
     Game/levelbase.cpp \
-    Game/platform.cpp \
     Game/player.cpp \
-    Game/wall.cpp \
-    Game/enemy.cpp \
     Game/donut.cpp \
     Game/blockbase.cpp \
     Game/bonusblock.cpp \
@@ -44,16 +41,12 @@ HEADERS += \
         mainwindow.h \
     Game/supercoprmgame.h \
     Game/levelbase.h \
-    Game/platform.h \
     Game/player.h \
-    Game/wall.h \
-    Game/enemy.h \
     Game/donut.h \
     Game/datatypes.h \
     Game/blockbase.h \
     Game/bonusblock.h \
     Game/itembase.h \
-    Game/blockrenders.h \
     Game/enemybase.h \
     Game/gamescene.h \
     Game/gameview.h

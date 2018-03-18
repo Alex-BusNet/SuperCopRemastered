@@ -35,6 +35,7 @@ public:
     void playerScreenPos();
 
     PlayerState getState();
+    PlayerState GetLastState();
     QPixmap* GetImage();
     QRect *GetBoundingBox();
     QRect* GetLeftBB();
@@ -64,8 +65,6 @@ public:
     void setOnGround(bool onGround);
     void setSpeedY(int y);
     void setJumping(bool jump);
-    void setOnWall(bool onWall);
-    void setOnPlatform(bool onPlat);
     void setWallCollided(int side, bool wallCollided);
     void clearWallCollided();
     void setSpeedX(int spd);
@@ -83,27 +82,15 @@ public:
     int GetBBX();
     int GetBBY();
 
-    int getFrame();
     int getLeftBound();
     int getRightBound();
     int getPlayerDirection();
     int getGround();
-    int getSpeedY();
-    int getRectPosX();
-    int getRectPosY();
-    int getRectSizeX();
-    int getRectSizeY();
 
     Size getSize();
 
-    bool isRolling();
     bool isJumping();
-    bool isMoveRight();
-    bool isMoveLeft();
     bool isOnGround();
-    bool isAscending();
-    bool isOnPlatform();
-    bool isOnWall();
     bool isWallCollided();
     bool isOnObstacle();
 
@@ -119,9 +106,8 @@ private:
     void pausePlayer();
     void fall();
 
-    bool rolling, jumping, moveLeft, moveRight, ascend, upPressed, pause, running;
-    bool onGround, playerOnWall, playerOnPlatform, wallCollided;
-    bool playerOnObstacle, leftWallCollided, rightWallCollided, inGap;
+    bool jumping, pause, running;
+    bool onGround, playerOnObstacle, leftWallCollided, rightWallCollided, inGap;
 
     PlayerState lastState, pState, nextState;
     QGraphicsPixmapItem *playerPixmap;
@@ -143,8 +129,7 @@ private:
     int playerDirection;
     int glideDistance;
 
-    QString PlayerStateStrings[8] = {"IDLE", "RUNNING_RIGHT", "JUMPING", "SLIDING", "RUNNING_LEFT", "LONG_JUMPING", "FALLING", "PAUSED"};
-
+    QString PlayerStateStrings[8] = {"IDLE", "RUNNING_RIGHT", "JUMPING", "SLIDING", "RUNNING_LEFT", "FALLING", "PAUSED"};
 
     QString idleImagePath, jumpImagePath, runImagePath, slideImagePath, fallImagePath;
     QPixmap *image;
