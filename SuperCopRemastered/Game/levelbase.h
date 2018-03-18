@@ -18,7 +18,9 @@
 #include "datatypes.h"
 #include "gameview.h"
 #include "blockbase.h"
+#include "bonusblock.h"
 #include "enemybase.h"
+#include "itembase.h"
 #include "player.h"
 
 class LevelBase : public QObject
@@ -31,10 +33,10 @@ public:
 
     ~LevelBase();
 
-    void LoadLevel(int levelNum, GameView *view);
-    void drawLevelBase(QPainter &painter);
+    void LoadLevel(int levelNum, GameView *view, bool devMode);
+    void drawLevelBase(QPainter &painter, bool devMode);
 
-    void UpdateLevel(Player *p, GameView *view);
+    void UpdateLevel(Player *p, GameView *view, bool devMode);
 
     int GetLevelRightBound();
 
@@ -49,29 +51,26 @@ private:
     // All non-floor objects in level.
     QVector<BlockBase*> obstacles;
     QVector<EnemyBase*> enemies;
-
+    QVector<ItemBase*> donuts;
     QVector<QGraphicsPixmapItem*> floorItems;
     QVector<QGraphicsPixmapItem*> obstacleItems;
     QVector<QGraphicsPixmapItem*> enemyItems;
+    QVector<QGraphicsPixmapItem*> donutItems;
 
     QVector<QGraphicsRectItem*> obstacleBBs;
     QVector<QGraphicsRectItem*> floorBBs;
     QVector<QGraphicsRectItem*> enemyBBs;
+    QVector<QGraphicsRectItem*> donutBBs;
 
     QVector<QGraphicsTextItem*> enemyTextItems;
     QVector<QGraphicsTextItem*> enemyBBText;
-    int floorHeight; // Y value for where to start drawing the floor (x=0)
+
+
     Size imageSize;
 
-    // Defines the vector indices that should be rendered
-    int leftWindowBound, rightWindowBound;
-    int leftObstacleBound, rightObstacleBound;
-    int leftEnemyBound, rightEnemyBound;
+    int floorHeight; // Y value for where to start drawing the floor (x=0)
     int windowWidth;
-//    int posIdx;
     int collidedItems, feetItems;
-//    int pxPerItem;
-//    int pXCenter, pYFeet;
 
     QPixmap *floor;
     QRect *rect;

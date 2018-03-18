@@ -2,7 +2,7 @@
 
 BonusBlock::BonusBlock()
 {
-    srand(time(0));
+//    srand(time(0));
     this->hitsLeft = 1;
 }
 
@@ -18,7 +18,7 @@ int BonusBlock::GetHitsRemaining()
 
 void BonusBlock::BlockHit()
 {
-    double res = ((double) rand() / RAND_MAX);
+//    double res = ((double) rand() / RAND_MAX);
 
 //    if(res > 0.15)
 //    {

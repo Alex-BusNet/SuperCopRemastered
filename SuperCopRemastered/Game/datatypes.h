@@ -14,7 +14,7 @@ enum ItemType {DONUT, ONE_UP, NO_ITEM_TYPE = -1};
 
 enum EnemyType {NORMAL, FAST, JUMPER, TURRET};
 
-enum PlayerState {IDLE, RUNNING_RIGHT, JUMPING, SLIDING, RUNNING_LEFT, FALLING, PAUSED};
+enum PlayerState {IDLE, RUNNING_RIGHT, JUMPING, SLIDING, RUNNING_LEFT, FALLING, PAUSED, VICTORY};
 
 
 enum BlockType {
@@ -33,6 +33,7 @@ enum BlockType {
     BONUS               = 12,
     FLOOR_COVERED_CORNER_LEFT = 13,
     FLOOR_COVERED_CORNER_RIGHT = 14,
+    GAP_BLOCK           = 15,
     NO_BLOCK_TYPE       = -1
 };
 #endif // DATATYPES_H

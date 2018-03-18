@@ -1246,7 +1246,7 @@
 			"unitX": 3,
 			"unitY": 1,
 			"blocktype": -1,
-			"leveltype": 0,
+			"leveltype": 4,
 			"itemtype": 3
 			},
 			{
@@ -1456,13 +1456,13 @@
 			{
 			"unitX": 70,
 			"unitY": 1,
-			"blocktype": -1,
+			"blocktype": 15,
 			"leveltype": 4
 			},
 			{
 			"unitX": 71,
 			"unitY": 1,
-			"blocktype": -1,
+			"blocktype": 15,
 			"leveltype": 4
 			},
 			{
@@ -1534,7 +1534,13 @@
 			{
 			"unitX": 86,
 			"unitY": 1,
-			"blocktype": -1,
+			"blocktype": 15,
+			"leveltype": 4
+			},
+			{
+			"unitX": 87,
+			"unitY": 1,
+			"blocktype": 15,
 			"leveltype": 4
 			},
 			{
@@ -1726,7 +1732,43 @@
 			{
 			"unitX": 138,
 			"unitY": 4,
-			"blocktype": 1,
+			"blocktype": 2,
+			"leveltype": 0
+			},
+			{
+			"unitX": 144,
+			"unitY": 1,
+			"blocktype": 3,
+			"leveltype": 0
+			},
+			{
+			"unitX": 143,
+			"unitY": 1,
+			"blocktype": 8,
+			"leveltype": 0
+			},
+			{
+			"unitX": 143,
+			"unitY": 2,
+			"blocktype": 3,
+			"leveltype": 0
+			},
+			{
+			"unitX": 142,
+			"unitY": 1,
+			"blocktype": 8,
+			"leveltype": 0
+			},
+			{
+			"unitX": 142,
+			"unitY": 2,
+			"blocktype": 8,
+			"leveltype": 0
+			},
+			{
+			"unitX": 142,
+			"unitY": 3,
+			"blocktype": 3,
 			"leveltype": 0
 			},
 			{
@@ -1750,42 +1792,6 @@
 			{
 			"unitX": 141,
 			"unitY": 4,
-			"blocktype": 1,
-			"leveltype": 0
-			},
-			{
-			"unitX": 142,
-			"unitY": 3,
-			"blocktype": 3,
-			"leveltype": 0
-			},
-			{
-			"unitX": 142,
-			"unitY": 2,
-			"blocktype": 8,
-			"leveltype": 0
-			},
-			{
-			"unitX": 142,
-			"unitY": 1,
-			"blocktype": 8,
-			"leveltype": 0
-			},
-			{
-			"unitX": 143,
-			"unitY": 2,
-			"blocktype": 3,
-			"leveltype": 0
-			},
-			{
-			"unitX": 143,
-			"unitY": 1,
-			"blocktype": 8,
-			"leveltype": 0
-			},
-			{
-			"unitX": 144,
-			"unitY": 1,
 			"blocktype": 3,
 			"leveltype": 0
 			},
@@ -1874,62 +1880,62 @@
 			"leveltype": 0
 			},
 			{
-			"unitX": 156,
-			"unitY": 4,
-			"blocktype": 3,
-			"leveltype": 0
-			},
-			{
-			"unitX": 156,
-			"unitY": 3,
-			"blocktype": 4,
-			"leveltype": 0
-			},
-			{
-			"unitX": 156,
-			"unitY": 2,
-			"blocktype": 4,
-			"leveltype": 0
-			},
-			{
-			"unitX": 156,
-			"unitY": 1,
-			"blocktype": 4,
-			"leveltype": 0
-			},
-			{
-			"unitX": 157,
-			"unitY": 3,
-			"blocktype": 3,
-			"leveltype": 0
-			},
-			{
-			"unitX": 157,
-			"unitY": 2,
-			"blocktype": 8,
-			"leveltype": 0
-			},
-			{
-			"unitX": 157,
-			"unitY": 1,
-			"blocktype": 8,
-			"leveltype": 0
-			},
-			{
-			"unitX": 158,
-			"unitY": 2,
-			"blocktype": 3,
-			"leveltype": 0
-			},
-			{
-			"unitX": 158,
-			"unitY": 1,
-			"blocktype": 8,
-			"leveltype": 0
-			},
-			{
 			"unitX": 159,
 			"unitY": 1,
+			"blocktype": 3,
+			"leveltype": 0
+			},
+			{
+			"unitX": 158,
+			"unitY": 1,
+			"blocktype": 8,
+			"leveltype": 0
+			},
+			{
+			"unitX": 158,
+			"unitY": 2,
+			"blocktype": 3,
+			"leveltype": 0
+			},
+			{
+			"unitX": 157,
+			"unitY": 1,
+			"blocktype": 8,
+			"leveltype": 0
+			},
+			{
+			"unitX": 157,
+			"unitY": 2,
+			"blocktype": 8,
+			"leveltype": 0
+			},
+			{
+			"unitX": 157,
+			"unitY": 3,
+			"blocktype": 3,
+			"leveltype": 0
+			},
+			{
+			"unitX": 156,
+			"unitY": 1,
+			"blocktype": 4,
+			"leveltype": 0
+			},
+			{
+			"unitX": 156,
+			"unitY": 2,
+			"blocktype": 4,
+			"leveltype": 0
+			},
+			{
+			"unitX": 156,
+			"unitY": 3,
+			"blocktype": 4,
+			"leveltype": 0
+			},
+			{
+			"unitX": 156,
+			"unitY": 4,
 			"blocktype": 3,
 			"leveltype": 0
 			},

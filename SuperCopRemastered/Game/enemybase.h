@@ -11,6 +11,8 @@
 
 #include "datatypes.h"
 
+#define ANIM_FRAME_COUNT 2
+
 class EnemyBase
 {
 public:
@@ -36,8 +38,6 @@ public:
 
     void SetGPixmapPtr(QGraphicsPixmapItem *ptr);
     void SetGRectPtr(QGraphicsRectItem *ptr);
-    void SetGPixmapText(QGraphicsTextItem *ptr);
-    void SetGRectText(QGraphicsTextItem *ptr);
 
     QGraphicsPixmapItem* GetGPixmapPtr();
     QGraphicsRectItem* GetGRectPtr();
@@ -52,7 +52,6 @@ private:
 
     QGraphicsPixmapItem *viewPixmap;
     QGraphicsRectItem *viewBB;
-    QGraphicsTextItem *pixText, *bbText;
 
     int posX, posY;
     int boundLeft, boundRight;

@@ -16,6 +16,7 @@
 #define JUMP_FRAME_COUNT          4
 #define SLIDE_FRAME_COUNT         8
 #define FALLING_FRAME_COUNT       4
+#define VICTORY_FRAME_COUNT       5
 
 #define PLAYER_INITIAL_X_VELOCITY 20.0f
 #define PLAYER_INITIAL_Y_VELOCITY 5.0f
@@ -30,7 +31,7 @@ public:
     Player(int parentWidth, int parentHeight);
     ~Player();
 
-    void drawPlayer(QPainter &painter);
+    void drawPlayer(QPainter &painter, bool devMode);
     void changeImage(QString str);
     void playerScreenPos();
 
@@ -46,14 +47,13 @@ public:
     QGraphicsPixmapItem* GetViewPixmap();
     QGraphicsRectItem* GetViewBB();
     QGraphicsRectItem* GetFallViewBB();
+    QGraphicsRectItem* GetJumpViewBB();
 
     void SetLevelBounds(int l, int r);
 
     void SetViewPixmap(QGraphicsPixmapItem* item);
     void SetViewBB(QGraphicsRectItem* item);
     void SetFallBB(QGraphicsRectItem* item);
-    void SetLeftBB(QGraphicsRectItem* item);
-    void SetRightBB(QGraphicsRectItem* item);
     void SetJumpBB(QGraphicsRectItem* item);
 
     void UpdatePlayer(GameView *view);
@@ -71,7 +71,7 @@ public:
     void setRectPosX(int x);
     void setRectPosY(int y);
     void setInGap(bool gap);
-
+    void SetVictory();
     void SetOnObstactle(bool onObs);
 
     int GetPosX();
@@ -105,19 +105,20 @@ private:
     void standBy();
     void pausePlayer();
     void fall();
+    void Celebrate();
 
     bool jumping, pause, running;
     bool onGround, playerOnObstacle, leftWallCollided, rightWallCollided, inGap;
 
     PlayerState lastState, pState, nextState;
     QGraphicsPixmapItem *playerPixmap;
-    QGraphicsRectItem *playerBB, *fallViewBB, *leftViewBB, *rightViewBB, *jumpViewBB;
+    QGraphicsRectItem *playerBB, *fallViewBB, *jumpViewBB;
 
     int rectPosX, rectPosY, rectSizeX, rectSizeY;
     int posX, posY;
 
     Size size;
-    QRect *boundingBox, *fallBB, *leftBB, *rightBB, *jumpBB;
+    QRect *boundingBox, *fallBB, *jumpBB;
 
     float speedX;
     float jumpSpeed;
@@ -129,9 +130,9 @@ private:
     int playerDirection;
     int glideDistance;
 
-    QString PlayerStateStrings[8] = {"IDLE", "RUNNING_RIGHT", "JUMPING", "SLIDING", "RUNNING_LEFT", "FALLING", "PAUSED"};
+    QString PlayerStateStrings[8] = {"IDLE", "RUNNING_RIGHT", "JUMPING", "SLIDING", "RUNNING_LEFT", "FALLING", "PAUSED", "VICTORY"};
 
-    QString idleImagePath, jumpImagePath, runImagePath, slideImagePath, fallImagePath;
+    QString idleImagePath, jumpImagePath, runImagePath, slideImagePath, fallImagePath, victoryImagePath;
     QPixmap *image;
 };
 

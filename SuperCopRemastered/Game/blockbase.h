@@ -19,6 +19,7 @@ public:
     void UpdateBlock(int playerDirection);
 
     void SetPosition(int x, int y);
+    void SetType(LevelType lType, BlockType bType);
 
     int GetPosX();
     int GetPosY();

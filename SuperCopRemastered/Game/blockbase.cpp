@@ -45,6 +45,15 @@ void BlockBase::SetPosition(int x, int y)
     boundingBox = new QRect(posX, posY, blockSize.x * xDim, blockSize.y * yDim);
 }
 
+void BlockBase::SetType(LevelType lType, BlockType bType)
+{
+    lt = lType;
+    bt = bType;
+    SetBlockInfo();
+//    qDebug() << "New Block type: " << bt;
+//    qDebug() << "New Level type: " << lt;
+}
+
 int BlockBase::GetPosX()
 {
     return posX;
@@ -188,6 +197,9 @@ void BlockBase::SetBlockInfo()
         break;
     case FLOOR_COVERED_CORNER_RIGHT:
         texturePath += "/floor_covered_corner_right.png";
+        break;
+    case GAP_BLOCK:
+        texturePath += "/empty_block.png";
         break;
     case NO_BLOCK_TYPE:
         texturePath += "/empty_block.png";

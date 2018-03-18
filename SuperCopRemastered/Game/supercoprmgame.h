@@ -21,10 +21,7 @@
 #include "datatypes.h"
 #include "gameview.h"
 #include "levelbase.h"
-#include "platform.h"
 #include "player.h"
-#include "wall.h"
-#include "enemy.h"
 #include "donut.h"
 
 using namespace std;
@@ -39,7 +36,6 @@ public:
     void keyPressEvent(QKeyEvent *evt);
     void keyReleaseEvent(QKeyEvent *evt);
     void setLastKeyPress(int keyPress);
-    void obstacleMovement();
     void setHighScores();
     void setShowDevOpts(bool devOpts);
 
@@ -70,10 +66,7 @@ private:
 
     bool isUpPressed, isDownPressed, isLeftPressed, isRightPressed, gamePaused, showDevOpts;
 
-    vector<Wall*>walls;
-    vector<Platform*>platforms;
     vector<Donut*>donuts;
-    vector<Enemy*>enemies;
     vector<int>donutspawn;
     vector<int>enemyspawn;
     vector<int>wallSpawn;

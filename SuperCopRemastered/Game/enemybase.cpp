@@ -15,10 +15,10 @@ EnemyBase::EnemyBase(int x, int y, EnemyType eType)
     this->boundingBox = new QRect(posX, posY, enemySize.x, enemySize.y);
     this->boundLeft = 0;
     this->boundRight = 70 * 205;
+    this->texturePath = QString("Assets/Enemy/%1/robot_%2Drive%3.png");
+
     viewPixmap = NULL;
     viewBB = NULL;
-    pixText = NULL;
-    bbText = NULL;
     SetEnemyInfo();
 }
 
@@ -32,23 +32,15 @@ EnemyBase::~EnemyBase()
 
     if(boundingBox != NULL)
         delete boundingBox;
-
-    if(pixText != NULL)
-        delete pixText;
-
-    if(bbText != NULL)
-        delete bbText;
 }
 
 void EnemyBase::DrawEnemy(QPainter &paint)
 {
-//    paint.drawPixmap(posX, posY, enemySize.x, enemySize.y, *texture);
+    paint.drawText(15, 220, QString("Enemy Frame Count: %1").arg(frame));
 }
 
 void EnemyBase::UpdateEnemy()
 {
-    frame = ((frame + 1) % 2) + 1;
-
     if(direction == EAST)
     {
         posX += speed;
@@ -75,10 +67,16 @@ void EnemyBase::UpdateEnemy()
         }
     }
 
-    texture = new QPixmap(texturePath.arg(direction == WEST ? "Left" : "Right" ).arg(color).arg(QString::number(frame)));
+    frame++;
 
-    viewPixmap->setPos(posX, posY);
+    delete texture;
+    texture = new QPixmap(texturePath.arg(direction == WEST ? "Left" : "Right" ).arg(color).arg(frame));
+
     viewPixmap->setPixmap(*texture);
+    viewPixmap->setPos(posX, posY);
+
+    if(frame >= ANIM_FRAME_COUNT)
+        frame = 0;
 
     boundingBox = new QRect(posX, posY, enemySize.x, enemySize.y);
 
@@ -87,9 +85,6 @@ void EnemyBase::UpdateEnemy()
         viewBB->setRect(posX, posY, enemySize.x, enemySize.y);
         viewBB->setPos(posX / 2, posY / 2);
     }
-
-//    pixText->setPos(posX + 30, posY + 2);
-//    bbText->setPos(posX + 30, posY + 12);
 }
 
 void EnemyBase::SetBounds(int left, int right)
@@ -153,16 +148,6 @@ void EnemyBase::SetGRectPtr(QGraphicsRectItem *ptr)
     viewBB = ptr;
 }
 
-void EnemyBase::SetGPixmapText(QGraphicsTextItem *ptr)
-{
-    pixText = ptr;
-}
-
-void EnemyBase::SetGRectText(QGraphicsTextItem *ptr)
-{
-    bbText = ptr;
-}
-
 QGraphicsPixmapItem *EnemyBase::GetGPixmapPtr()
 {
     return viewPixmap;
@@ -175,7 +160,8 @@ QGraphicsRectItem *EnemyBase::GetGRectPtr()
 
 void EnemyBase::SetEnemyInfo()
 {
-    texturePath = QString("Assets/Enemy/%1/robot_%2Drive%3.png");
+    direction = WEST;
+    frame = 1;
 
     switch(et)
     {
@@ -184,30 +170,28 @@ void EnemyBase::SetEnemyInfo()
         pointValue = 10;
         direction = WEST;
         color = "green";
-        texture = new QPixmap(texturePath.arg(direction == WEST ? "Left" : "Right" ).arg(color).arg("1"));
+        texture = new QPixmap(texturePath.arg(direction == WEST ? "Left" : "Right" ).arg(color).arg(frame));
         break;
     case FAST:
         speed = 25;
         pointValue = 15;
         direction = WEST;
         color = "red";
-        texture = new QPixmap(texturePath.arg(direction == WEST ? "Left" : "Right" ).arg(color).arg("1"));
+        texture = new QPixmap(texturePath.arg(direction == WEST ? "Left" : "Right" ).arg(color).arg(frame));
         break;
     case JUMPER:
         speed = 5;
         pointValue = 20;
         direction = WEST;
         color = "yellow";
-        texture = new QPixmap(texturePath.arg(direction == WEST ? "Left" : "Right" ).arg(color).arg("1"));
+        texture = new QPixmap(texturePath.arg(direction == WEST ? "Left" : "Right" ).arg(color).arg(frame));
         break;
     case TURRET:
         speed = 3;
         pointValue = 25;
         color = "blue";
-        texture = new QPixmap(texturePath.arg(direction == WEST ? "Left" : "Right" ).arg(color).arg("1"));
+        texture = new QPixmap(texturePath.arg(direction == WEST ? "Left" : "Right" ).arg(color).arg(frame));
         break;
     }
 
-    direction = WEST;
-    frame = 1;
 }

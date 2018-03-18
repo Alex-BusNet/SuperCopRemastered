@@ -3,30 +3,48 @@
 SuperCopRMGame::SuperCopRMGame(QWidget *parent)
     : QWidget(parent)
 {
+    showDevOpts = false;
+
 //    QWidget::setWindowState(Qt::WindowFullScreen);
     QWidget::setFixedSize(1280, 720);
-    qDebug() << "Height: " << this->height();
 
-    qDebug() << "Creating LevelBase...";
+    if(showDevOpts)
+    {
+        qDebug() << "Height: " << this->height();
+        qDebug() << "Creating LevelBase...";
+    }
+
     lb = new LevelBase(this->width(), this->height());
 
-    qDebug() << "Loading player";
+    if(showDevOpts)
+        qDebug() << "Loading player";
+
     player = new Player(this->width(), lb->getGround());
 
-    qDebug() << "Loading Level...";
+    if(showDevOpts)
+        qDebug() << "Loading Level...";
+
     view = new GameView(this);
-    lb->LoadLevel(1, view);
+    lb->LoadLevel(1, view, showDevOpts);
 
-    qDebug() << "Loading player to Scene...";
+    if(showDevOpts)
+        qDebug() << "Loading player to Scene...";
+
     player->SetViewPixmap(view->addPixmap(*(player->GetImage())));
-    player->SetViewBB(view->addRect(*player->GetBoundingBox(), QPen(Qt::transparent)));
-    player->SetFallBB(view->addRect(*player->GetFallBB(), QPen(Qt::transparent)));
 
-//    player->SetLeftBB(view->addRect(*player->GetLeftBB()));
-//    player->SetRightBB(view->addRect(*player->GetRightBB()));
-//    player->SetJumpBB(view->addRect(*player->GetJumpBB()));
+    QPen pen;
+    if(showDevOpts)
+        pen = QPen(Qt::black);
+    else
+        pen = QPen(Qt::transparent);
 
-    qDebug() << "Setting player start position...";
+    player->SetViewBB(view->addRect(*player->GetBoundingBox(), pen));
+    player->SetFallBB(view->addRect(*player->GetFallBB(), pen));
+    player->SetJumpBB(view->addRect(*player->GetJumpBB(), pen));
+
+    if(showDevOpts)
+        qDebug() << "Setting player start position...";
+
     player->setPosX(lb->GetPlayerStart().x());
     player->setPosY(lb->GetPlayerStart().y());
 
@@ -44,16 +62,20 @@ SuperCopRMGame::SuperCopRMGame(QWidget *parent)
     connect(lb, &LevelBase::EnemyDefeated, this, &SuperCopRMGame::scoreUpdate);
     connect(lb, &LevelBase::EndOfGame, this, &SuperCopRMGame::GameOver);
 
-    qDebug() << "Setting Background...";
+    if(showDevOpts)
+        qDebug() << "Setting Background...";
+
     QPixmap bkgnd("Assets/UI/background.png");
     bkgnd = bkgnd.scaled(this->width(), this->height(), Qt::IgnoreAspectRatio);
     QPalette palette;
     palette.setBrush(QPalette::Background, bkgnd);
     this->setPalette(palette);
 
-    qDebug() << "Creating Timers...";
+    if(showDevOpts)
+        qDebug() << "Creating Timers...";
+
     timer = new QTimer();
-    timer->setInterval(65);
+    timer->setInterval(60);
     connect(timer, &QTimer::timeout, this, &SuperCopRMGame::updateField);
 
     renderTimer = new QTimer();
@@ -90,7 +112,6 @@ SuperCopRMGame::SuperCopRMGame(QWidget *parent)
 
     //------------------------------------------------------------------------------------------
 
-    showDevOpts = false;
 
     resume = new QPushButton("RESUME");
     resume->hide();
@@ -111,10 +132,6 @@ SuperCopRMGame::SuperCopRMGame(QWidget *parent)
 
     hLayout->addWidget(resume);
     hLayout->addWidget(exit);
-    hLayout2->addSpacing(this->width() / 3);
-    hLayout2->addWidget(paused);
-    hLayout2->addSpacing(this->width() / 4);
-    vLayout->addLayout(hLayout2);
     vLayout->addWidget(view);
     vLayout->addLayout(hLayout);
 
@@ -122,7 +139,9 @@ SuperCopRMGame::SuperCopRMGame(QWidget *parent)
 
     timer->start();
     keyTimer->start();
-    qDebug() << "Done.";
+
+    if(showDevOpts)
+        qDebug() << "Done.";
 }
 
 SuperCopRMGame::~SuperCopRMGame()
@@ -157,14 +176,12 @@ void SuperCopRMGame::keyPressEvent(QKeyEvent *evt)
             gamePaused = true;
             resume->show();
             exit->show();
-            paused->show();
         }
         else
         {
             gamePaused = false;
             resume->hide();
             exit->hide();
-            paused->hide();
         }
         break;
     default:
@@ -198,125 +215,6 @@ void SuperCopRMGame::setLastKeyPress(int keyPress)
     this->lastKeyPress = keyPress;
 }
 
-void SuperCopRMGame::obstacleMovement()
-{
-    for(unsigned int i = 0; i < enemies.size(); i++)
-    {
-        for(unsigned int j = 0; j < walls.size(); j++)
-        {
-            QRect enemyRect, wallRect;
-            enemyRect = QRect((*(enemies.at(i))).getPosX(),(*(enemies.at(i))).getPosY(),(*(enemies.at(i))).getSize().x,(*(enemies.at(i))).getSize().y);
-            wallRect = QRect((*(walls.at(j))).getWallPosX(),(*(walls.at(j))).getWallPosY(),(*(walls.at(j))).getWallSize().x,(*(walls.at(j))).getWallSize().y);
-
-            if(enemyRect.intersects(wallRect) && (*(walls.at(j))).isActive())
-            {
-                if(0==(*(enemies.at(i))).getDirection())
-                {
-                    if((*(walls.at(j))).getWallPosX() + (*(walls.at(j))).getWallSize().x > (*(enemies.at(i))).getPosX() && (*(walls.at(j))).getWallPosX() + 16 < (*(enemies.at(i))).getPosX() && (*(enemies.at(i))).getPosX() < this->width())
-                    {
-                        (*(enemies.at(i))).setDirection(1);
-                    }
-                }
-
-                if (1 == (*(enemies.at(i))).getDirection())
-                {
-                    if((*(walls.at(j))).getWallPosX() < (*(enemies.at(i))).getPosX() + (*(enemies.at(i))).getSize().x && (*(walls.at(j))).getWallPosX() + 16 > (*(enemies.at(i))).getPosX() + (*(enemies.at(i))).getSize().x)
-                    {
-                        (*(enemies.at(i))).setDirection(0);
-                    }
-                }
-            }
-        }//Enemies turn around when they hit walls
-
-        if((*(enemies.at(i))).getActive())
-        {
-            if(0 == (*(enemies.at(i))).getDirection())
-            {
-                (*(enemies.at(i))).setPosX((*(enemies.at(i))).getPosX() - moveSpeed - 3);
-            }
-            else if (1 == (*(enemies.at(i))).getDirection())
-            {
-                (*(enemies.at(i))).setPosX((*(enemies.at(i))).getPosX() + moveSpeed + 3);
-            }
-        }//enemy moves based on time
-    }
-
-    if((1 == lastKeyPress || 2 == lastKeyPress) && (player->GetPosX() + player->getSize().x) >= player->getRightBound()&& levelEnd->getPosX() >= 0)
-    {
-        for(unsigned int i = 0; i < enemies.size(); i++)
-        {
-            if((*(enemies.at(i))).getActive())
-            {
-                (*(enemies.at(i))).setPosX((*(enemies.at(i))).getPosX() - moveSpeed);
-            }
-        }//enemies appear to move faster when the player runs toward them
-
-        for(unsigned int i = 0; i < platforms.size(); i++)
-        {
-            if((*(platforms.at(i))).isActive())
-            {
-                (*(platforms.at(i))).setPlatformPosX((*(platforms.at(i))).getPlatformPosX() - moveSpeed);
-            }
-        }//Platforms scroll
-
-        for(unsigned int i = 0; i < walls.size(); i++)
-        {
-            if((*(walls.at(i))).isActive())
-            {
-                (*(walls.at(i))).setWallPosX((*(walls.at(i))).getWallPosX() - moveSpeed);
-            }
-        }//Walls scroll
-
-        for(unsigned int i = 0; i < donuts.size(); i++)
-        {
-            if((*(donuts.at(i))).getActive()){
-                (*(donuts.at(i))).setPosX((*(donuts.at(i))).getPosX() - moveSpeed);
-            }
-        }//Donuts scroll
-
-        location+=(moveSpeed/5);
-        levelEnd->setPosX(levelEnd->getPosX() - moveSpeed);
-    }
-
-    if((4 == lastKeyPress || 2 == lastKeyPress) && (player->GetPosX() <= player->getLeftBound()) && 0 < location)
-    {
-        for(unsigned int i = 0; i < enemies.size(); i++)
-        {
-            if((*(enemies.at(i))).getActive())
-            {
-                (*(enemies.at(i))).setPosX((*(enemies.at(i))).getPosX() + moveSpeed);
-            }
-        }//enemies appear to move slower when the player runs away
-
-        for(unsigned int i = 0; i < platforms.size(); i++)
-        {
-            if((*(platforms.at(i))).isActive())
-            {
-                (*(platforms.at(i))).setPlatformPosX((*(platforms.at(i))).getPlatformPosX() + moveSpeed);
-            }
-        }//Platforms scroll
-
-        for(unsigned int i = 0; i < walls.size(); i++)
-        {
-            if((*(walls.at(i))).isActive())
-            {
-                (*(walls.at(i))).setWallPosX((*(walls.at(i))).getWallPosX() + moveSpeed);
-            }
-        }//Walls scroll
-
-        for(unsigned int i = 0; i < donuts.size(); i++)
-        {
-            if((*(donuts.at(i))).getActive())
-            {
-                (*(donuts.at(i))).setPosX((*(donuts.at(i))).getPosX() + moveSpeed);
-            }
-        }//Donuts scroll
-
-        location-=(moveSpeed/5);
-        levelEnd->setPosX(levelEnd->getPosX() + moveSpeed);
-    }
-}
-
 void SuperCopRMGame::pollKey()
 {
     //Checks if any of the keys are pressed.
@@ -329,9 +227,7 @@ void SuperCopRMGame::pollKey()
     else if(isLeftPressed )
         lastKeyPress = 4;
     else
-    {
         lastKeyPress = 0;
-    }
 }
 
 void SuperCopRMGame::updateField()
@@ -341,10 +237,9 @@ void SuperCopRMGame::updateField()
         player->playerAction(lastKeyPress);
         player->UpdateFrame();
         player->UpdatePlayer(view);
-        lb->UpdateLevel(player, view);
+        lb->UpdateLevel(player, view, showDevOpts);
         this->update();
     }
-
 }
 
 void SuperCopRMGame::resumeGame()
@@ -404,11 +299,17 @@ void SuperCopRMGame::GameOver(bool endOfLevel)
         timer->stop();
         keyTimer->stop();
         this->close();
+
     }
     else
     {
         // Victory Stuff goes here.
+        paused->setText(QString("YOU WIN!"));
+        gamePaused = true;
+        player->SetVictory();
     }
+
+    // Reset level here.
 }
 
 void SuperCopRMGame::paintEvent(QPaintEvent *e)
@@ -416,8 +317,8 @@ void SuperCopRMGame::paintEvent(QPaintEvent *e)
     Q_UNUSED(e)
 
     QPainter painter(this);
-    player->drawPlayer(painter);
-    lb->drawLevelBase(painter);
+    player->drawPlayer(painter, showDevOpts);
+    lb->drawLevelBase(painter, showDevOpts);
 
     //===========================================================
     //    START PHYSICS
@@ -451,7 +352,14 @@ void SuperCopRMGame::paintEvent(QPaintEvent *e)
     QPen pen = QPen(Qt::white);
     painter.setPen(pen);
     painter.setFont(*scoreFont);
-    painter.drawText(10, 30, QString("Score: %1").arg(QString::number(gamescore)));
+    painter.drawText(15, 50, QString("Score: %1").arg(QString::number(gamescore)));
+
+    if(gamePaused)
+    {
+        painter.setPen(QPen(Qt::black));
+        painter.setFont(*pausedFont);
+        painter.drawText((this->width() / 2) - 110, 100, paused->text());
+    }
 
     if(showDevOpts)
     {
