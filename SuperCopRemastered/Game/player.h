@@ -93,6 +93,7 @@ public:
     bool isOnGround();
     bool isWallCollided();
     bool isOnObstacle();
+    bool isInGap();
 
 public slots:
     void playerAction(int action);

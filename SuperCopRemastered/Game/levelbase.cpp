@@ -358,21 +358,13 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
                             emit EndOfGame(true);
                         }
                     }
-                    else if(((!leftWallCollision && !rightWallCollision && !topBlockCollision && !bottomBlockCollision) && (nearestObsY->GetType() == NO_BLOCK_TYPE || nearestObsY->GetType() == GAP_BLOCK)))
+                    else if(((!leftWallCollision && !rightWallCollision && !topBlockCollision && !bottomBlockCollision) && (nearestObsY->GetType() == GAP_BLOCK)))
                     {
                         if(devMode)
                             qDebug() << "Empty Object collision";
 
                         p->setOnGround(false);
-
-                        // Since only NO_BLOCK_TYPE and GAP_BLOCK type obstacles can
-                        // actually trigger this block of code, if we determine
-                        // that the block is not a GAP_BLOCK type, then it must be
-                        // a NO_BLOCK_TYPE type obstacle.
-                        if(nearestObsY->GetType() == GAP_BLOCK)
-                            p->setInGap(true);
-                        else
-                            p->SetOnObstactle(false);
+                        p->setInGap(true);
                     }
                     else if(bottomBlockCollision)
                     {
@@ -469,7 +461,7 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
                     else
                     {
                         // Player just falls.
-                        if(p->getState() != JUMPING)
+                        if(p->getState() != JUMPING && p->getState() != FALLING)
                         {
                             p->setOnGround(false);
                             p->SetOnObstactle(false);

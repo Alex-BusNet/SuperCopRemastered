@@ -111,12 +111,12 @@ QRect *BlockBase::GetRightBoundingBox()
 
 QRect *BlockBase::GetTopBoundingBox()
 {
-    return new QRect(boundingBox->x() + 5, boundingBox->y(), boundingBox->width() - 10, 5);
+    return new QRect(boundingBox->x() + 5, boundingBox->y()-5, boundingBox->width() - 10, 10);
 }
 
 QRect *BlockBase::GetBottomBoundingBox()
 {
-    return new QRect(boundingBox->x() + 5, boundingBox->y() + boundingBox->height() - 5, boundingBox->width() - 10, 5);
+    return new QRect(boundingBox->x() + 5, boundingBox->y() + boundingBox->height() - 5, boundingBox->width() - 10, 10);
 }
 
 QPixmap *BlockBase::GetTexture()

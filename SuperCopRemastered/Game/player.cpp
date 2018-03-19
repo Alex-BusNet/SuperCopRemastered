@@ -349,7 +349,7 @@ void Player::playerAction(int action)
             }
             break;
         case NONE:
-            if((posY + size.y) < ground && !playerOnObstacle && !onGround)
+            if(((posY + size.y) < ground && !playerOnObstacle && !onGround) || inGap)
             {
                 if(pState != FALLING)
                 {
@@ -642,6 +642,11 @@ bool Player::isOnGround()
 bool Player::isOnObstacle()
 {
     return playerOnObstacle;
+}
+
+bool Player::isInGap()
+{
+    return inGap;
 }//Accessor
 
 void Player::setSpeedX(int spd)
