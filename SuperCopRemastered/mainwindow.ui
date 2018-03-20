@@ -71,7 +71,7 @@
      <item>
       <widget class="QPushButton" name="runNNPB">
        <property name="text">
-        <string>RoboCop</string>
+        <string>RoboCop™</string>
        </property>
       </widget>
      </item>
