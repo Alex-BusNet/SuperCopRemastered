@@ -24,14 +24,7 @@ EnemyBase::EnemyBase(int x, int y, EnemyType eType)
 
 EnemyBase::~EnemyBase()
 {
-    if(viewBB != NULL)
-        delete viewBB;
 
-    if(viewPixmap != NULL)
-        delete viewPixmap;
-
-    if(boundingBox != NULL)
-        delete boundingBox;
 }
 
 void EnemyBase::DrawEnemy(QPainter &paint)

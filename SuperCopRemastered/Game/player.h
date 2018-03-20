@@ -35,6 +35,7 @@ public:
     void drawPlayer(QPainter &painter, bool devMode);
     void changeImage(QString str);
     void playerScreenPos();
+    void Reset();
 
     PlayerState getState();
     PlayerState GetLastState();

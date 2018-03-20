@@ -40,6 +40,8 @@ public:
     void setShowDevOpts(bool devOpts);
 
 private:
+    void InitLevel();
+
     Player *player;
     QGraphicsPixmapItem *playerPixmap;
     QGraphicsRectItem *playerBB;

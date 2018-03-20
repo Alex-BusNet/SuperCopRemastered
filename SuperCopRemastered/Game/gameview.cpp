@@ -11,6 +11,7 @@ GameView::GameView(QWidget *parent)
     this->setDragMode(QGraphicsView::NoDrag);
     this->setViewportUpdateMode(QGraphicsView::MinimalViewportUpdate);
     this->setStyleSheet(QString("QGraphicsView { background-color: transparent; }"));
+
 }
 
 QGraphicsPixmapItem *GameView::addPixmap(const QPixmap &pixmap)
@@ -41,6 +42,12 @@ void GameView::removePixmap(QGraphicsPixmapItem *pixmap)
 void GameView::removeRect(QGraphicsRectItem *rect)
 {
     this->scene->removeItem(rect);
+}
+
+void GameView::ClearScene()
+{
+    if(scene != NULL)
+        scene->clear();
 }
 
 void GameView::keyPressEvent(QKeyEvent *e)

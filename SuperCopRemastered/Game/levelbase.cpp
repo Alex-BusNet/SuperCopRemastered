@@ -58,7 +58,8 @@ void LevelBase::LoadLevel(int levelNum, GameView *view, bool devMode)
                         floorItems.push_back(view->addPixmap(*(levelFloor.last()->GetTexture())));
                         floorItems.last()->setPos(xPos * 70, floorHeight - (yPos * 70));
 
-                        view->addText(QString("%1").arg(floorItems.size() / 7))->setPos((xPos * 70) + 30, floorHeight - (yPos * 70) + 30);
+                        if(devMode)
+                            view->addText(QString("%1").arg(floorItems.size() / 7))->setPos((xPos * 70) + 30, floorHeight - (yPos * 70) + 30);
 
                         // This loop is used to fill in the scene underneath the floor.
                         for(int k = 0; k < 6; k++)
@@ -179,21 +180,26 @@ void LevelBase::LoadLevel(int levelNum, GameView *view, bool devMode)
 
                     foreach(EnemyBase *eb, enemies)
                     {
-                        enemyItems.push_back(view->addPixmap(*(eb->GetTexture())));
-                        enemyItems.last()->setPos(eb->GetPosX(), eb->GetPosY());
-                        enemyItems.last()->setScale(0.5);
-
-                        if(eb->GetBoundingBox() != NULL)
+                        if(eb != NULL)
                         {
-                            enemyBBs.push_back(view->addRect(*eb->GetBoundingBox(), QPen(Qt::transparent)));
-                            enemyBBs.last()->setPos(0,0);
-                            enemyBBs.last()->setScale(0.5);
+                            enemyItems.push_back(view->addPixmap(*(eb->GetTexture())));
+                            enemyItems.last()->setPos(eb->GetPosX(), eb->GetPosY());
+                            enemyItems.last()->setScale(0.5);
 
-                            eb->SetGRectPtr(enemyBBs.last());
+                            if(eb->GetBoundingBox() != NULL)
+                            {
+                                enemyBBs.push_back(view->addRect(*eb->GetBoundingBox(), QPen(Qt::transparent)));
+                                enemyBBs.last()->setPos(0,0);
+                                enemyBBs.last()->setScale(0.5);
+                                eb->SetGRectPtr(enemyBBs.last());
+                            }
+
+                            eb->SetGPixmapPtr(enemyItems.last());
                         }
-
-                        eb->SetGPixmapPtr(enemyItems.last());
                     }
+
+                    if(devMode)
+                        qDebug() << "Level load complete.";
                 }
             }
             else
@@ -233,18 +239,19 @@ void LevelBase::drawLevelBase(QPainter &painter, bool devMode)
 
         if(enemies.at(0) != NULL)
             enemies.at(0)->DrawEnemy(painter);
-
-        int x = 0, y = 0;
-        for(y = 0; y < 10; y++)
-        {
-            for(x = 0; x < 18; x++)
-            {
-                if(parsedView[y][x] != 0)
-                    painter.drawText((15 * x) + 215, (15 * y) + 50, QString(" %1 ").arg(parsedView[y][x]));
-            }
-        }
-
     }
+
+    // Renders the parsed view array on screen
+    int x = 0, y = 0;
+    for(y = 0; y < 10; y++)
+    {
+        for(x = 0; x < 18; x++)
+        {
+            if(parsedView[y][x] != 0)
+                painter.drawText((15 * x) + 215, (15 * y) + 50, QString(" %1 ").arg(parsedView[y][x]));
+        }
+    }
+
 }
 
 void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
@@ -258,7 +265,22 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
     {
         if(enemies.at(i) != NULL)
         {
-            enemies.at(i)->UpdateEnemy();
+            if((enemyItems.at(i) != NULL) && (enemyItems.at(i)->collidingItems().size() > 1))
+            {
+                QGraphicsItem *item = enemyItems.at(i)->collidingItems().at(1);
+                int idx = enemyItems.indexOf((QGraphicsPixmapItem*)item);
+                // We just want the enemies to turn around when they collide with each other.
+                // We will handle collisions with player later.
+                if(idx != -1)
+                {
+                    enemies.at(i)->FlipDirection();
+                    enemies.at(idx)->FlipDirection();
+                }
+                else
+                    enemies.at(i)->UpdateEnemy();
+            }
+            else
+                enemies.at(i)->UpdateEnemy();
         }
     }
 
@@ -310,7 +332,7 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
                 if(devMode)
                     qDebug() << "Collision with enemy: " << idx  << " | state: " << p->getState() << " lastState: " << p->GetLastState();
 
-                if((p->getState() == FALLING) || (p->GetLastState() == FALLING) || (p->GetLastState() == JUMPING))
+                if((p->getState() == FALLING) || (p->GetLastState() == JUMPING))
                 {
                     if(devMode)
                         qDebug() << "Enemy Defeated";
@@ -354,7 +376,7 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
                                               && (nearestObsY->GetRightBoundingBox()->intersects(p->GetViewBB()->rect().toRect())));
 
                     bool topBlockCollision = ((nearestObsY->GetType() == WALL_CORNER_LEFT || nearestObsY->GetType() == WALL_CORNER_RIGHT || nearestObsY->GetType() == BLOCK || nearestObsY->GetType() == BONUS || nearestObsY->GetType() == PLATFORM_LEFT || nearestObsY->GetType() == PLATFORM_RIGHT || nearestObsY->GetType() == BLOCK_EDGE_TOP)
-                                              && (nearestObsY->GetTopBoundingBox()->intersects(p->GetFallViewBB()->rect().toRect())) && p->getState() == FALLING);
+                                              && (nearestObsY->GetTopBoundingBox()->intersects(p->GetFallViewBB()->rect().toRect())) && ((p->getState() == FALLING) || (p->getState() == IDLE)));
 
                     bool bottomBlockCollision = ((nearestObsY->GetType() == BONUS) && (nearestObsY->GetBottomBoundingBox()->intersects(p->GetJumpViewBB()->rect().toRect())) && p->getState() == JUMPING);
 
@@ -447,8 +469,8 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
                         bool rightWallCollision =(((floorBlock->GetType() == WALL_CORNER_RIGHT) || (floorBlock->GetType() == WALL_SIDE_RIGHT) || (floorBlock->GetType() == WALL_CORNER_LEFT) || ( floorBlock->GetType() == WALL_SIDE_LEFT))
                                                   && (floorBlock->GetRightBoundingBox()->intersects(p->GetViewBB()->rect().toRect())));
 
-                        bool topBlockCollision = ((floorBlock->GetType() == WALL_CORNER_LEFT || floorBlock->GetType() == WALL_CORNER_RIGHT || floorBlock->GetType() == BLOCK || floorBlock->GetType() == BONUS || floorBlock->GetType() == PLATFORM_LEFT || floorBlock->GetType() == PLATFORM_RIGHT || floorBlock->GetType() == BLOCK_EDGE_TOP)
-                                                  && (floorBlock->GetTopBoundingBox()->intersects(p->GetViewBB()->rect().toRect())) && p->getState() == FALLING);
+                        bool topBlockCollision = ((floorBlock->GetType() == WALL_CORNER_LEFT || floorBlock->GetType() == WALL_CORNER_RIGHT || floorBlock->GetType() == BLOCK || floorBlock->GetType() == BLOCK_EDGE_TOP)
+                                                  && (floorBlock->GetTopBoundingBox()->intersects(p->GetFallViewBB()->rect().toRect())) && p->getState() == FALLING);
 
                         if((leftWallCollision || rightWallCollision) && !topBlockCollision)
                         {
@@ -468,8 +490,10 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
                         else
                         {
                             // If the player didn't collide with the left or right side of
-                            // a floor object, then they must be standing on the floor.
-                            p->setOnGround(true);
+                            // a floor object, and the floor object is not an opening, then
+                            // the player must be standing on the ground.
+                            if(floorBlock->GetType() != NO_BLOCK_TYPE && floorBlock->GetType() != GAP_BLOCK)
+                                p->setOnGround(true);
                         }
                     }
                 }
@@ -684,23 +708,27 @@ QPoint LevelBase::GetPlayerStart()
 
 void LevelBase::ClearView(GameView *view)
 {
-    qDebug() << "Clearing enemy items and bounding boxes";
     foreach(EnemyBase *eb, enemies)
     {
-        view->removePixmap(eb->GetGPixmapPtr());
-        view->removeRect(eb->GetGRectPtr());
-
-        delete enemyItems.at(enemyItems.indexOf(eb->GetGPixmapPtr()));
-        delete enemyBBs.at(enemyBBs.indexOf(eb->GetGRectPtr()));
-
-        delete eb->GetGPixmapPtr();
-        delete eb->GetGRectPtr();
-
-        eb->SetGPixmapPtr(NULL);
-        eb->SetGRectPtr(NULL);
+        if(eb != NULL)
+            delete eb;
     }
+    enemies.clear();
 
-    qDebug() << "Clearing floor items";
+    foreach(BlockBase *bb, obstacles)
+    {
+        if(bb != NULL)
+            delete bb;
+    }
+    obstacles.clear();
+
+    foreach(BlockBase *bb, levelFloor)
+    {
+        if(bb != NULL)
+            delete bb;
+    }
+    levelFloor.clear();
+
     foreach(QGraphicsPixmapItem *i, floorItems)
     {
         if(i != NULL)
@@ -709,8 +737,8 @@ void LevelBase::ClearView(GameView *view)
             delete i;
         }
     }
+    floorItems.clear();
 
-    qDebug() << "Clearing obstacle items";
     foreach(QGraphicsPixmapItem *i, obstacleItems)
     {
         if(i != NULL)
@@ -719,8 +747,18 @@ void LevelBase::ClearView(GameView *view)
             delete i;
         }
     }
+    obstacleItems.clear();
 
-    qDebug() << "Clearing floor bounding boxes";
+    foreach(QGraphicsPixmapItem *i, enemyItems)
+    {
+        if(i != NULL)
+        {
+            view->removePixmap(i);
+            delete i;
+        }
+    }
+    enemyItems.clear();
+
     foreach(QGraphicsRectItem *r, floorBBs)
     {
         if(r != NULL)
@@ -729,8 +767,8 @@ void LevelBase::ClearView(GameView *view)
             delete r;
         }
     }
+    floorBBs.clear();
 
-    qDebug() << "Clearing obstacle bounding boxes";
     foreach(QGraphicsRectItem *r, obstacleBBs)
     {
         if(r != NULL)
@@ -739,4 +777,18 @@ void LevelBase::ClearView(GameView *view)
             delete r;
         }
     }
+    obstacleBBs.clear();
+
+    foreach(QGraphicsRectItem *r, enemyBBs)
+    {
+        if(r != NULL)
+        {
+            view->removeRect(r);
+            delete r;
+        }
+    }
+    enemyBBs.clear();
+
+    view->ClearScene();
+
 }//Draws the floor

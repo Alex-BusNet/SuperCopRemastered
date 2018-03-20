@@ -16,8 +16,11 @@ public:
     QGraphicsRectItem *addRect(const QRect &rect = QRect(), const QPen &pen = QPen(Qt::black), const QPixmap &texture = QPixmap());
     QGraphicsTextItem *addText(QString text);
     QGraphicsLineItem* addLine(qreal x1, qreal y1, qreal x2, qreal y2, const QPen &pen = QPen(Qt::black));
+
     void removePixmap(QGraphicsPixmapItem *pixmap);
     void removeRect(QGraphicsRectItem *rect);
+
+    void ClearScene();
 
     void keyPressEvent(QKeyEvent *e);
     void keyReleaseEvent(QKeyEvent *e);

@@ -36,7 +36,7 @@ Player::Player(int parentWidth, int parentHeight)
     boundingBox = new QRect(posX + 8, posY, 30, size.y);
     jumpBB = new QRect(posX + 13, posY - 5, 30, 5);
     jumpViewBB = NULL;
-    fallBB = new QRect(posX + 13, posY + size.y - 10, 30, 20);
+    fallBB = new QRect(posX + 13, posY + size.y - 20, 30, 40);
     fallViewBB = NULL;
 
     leftBound = parentWidth / 6;
@@ -115,6 +115,21 @@ void Player::playerScreenPos()
     {
         this->setPosX(this->GetPosX());
     }
+}
+
+void Player::Reset()
+{
+    lastState = IDLE;
+    pState = IDLE;
+    lastActionPressed = NONE;
+    playerDirection = EAST;
+    jumping = false;
+    onGround = true;
+    playerOnObstacle = false;
+    inGap = false;
+    speedX = PLAYER_INITIAL_X_VELOCITY;
+    jumpSpeed = PLAYER_INITIAL_Y_VELOCITY;
+    frame = 1;
 }
 
 PlayerState Player::getState()
@@ -742,7 +757,7 @@ void Player::setPosX(int x)
 
     if(fallViewBB != NULL)
     {
-        fallViewBB->setRect(posX + 8, posY + size.y-5, 50, 10);
+        fallViewBB->setRect(posX + 8, posY + size.y-15, 50, 30);
         fallViewBB->setPos(0,0);
     }
 
@@ -770,7 +785,7 @@ void Player::setPosY(int y)
 
     if(fallViewBB != NULL)
     {
-        fallViewBB->setRect(posX + 8, posY + size.y-5, 50, 10);
+        fallViewBB->setRect(posX + 8, posY + size.y-15, 50, 30);
         fallViewBB->setPos(0,0);
     }
 }

@@ -26,30 +26,8 @@ SuperCopRMGame::SuperCopRMGame(QWidget *parent)
 
     view = new GameView(this);
     view->setGeometry(0, 0 , 1280, 720);
-    lb->LoadLevel(1, view, showDevOpts);
 
-    if(showDevOpts)
-        qDebug() << "Loading player to Scene...";
-
-    player->SetViewPixmap(view->addPixmap(*(player->GetImage())));
-
-    QPen pen;
-    if(showDevOpts)
-        pen = QPen(Qt::black);
-    else
-        pen = QPen(Qt::transparent);
-
-    player->SetViewBB(view->addRect(*player->GetBoundingBox(), pen));
-    player->SetFallBB(view->addRect(*player->GetFallBB(), pen));
-    player->SetJumpBB(view->addRect(*player->GetJumpBB(), pen));
-
-    if(showDevOpts)
-        qDebug() << "Setting player start position...";
-
-    player->setPosX(lb->GetPlayerStart().x());
-    player->setPosY(lb->GetPlayerStart().y());
-
-    player->SetLevelBounds(0, lb->GetLevelRightBound());
+    InitLevel();
 
     msg = new QMessageBox();
     pbox = new QMessageBox();
@@ -87,16 +65,6 @@ SuperCopRMGame::SuperCopRMGame(QWidget *parent)
     keyTimer->setInterval(5);
     connect(keyTimer, &QTimer::timeout, this, &SuperCopRMGame::pollKey);
 
-    isUpPressed = false;
-    isDownPressed = false;
-    isLeftPressed = false;
-    isRightPressed = false;
-    gamePaused = false;
-    gameOver = false;
-    lastKeyPress = 0;
-    gamescore=0;
-    location=0;
-
     //------------------------------------------------------------------------------------------
     // Gamepad configuration
     gpm = QGamepadManager::instance();
@@ -113,7 +81,6 @@ SuperCopRMGame::SuperCopRMGame(QWidget *parent)
     connect(gpkn, &QGamepadKeyNavigation::rightKeyChanged, this, &SuperCopRMGame::actionInput);
 
     //------------------------------------------------------------------------------------------
-
 
     resume = new QPushButton("RESUME");
     resume->hide();
@@ -253,6 +220,8 @@ void SuperCopRMGame::resumeGame()
 
 void SuperCopRMGame::exitGame()
 {
+    timer->stop();
+    keyTimer->stop();
     this->close();
 }
 
@@ -297,10 +266,11 @@ void SuperCopRMGame::GameOver(bool endOfLevel)
         gameOverBox->setText("YOU LOSE!");
         gameOverBox->exec();
         delete gameOverBox;
-        timer->stop();
-        keyTimer->stop();
-        this->close();
 
+        lb->ClearView(view);
+        InitLevel();
+        player->Reset();
+        view->ensureVisible(player->GetViewPixmap(), 200, 70);
     }
     else
     {
@@ -311,8 +281,6 @@ void SuperCopRMGame::GameOver(bool endOfLevel)
     }
 
     setHighScores();
-
-    // Reset level here.
 }
 
 void SuperCopRMGame::paintEvent(QPaintEvent *e)
@@ -451,4 +419,42 @@ void SuperCopRMGame::setHighScores()
 void SuperCopRMGame::setShowDevOpts(bool devOpts)
 {
     this->showDevOpts = devOpts;
-}//Enables the developer options.
+}
+
+void SuperCopRMGame::InitLevel()
+{
+    lb->LoadLevel(1, view, showDevOpts);
+
+    if(showDevOpts)
+        qDebug() << "Loading player to Scene...";
+
+    player->SetViewPixmap(view->addPixmap(*(player->GetImage())));
+
+    QPen pen;
+    if(showDevOpts)
+        pen = QPen(Qt::black);
+    else
+        pen = QPen(Qt::transparent);
+
+    player->SetViewBB(view->addRect(*player->GetBoundingBox(), pen));
+    player->SetFallBB(view->addRect(*player->GetFallBB(), pen));
+    player->SetJumpBB(view->addRect(*player->GetJumpBB(), pen));
+
+    if(showDevOpts)
+        qDebug() << "Setting player start position...";
+
+    player->setPosX(lb->GetPlayerStart().x());
+    player->setPosY(lb->GetPlayerStart().y());
+
+    player->SetLevelBounds(0, lb->GetLevelRightBound());
+
+    isUpPressed = false;
+    isDownPressed = false;
+    isLeftPressed = false;
+    isRightPressed = false;
+    gamePaused = false;
+    gameOver = false;
+    lastKeyPress = 0;
+    gamescore=0;
+    location=0;
+}
