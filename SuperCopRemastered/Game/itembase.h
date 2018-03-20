@@ -27,6 +27,9 @@ public:
     void SetViewPixmap(QGraphicsPixmapItem *item);
     void SetViewBB(QGraphicsRectItem *item);
 
+    int GetPosX();
+    int GetPosY();
+
 private:
     ItemType it;
     Size itemSize;  // px dimesions

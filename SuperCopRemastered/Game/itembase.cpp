@@ -49,6 +49,16 @@ void ItemBase::SetViewBB(QGraphicsRectItem *item)
     viewBB = item;
 }
 
+int ItemBase::GetPosX()
+{
+    return posX;
+}
+
+int ItemBase::GetPosY()
+{
+    return posY;
+}
+
 void ItemBase::SetItemInfo()
 {
     if(it == DONUT)

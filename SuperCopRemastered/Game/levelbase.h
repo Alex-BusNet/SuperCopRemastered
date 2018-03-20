@@ -78,13 +78,11 @@ private:
     bool updateStatus;
 
     QPoint playerStart;
+    int parsedView[10][18]; // [y][x]
 
 signals:
     void EnemyDefeated(int value);
     void EndOfGame(bool endOfLevel);
-
-public slots:
-    void generatePiece();
 };
 
 #endif // LEVELBASE_H

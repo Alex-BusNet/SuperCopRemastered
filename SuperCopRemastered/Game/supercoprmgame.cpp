@@ -3,7 +3,7 @@
 SuperCopRMGame::SuperCopRMGame(QWidget *parent)
     : QWidget(parent)
 {
-    showDevOpts = false;
+    showDevOpts = true;
 
 //    QWidget::setWindowState(Qt::WindowFullScreen);
     QWidget::setFixedSize(1280, 720);
@@ -25,6 +25,7 @@ SuperCopRMGame::SuperCopRMGame(QWidget *parent)
         qDebug() << "Loading Level...";
 
     view = new GameView(this);
+    view->setGeometry(0, 0 , 1280, 720);
     lb->LoadLevel(1, view, showDevOpts);
 
     if(showDevOpts)
@@ -75,7 +76,7 @@ SuperCopRMGame::SuperCopRMGame(QWidget *parent)
         qDebug() << "Creating Timers...";
 
     timer = new QTimer();
-    timer->setInterval(60);
+    timer->setInterval(50);
     connect(timer, &QTimer::timeout, this, &SuperCopRMGame::updateField);
 
     renderTimer = new QTimer();
@@ -91,6 +92,7 @@ SuperCopRMGame::SuperCopRMGame(QWidget *parent)
     isLeftPressed = false;
     isRightPressed = false;
     gamePaused = false;
+    gameOver = false;
     lastKeyPress = 0;
     gamescore=0;
     location=0;
@@ -146,7 +148,6 @@ SuperCopRMGame::SuperCopRMGame(QWidget *parent)
 
 SuperCopRMGame::~SuperCopRMGame()
 {
-    lb->ClearView(view);
     delete lb;
 
     delete player;
@@ -305,9 +306,11 @@ void SuperCopRMGame::GameOver(bool endOfLevel)
     {
         // Victory Stuff goes here.
         paused->setText(QString("YOU WIN!"));
-        gamePaused = true;
+        gameOver = true;
         player->SetVictory();
     }
+
+    setHighScores();
 
     // Reset level here.
 }
@@ -354,7 +357,7 @@ void SuperCopRMGame::paintEvent(QPaintEvent *e)
     painter.setFont(*scoreFont);
     painter.drawText(15, 50, QString("Score: %1").arg(QString::number(gamescore)));
 
-    if(gamePaused)
+    if(gamePaused || gameOver)
     {
         painter.setPen(QPen(Qt::black));
         painter.setFont(*pausedFont);
@@ -370,7 +373,7 @@ void SuperCopRMGame::paintEvent(QPaintEvent *e)
         devPaint.setPen(debugPen);
 
         //Game input info
-        devPaint.drawText(15, 60, QString("lastActionPressed: %1").arg(QString::number(lastKeyPress)));
+        devPaint.drawText(20, 60, QString("lastActionPressed: %1").arg(QString::number(lastKeyPress)));
     }
 }//Handles Painting all elements on screen
 

@@ -21,8 +21,9 @@
 #define PLAYER_INITIAL_X_VELOCITY 20.0f
 #define PLAYER_INITIAL_Y_VELOCITY 5.0f
 #define PLAYER_FALLING_X_VELOCITY 2.0f
+#define PLAYER_Y_PX_PER_UPDATE    9.0f
 #define COEFF_OF_FRICTION         0.5f
-#define GRAVITY_FACTOR            0.8f
+#define GRAVITY_FACTOR            0.9f
 
 class Player
 {

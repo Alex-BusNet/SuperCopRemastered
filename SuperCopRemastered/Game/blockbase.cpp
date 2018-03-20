@@ -51,7 +51,7 @@ void BlockBase::SetType(LevelType lType, BlockType bType)
     bt = bType;
     SetBlockInfo();
 //    qDebug() << "New Block type: " << bt;
-//    qDebug() << "New Level type: " << lt;
+    //    qDebug() << "New Level type: " << lt;
 }
 
 int BlockBase::GetPosX()
@@ -111,12 +111,12 @@ QRect *BlockBase::GetRightBoundingBox()
 
 QRect *BlockBase::GetTopBoundingBox()
 {
-    return new QRect(boundingBox->x() + 5, boundingBox->y()-5, boundingBox->width() - 10, 10);
+    return new QRect(boundingBox->x() + 5, boundingBox->y(), boundingBox->width() - 10, 10);
 }
 
 QRect *BlockBase::GetBottomBoundingBox()
 {
-    return new QRect(boundingBox->x() + 5, boundingBox->y() + boundingBox->height() - 5, boundingBox->width() - 10, 10);
+    return new QRect(boundingBox->x() + 5, boundingBox->y() + boundingBox->height() - 10, boundingBox->width() - 10, 20);
 }
 
 QPixmap *BlockBase::GetTexture()

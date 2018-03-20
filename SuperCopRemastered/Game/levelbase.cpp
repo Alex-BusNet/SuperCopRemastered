@@ -22,8 +22,6 @@ LevelBase::~LevelBase()
 
 void LevelBase::LoadLevel(int levelNum, GameView *view, bool devMode)
 {
-    view->addRect(QRect(0, 0, 70*200, 5), QPen(Qt::transparent));
-
     QFile levelData(QString("Assets/Level/World1_%1.json").arg(levelNum));
 
     if(levelData.open(QIODevice::ReadOnly))
@@ -59,6 +57,8 @@ void LevelBase::LoadLevel(int levelNum, GameView *view, bool devMode)
 
                         floorItems.push_back(view->addPixmap(*(levelFloor.last()->GetTexture())));
                         floorItems.last()->setPos(xPos * 70, floorHeight - (yPos * 70));
+
+                        view->addText(QString("%1").arg(floorItems.size() / 7))->setPos((xPos * 70) + 30, floorHeight - (yPos * 70) + 30);
 
                         // This loop is used to fill in the scene underneath the floor.
                         for(int k = 0; k < 6; k++)
@@ -104,9 +104,9 @@ void LevelBase::LoadLevel(int levelNum, GameView *view, bool devMode)
                         int xPos = subObj["unitX"].toInt();
                         int yPos = subObj["unitY"].toInt();
 
-                        if(bt != BONUS)
+                        if(bt != BONUS && it != 3)
                             obstacles.push_back(new BlockBase(lt, bt));
-                        else
+                        else if(it != 3)
                             obstacles.push_back(new BonusBlock(1));
 
                         // Obstacle is the player start location
@@ -204,18 +204,46 @@ void LevelBase::LoadLevel(int levelNum, GameView *view, bool devMode)
     {
         qDebug() << "Failed to open: " << levelData.fileName();
     }
+
+//    if(devMode)
+//    {
+//        // Draw Vertical lines
+//        for(int i = 0; i < levelFloor.size() / 7; i++)
+//        {
+//            view->addLine((i * 70), 0, (i * 70), view->height());
+//        }
+
+//        // Draw Horizontal lines
+//        for(int i = 0; i < 16; i++)
+//        {
+//            view->addLine(0, (i * 70) - 20, ((levelFloor.size() / 7) * 70), (i * 70));
+//            view->addText(QString("%1").arg(i))->setPos(15, (i * 70) + 15);
+//        }
+//    }
+
 }
 
 void LevelBase::drawLevelBase(QPainter &painter, bool devMode)
 {
     if(devMode)
     {
-        painter.drawText(15, 180, QString("Player items collided: %1").arg(collidedItems));
-        painter.drawText(15, 190, QString("Player feet collided: %1").arg(feetItems));
-        painter.drawText(15, 200, QString("Level Update: %1").arg(updateStatus));
+        painter.drawText(20, 180, QString("Player items collided: %1").arg(collidedItems));
+        painter.drawText(20, 190, QString("Player feet collided: %1").arg(feetItems));
+        painter.drawText(20, 200, QString("Level Update: %1").arg(updateStatus));
 
         if(enemies.at(0) != NULL)
             enemies.at(0)->DrawEnemy(painter);
+
+        int x = 0, y = 0;
+        for(y = 0; y < 10; y++)
+        {
+            for(x = 0; x < 18; x++)
+            {
+                if(parsedView[y][x] != 0)
+                    painter.drawText((15 * x) + 215, (15 * y) + 50, QString(" %1 ").arg(parsedView[y][x]));
+            }
+        }
+
     }
 }
 
@@ -326,12 +354,14 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
                                               && (nearestObsY->GetRightBoundingBox()->intersects(p->GetViewBB()->rect().toRect())));
 
                     bool topBlockCollision = ((nearestObsY->GetType() == WALL_CORNER_LEFT || nearestObsY->GetType() == WALL_CORNER_RIGHT || nearestObsY->GetType() == BLOCK || nearestObsY->GetType() == BONUS || nearestObsY->GetType() == PLATFORM_LEFT || nearestObsY->GetType() == PLATFORM_RIGHT || nearestObsY->GetType() == BLOCK_EDGE_TOP)
-                                              && (nearestObsY->GetTopBoundingBox()->intersects(p->GetViewBB()->rect().toRect())) && p->getState() == FALLING);
+                                              && (nearestObsY->GetTopBoundingBox()->intersects(p->GetFallViewBB()->rect().toRect())) && p->getState() == FALLING);
 
-                    bool bottomBlockCollision = ((nearestObsY->GetType() == BONUS) && (nearestObsY->GetBottomBoundingBox()->intersects(p->GetJumpViewBB()->rect().toRect())));
+                    bool bottomBlockCollision = ((nearestObsY->GetType() == BONUS) && (nearestObsY->GetBottomBoundingBox()->intersects(p->GetJumpViewBB()->rect().toRect())) && p->getState() == JUMPING);
 
                     if(devMode)
+                    {
                         qDebug() << "Left collision: " << leftWallCollision << " Right wall collision: " << rightWallCollision << " Top block collision: " << topBlockCollision << " Bottom block collision: " << bottomBlockCollision << " Block type: " << nearestObsY->GetType();
+                    }
 
                     if((leftWallCollision || rightWallCollision) && !topBlockCollision && !bottomBlockCollision)
                     {
@@ -485,6 +515,156 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
             p->clearWallCollided();
         }
     }
+
+    // ===============================
+    // Neural Net / Genetic Algorithm
+    // Screen Parsing
+    //================================
+    int x, y;
+
+    // Clear the parsedView array
+    for(y = 0; y < 10; y++)
+    {
+        for(x = 0; x < 18; x++)
+        {
+            parsedView[y][x] = 0;
+        }
+    }
+
+    x = y = 0;
+
+    // Set the position of any obstacles visible to the player
+    foreach(QGraphicsPixmapItem* item, obstacleItems)
+    {
+        int idx = obstacleItems.indexOf(item);
+        if(idx != -1)
+        {
+            QPoint pos = view->mapFromScene(obstacles.at(idx)->GetPosX(), obstacles.at(idx)->GetPosY());
+            if(pos.x() >= 0 && pos.x() <= view->width()&& pos.y() >= 0 && pos.y() <= view->height())
+            {
+                x = (pos.x() / 70) % 18;
+                y = (pos.y() / 70) % 10;
+
+                if(obstacles.at(idx)->GetType() != NO_BLOCK_TYPE && obstacles.at(idx)->GetType() != GAP_BLOCK)
+                    parsedView[y][x] = 1;
+            }
+
+            // If we are looking at items out side the right most part of the screen,
+            // stop searching through vector.
+            // Note: This provides some improved performance near the start of the level
+            //       (Not that any one will actually notice the improvement), but is
+            //       reduced near the end of the level since the time complexity of the
+            //       loop becomes O(n)
+            if(pos.x() >= view->width())
+                break;
+        }
+    }
+
+    // Set the position of floor tiles visible to the player
+    foreach(QGraphicsPixmapItem* item, floorItems)
+    {
+        int idx = floorItems.indexOf(item);
+        if(idx != -1)
+        {
+            QPoint pos = view->mapFromScene(levelFloor.at(idx)->GetPosX(), levelFloor.at(idx)->GetPosY());
+
+            if(pos.x() >= 0 && pos.x() <= view->width()&& pos.y() >= 0 && pos.y() <= view->height())
+            {
+                x = (pos.x() / 70) % 18;
+                y = (pos.y() / 70) % 10;
+
+                if(levelFloor.at(idx)->GetType() != NO_BLOCK_TYPE && levelFloor.at(idx)->GetType() != GAP_BLOCK)
+                    parsedView[y][x] = 1;
+            }
+
+            // If we are looking at items out side the right most part of the screen,
+            // stop searching through vector.
+            // Note: This provides some improved performance near the start of the level
+            //       (Not that any one will actually notice the improvement), but is
+            //       reduced near the end of the level since the time complexity of the
+            //       loop becomes O(n)
+            if(pos.x() > view->width())
+                break;
+        }
+    }
+
+    // Set the position of any enemies visible to the player
+    foreach(QGraphicsPixmapItem* item, enemyItems)
+    {
+        if(enemies.at(enemyItems.indexOf(item)) != NULL)
+        {
+            int idx = enemyItems.indexOf(item);
+            if(idx != -1)
+            {
+                QPoint pos = view->mapFromScene(enemies.at(idx)->GetPosX(), enemies.at(idx)->GetPosY());
+
+                if(pos.x() >= 0 && pos.x() <= view->width() && pos.y() >= 0 && pos.y() <= view->height())
+                {
+                    x = (pos.x() / 70) % 18;
+                    y = ((pos.y() / 70) % 10);
+
+                    parsedView[y][x] = 3;
+                }
+
+                // If we are looking at items out side the right most part of the screen,
+                // stop searching through vector.
+                // Note: This provides some improved performance near the start of the level
+                //       (Not that any one will actually notice the improvement), but is
+                //       reduced near the end of the level since the time complexity of the
+                //       loop becomes O(n)
+                if(pos.x() > view->width())
+                    break;
+            }
+        }
+    }
+
+    // Set the position of any donuts visible to the player
+    foreach(QGraphicsPixmapItem *item, donutItems)
+    {
+        if(item != NULL)
+        {
+            if(donuts.at(donutItems.indexOf(item)) != NULL)
+            {
+                int idx = donutItems.indexOf(item);
+                if(idx != -1)
+                {
+                    QPoint pos = view->mapFromScene(donuts.at(idx)->GetPosX(), donuts.at(idx)->GetPosY());
+
+                    if(pos.x() >= 0 && pos.x() <= view->width() && pos.y() >= 0 && pos.y() <= view->height())
+                    {
+                        x = (pos.x() / 70) % 18;
+                        y = ((pos.y() / 70) % 10);
+
+                        parsedView[y][x] = 4;
+                    }
+
+                    // If we are looking at items out side the right most part of the screen,
+                    // stop searching through vector.
+                    // Note: This provides some improved performance near the start of the level
+                    //       (Not that anywould will actually notice the improvement), but is
+                    //       reduced near the end of the level since the time complexity of the
+                    //       loop becomes O(n)
+                    if(pos.x() > view->width())
+                        break;
+                }
+            }
+        }
+    }
+
+    // Set the player's location in the array.
+    if(p != NULL)
+    {
+        QPoint pos = view->mapFromScene(p->GetPosX(), p->GetPosY());
+
+        if(pos.x() >= 0 && pos.x() <= view->width() && pos.y() >= 0 && pos.y() <= view->height())
+        {
+            x = ((int)pos.x() / 70) % 18;
+            y = ((int)pos.y() / 70) % 10;
+
+            parsedView[y][x] = 2;
+        }
+
+    }
 }
 
 int LevelBase::GetLevelRightBound()
@@ -504,6 +684,23 @@ QPoint LevelBase::GetPlayerStart()
 
 void LevelBase::ClearView(GameView *view)
 {
+    qDebug() << "Clearing enemy items and bounding boxes";
+    foreach(EnemyBase *eb, enemies)
+    {
+        view->removePixmap(eb->GetGPixmapPtr());
+        view->removeRect(eb->GetGRectPtr());
+
+        delete enemyItems.at(enemyItems.indexOf(eb->GetGPixmapPtr()));
+        delete enemyBBs.at(enemyBBs.indexOf(eb->GetGRectPtr()));
+
+        delete eb->GetGPixmapPtr();
+        delete eb->GetGRectPtr();
+
+        eb->SetGPixmapPtr(NULL);
+        eb->SetGRectPtr(NULL);
+    }
+
+    qDebug() << "Clearing floor items";
     foreach(QGraphicsPixmapItem *i, floorItems)
     {
         if(i != NULL)
@@ -513,6 +710,7 @@ void LevelBase::ClearView(GameView *view)
         }
     }
 
+    qDebug() << "Clearing obstacle items";
     foreach(QGraphicsPixmapItem *i, obstacleItems)
     {
         if(i != NULL)
@@ -522,15 +720,7 @@ void LevelBase::ClearView(GameView *view)
         }
     }
 
-    foreach(QGraphicsPixmapItem *i, enemyItems)
-    {
-        if(i != NULL)
-        {
-            view->removePixmap(i);
-            delete i;
-        }
-    }
-
+    qDebug() << "Clearing floor bounding boxes";
     foreach(QGraphicsRectItem *r, floorBBs)
     {
         if(r != NULL)
@@ -540,6 +730,7 @@ void LevelBase::ClearView(GameView *view)
         }
     }
 
+    qDebug() << "Clearing obstacle bounding boxes";
     foreach(QGraphicsRectItem *r, obstacleBBs)
     {
         if(r != NULL)
@@ -548,18 +739,4 @@ void LevelBase::ClearView(GameView *view)
             delete r;
         }
     }
-
-    foreach(QGraphicsRectItem *r, enemyBBs)
-    {
-        if(r != NULL)
-        {
-            view->removeRect(r);
-            delete r;
-        }
-    }
-}
-
-void LevelBase::generatePiece()
-{
-
 }//Draws the floor

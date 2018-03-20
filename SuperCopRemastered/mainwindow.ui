@@ -63,6 +63,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="playSCPB">
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Play the classic platformer,&lt;span style=&quot; font-weight:600;&quot;&gt; SuperCop&lt;/span&gt;, now with updated graphics!&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
        <property name="text">
         <string>SuperCop: Remastered</string>
        </property>
@@ -70,6 +73,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="runNNPB">
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;SuperCop Remastered, but with out keyboard input. This version is controlled by a Neural Network coupled with a Genetic Algorithm.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
        <property name="text">
         <string>RoboCop</string>
        </property>
@@ -77,6 +83,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="settingsPB">
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This button does nothing. You can click it all day long, and nothing will happen. There is no secret achievement for clicking this button 1,000 times.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
        <property name="text">
         <string>Settings</string>
        </property>
@@ -89,6 +98,9 @@
          <width>104</width>
          <height>54</height>
         </size>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Exit SuperCop: Remastered&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="styleSheet">
         <string notr="true"/>

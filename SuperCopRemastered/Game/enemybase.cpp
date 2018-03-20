@@ -36,7 +36,7 @@ EnemyBase::~EnemyBase()
 
 void EnemyBase::DrawEnemy(QPainter &paint)
 {
-    paint.drawText(15, 220, QString("Enemy Frame Count: %1").arg(frame));
+//    paint.drawText(90, 220, QString("Enemy Frame Count: %1").arg(frame));
 }
 
 void EnemyBase::UpdateEnemy()
