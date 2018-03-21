@@ -36,7 +36,7 @@ Player::Player(int parentWidth, int parentHeight)
     boundingBox = new QRect(posX + 8, posY, 30, size.y);
     jumpBB = new QRect(posX + 13, posY - 5, 30, 5);
     jumpViewBB = NULL;
-    fallBB = new QRect(posX + 13, posY + size.y - 20, 30, 40);
+    fallBB = new QRect(posX + 13, posY + size.y, 30, 40);
     fallViewBB = NULL;
 
     leftBound = parentWidth / 6;
@@ -47,7 +47,7 @@ Player::Player(int parentWidth, int parentHeight)
     onGround = true;
     playerOnObstacle = false;
     inGap = false;
-    pState = lastState = IDLE;
+    pState = lastState = nextState = IDLE;
 
     playerPixmap = NULL;
     playerBB = NULL;
@@ -79,14 +79,15 @@ void Player::drawPlayer(QPainter &painter, bool devMode)
     {
         painter.drawText(20, 70, QString("Player last state: %1").arg(PlayerStateStrings[lastState]));
         painter.drawText(20, 80, QString("Player state: %1").arg(PlayerStateStrings[pState]));
-        painter.drawText(20, 90, QString("Jump Speed:   %1").arg(jumpSpeed));
-        painter.drawText(20, 100, QString("X Speed:  %1").arg(speedX));
-        painter.drawText(20, 110, QString("Left Wall collision: %1").arg(leftWallCollided));
-        painter.drawText(20, 120, QString("Right wall collision: %1").arg(rightWallCollided));
-        painter.drawText(20, 130, QString("On ground: %1").arg(onGround));
-        painter.drawText(20, 140, QString("On obstacle: %1").arg(playerOnObstacle));
-        painter.drawText(20, 150, QString("Jumping: %1").arg(jumping));
-        painter.drawText(20, 160, QString("In Gap: %1").arg(inGap));
+        painter.drawText(20, 90, QString("Player next state: %1").arg(PlayerStateStrings[nextState]));
+        painter.drawText(20, 100, QString("Jump Speed:   %1").arg(jumpSpeed));
+        painter.drawText(20, 110, QString("X Speed:  %1").arg(speedX));
+        painter.drawText(20, 120, QString("Left Wall collision: %1").arg(leftWallCollided));
+        painter.drawText(20, 130, QString("Right wall collision: %1").arg(rightWallCollided));
+        painter.drawText(20, 140, QString("On ground: %1").arg(onGround));
+        painter.drawText(20, 150, QString("On obstacle: %1").arg(playerOnObstacle));
+        painter.drawText(20, 160, QString("Jumping: %1").arg(jumping));
+        painter.drawText(20, 170, QString("In Gap: %1").arg(inGap));
     }
 
 }//Draws the player
@@ -102,12 +103,12 @@ void Player::changeImage(QString str)
 
 void Player::playerScreenPos()
 {
-    if(!jumping && (RIGHT == lastActionPressed) && (this->posX + speedX < rightBound) && !rightWallCollided && (pState != IDLE))
+    if(((RIGHT == lastActionPressed) && pState != RUNNING_LEFT) && (this->posX + speedX < rightBound) && !rightWallCollided)
     {
         this->setPosX(this->GetPosX() + speedX);
 
     }
-    else if(!jumping && (LEFT == lastActionPressed) && (this->posX > leftBound) && !leftWallCollided && (pState != IDLE))
+    else if(((LEFT == lastActionPressed) && pState != RUNNING_RIGHT) && (this->posX > leftBound) && !leftWallCollided)
     {
         this->setPosX(this->GetPosX() - speedX);
     }
@@ -121,6 +122,7 @@ void Player::Reset()
 {
     lastState = IDLE;
     pState = IDLE;
+    nextState = IDLE;
     lastActionPressed = NONE;
     playerDirection = EAST;
     jumping = false;
@@ -315,6 +317,7 @@ void Player::playerAction(int action)
                 break;
             else if(pState == RUNNING_RIGHT || pState == RUNNING_LEFT)
             {
+                nextState = pState;
                 lastState = pState;
                 pState = JUMPING;
             }
@@ -401,14 +404,14 @@ void Player::jump()
     playerOnObstacle = false;
     onGround = false;
     inGap = false;
-    clearWallCollided();
+//    clearWallCollided();
 
     QString dir = (playerDirection == EAST) ? "Right" : "Left";
 
     if(pState == JUMPING)
     {
-        if(lastState == RUNNING_LEFT && !leftWallCollided) { posX -= 20; rectPosX -= 20;}
-        else if(lastState == RUNNING_RIGHT && !rightWallCollided) { posX += 20; rectPosX += 20; }
+        if(lastState == RUNNING_LEFT && !leftWallCollided) { posX -= PLAYER_FALLING_X_VELOCITY; rectPosX -= PLAYER_FALLING_X_VELOCITY; }
+        else if(lastState == RUNNING_RIGHT && !rightWallCollided) { posX += PLAYER_FALLING_X_VELOCITY; rectPosX += PLAYER_FALLING_X_VELOCITY; }
     }
 
     if(pState != FALLING)
@@ -422,7 +425,7 @@ void Player::jump()
         {
             frame = 1;
             pState = FALLING;
-            jumpSpeed = PLAYER_INITIAL_Y_VELOCITY;
+            lastState = JUMPING;
         }
     }
 
@@ -549,14 +552,8 @@ void Player::pausePlayer()
 
 void Player::fall()
 {
-    // Reset the jumpSpeed for falling.
-    // If we don't, the player will drop like a rock
-    if(jumpSpeed >= PLAYER_INITIAL_Y_VELOCITY)
-        jumpSpeed = 2.4f;
-
-    jumpSpeed *= 1 / GRAVITY_FACTOR;
-    posY += (PLAYER_Y_PX_PER_UPDATE * jumpSpeed);
-    rectPosY += (PLAYER_Y_PX_PER_UPDATE * jumpSpeed);
+    posY += (PLAYER_Y_PX_PER_UPDATE * 2);
+    rectPosY += (PLAYER_Y_PX_PER_UPDATE * 2);
 
     changeImage(fallImagePath.arg((playerDirection == WEST) ? "Left" : "Right").arg(frame));
 
@@ -566,11 +563,12 @@ void Player::fall()
         posY = ground - 89;
         rectPosY = ground - 89;
 
-        if(lastState == RUNNING_LEFT) pState = RUNNING_LEFT;
-        else if(lastState == RUNNING_RIGHT) pState = RUNNING_RIGHT;
+        if(nextState == RUNNING_LEFT) pState = RUNNING_LEFT;
+        else if(nextState == RUNNING_RIGHT) pState = RUNNING_RIGHT;
         else if(pState != VICTORY) pState = IDLE;
 
         lastState = FALLING;
+        nextState = IDLE;
 
         jumpSpeed = PLAYER_INITIAL_Y_VELOCITY;
         speedX = PLAYER_INITIAL_X_VELOCITY;
@@ -583,14 +581,12 @@ void Player::fall()
     {
         if((lastActionPressed == LEFT) && !leftWallCollided)
         {
-            posX -= 20;
-            rectPosX -= 20;
+            speedX = PLAYER_FALLING_X_VELOCITY;
             playerDirection = WEST;
         }
         else if((lastActionPressed == RIGHT) && !rightWallCollided)
         {
-            posX += 20;
-            rectPosX += 20;
+            speedX = PLAYER_FALLING_X_VELOCITY;
             playerDirection = EAST;
         }
     }
@@ -699,6 +695,7 @@ void Player::SetVictory()
 
 void Player::SetOnObstactle(bool onObs)
 {
+    qDebug() << "Setting on obstacle" << true;
     playerOnObstacle = onObs;
     onGround = false;
     inGap = false;
@@ -746,18 +743,19 @@ void Player::setPosX(int x)
 
     if(playerBB != NULL)
     {
-        playerBB->setRect(posX + 8, posY, 50, size.y);
+        playerBB->setRect(posX + 8, posY + 5, 44, size.y - 10);
         playerBB->setPos(0, 0);
     }
+
     if(jumpViewBB != NULL)
     {
-        jumpViewBB->setRect(posX + 13, posY-5, 40, 10);
+        jumpViewBB->setRect(posX + 8, posY, 44, 10);
         jumpViewBB->setPos(0,0);
     }
 
     if(fallViewBB != NULL)
     {
-        fallViewBB->setRect(posX + 8, posY + size.y-15, 50, 30);
+        fallViewBB->setRect(posX + 8, posY + size.y - 10, 44, 20);
         fallViewBB->setPos(0,0);
     }
 
@@ -773,19 +771,19 @@ void Player::setPosY(int y)
 
     if(playerBB != NULL)
     {
-        playerBB->setRect(posX + 8, posY, 50, size.y);
+        playerBB->setRect(posX + 8, posY + 5, 44, size.y - 10);
         playerBB->setPos(0, 0);
     }
 
     if(jumpViewBB != NULL)
     {
-        jumpViewBB->setRect(posX + 13, posY-5, 40, 10);
+        jumpViewBB->setRect(posX + 8, posY, 44, 10);
         jumpViewBB->setPos(0,0);
     }
 
     if(fallViewBB != NULL)
     {
-        fallViewBB->setRect(posX + 8, posY + size.y-15, 50, 30);
+        fallViewBB->setRect(posX + 8, posY + size.y - 10, 44, 20);
         fallViewBB->setPos(0,0);
     }
 }
@@ -808,6 +806,7 @@ void Player::setJumping(bool jump)
 
 void Player::setWallCollided(int side, bool wallCollided)
 {
+    qDebug() << "Setting wall collided: " << side << " " << wallCollided;
     if(side == WEST)
     {
         this->leftWallCollided = wallCollided;

@@ -101,22 +101,22 @@ QRect *BlockBase::GetBoundingBox()
 
 QRect *BlockBase::GetLeftBoundingBox()
 {
-    return new QRect(boundingBox->x(), boundingBox->y() + 5, 5, boundingBox->height() - 10);
+    return new QRect(boundingBox->x() -5, boundingBox->y() + 20, 10, boundingBox->height()-20);
 }
 
 QRect *BlockBase::GetRightBoundingBox()
 {
-    return new QRect(boundingBox->x() + boundingBox->width() - 5, boundingBox->y() + 5, 5, boundingBox->height() - 10);
+    return new QRect(boundingBox->x() + boundingBox->width() - 5, boundingBox->y() + 20, 10, boundingBox->height()-20);
 }
 
 QRect *BlockBase::GetTopBoundingBox()
 {
-    return new QRect(boundingBox->x() + 5, boundingBox->y() - 10, boundingBox->width() - 10, 20);
+    return new QRect(boundingBox->x(), boundingBox->y() - 15, boundingBox->width(), 35);
 }
 
 QRect *BlockBase::GetBottomBoundingBox()
 {
-    return new QRect(boundingBox->x() + 5, boundingBox->y() + boundingBox->height() - 10, boundingBox->width() - 10, 20);
+    return new QRect(boundingBox->x()+5, boundingBox->y() + boundingBox->height() - 20, boundingBox->width() - 10, 20);
 }
 
 QPixmap *BlockBase::GetTexture()
