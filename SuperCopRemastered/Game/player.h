@@ -20,7 +20,7 @@
 
 #define PLAYER_INITIAL_X_VELOCITY 20.0f
 #define PLAYER_INITIAL_Y_VELOCITY 5.0f
-#define PLAYER_FALLING_X_VELOCITY 12.5f
+#define PLAYER_FALLING_X_VELOCITY 13.0f
 #define PLAYER_DRAG_COEFF         0.4f
 #define PLAYER_Y_PX_PER_UPDATE    9.0f
 #define COEFF_OF_FRICTION         0.5f
@@ -65,7 +65,6 @@ public:
     void setPosX(int x);
     void setPosY(int y);
     void setSize(Size s);
-    void setOnGround(bool onGround);
     void setSpeedY(int y);
     void setJumping(bool jump);
     void setWallCollided(int side, bool wallCollided);
@@ -73,9 +72,8 @@ public:
     void setSpeedX(int spd);
     void setRectPosX(int x);
     void setRectPosY(int y);
-    void setInGap(bool gap);
     void SetVictory();
-    void SetOnObstactle(bool onObs);
+    void SetOnObstactle(bool onObs, int obsY);
 
     int GetPosX();
     int GetPosY();
@@ -93,10 +91,8 @@ public:
     Size getSize();
 
     bool isJumping();
-    bool isOnGround();
     bool isWallCollided();
     bool isOnObstacle();
-    bool isInGap();
 
 public slots:
     void playerAction(int action);
@@ -112,7 +108,7 @@ private:
     void Celebrate();
 
     bool jumping, pause, running;
-    bool onGround, playerOnObstacle, leftWallCollided, rightWallCollided, inGap;
+    bool playerOnObstacle, leftWallCollided, rightWallCollided;
 
     PlayerState lastState, pState, nextState;
     QGraphicsPixmapItem *playerPixmap;
