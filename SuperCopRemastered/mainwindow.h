@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "Game/supercoprmgame.h"
+#include "Game/robocoprmgame.h"
 
 namespace Ui {
 class MainWindow;
@@ -28,6 +29,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     SuperCopRMGame *scrmg;
+    robocoprmgame *rcrmg;
 };
 
 #endif // MAINWINDOW_H

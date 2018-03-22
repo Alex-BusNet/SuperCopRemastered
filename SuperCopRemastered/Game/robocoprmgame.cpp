@@ -1,7 +1,7 @@
-#include "supercoprmgame.h"
+#include "robocoprmgame.h"
 
-SuperCopRMGame::SuperCopRMGame(QWidget *parent)
-    : QWidget(parent)
+robocoprmgame::robocoprmgame(QWidget *parent) :
+    QWidget(parent)
 {
     showDevOpts = true;
 
@@ -38,8 +38,8 @@ SuperCopRMGame::SuperCopRMGame(QWidget *parent)
     pausedFont = new QFont(this->font());
     pausedFont->setPointSize(48);
 
-    connect(lb, &LevelBase::EnemyDefeated, this, &SuperCopRMGame::scoreUpdate);
-    connect(lb, &LevelBase::EndOfGame, this, &SuperCopRMGame::GameOver);
+    connect(lb, &LevelBase::EnemyDefeated, this, &robocoprmgame::scoreUpdate);
+    connect(lb, &LevelBase::EndOfGame, this, &robocoprmgame::GameOver);
 
     if(showDevOpts)
         qDebug() << "Setting Background...";
@@ -55,15 +55,15 @@ SuperCopRMGame::SuperCopRMGame(QWidget *parent)
 
     timer = new QTimer();
     timer->setInterval(50);
-    connect(timer, &QTimer::timeout, this, &SuperCopRMGame::updateField);
+    connect(timer, &QTimer::timeout, this, &robocoprmgame::updateField);
 
     renderTimer = new QTimer();
     renderTimer->setInterval(17);
-    connect(renderTimer, &QTimer::timeout, this, &SuperCopRMGame::updateRender);
+    connect(renderTimer, &QTimer::timeout, this, &robocoprmgame::updateRender);
 
     keyTimer = new QTimer();
     keyTimer->setInterval(5);
-    connect(keyTimer, &QTimer::timeout, this, &SuperCopRMGame::pollKey);
+    connect(keyTimer, &QTimer::timeout, this, &robocoprmgame::pollKey);
 
     //------------------------------------------------------------------------------------------
     // Gamepad configuration
@@ -75,20 +75,20 @@ SuperCopRMGame::SuperCopRMGame(QWidget *parent)
     gpkn->setLeftKey(Qt::Key_Left);
     gpkn->setRightKey(Qt::Key_Right);
 
-    connect(gpkn, &QGamepadKeyNavigation::upKeyChanged, this, &SuperCopRMGame::actionInput);
-    connect(gpkn, &QGamepadKeyNavigation::downKeyChanged, this, &SuperCopRMGame::actionInput);
-    connect(gpkn, &QGamepadKeyNavigation::leftKeyChanged, this, &SuperCopRMGame::actionInput);
-    connect(gpkn, &QGamepadKeyNavigation::rightKeyChanged, this, &SuperCopRMGame::actionInput);
+    connect(gpkn, &QGamepadKeyNavigation::upKeyChanged, this, &robocoprmgame::actionInput);
+    connect(gpkn, &QGamepadKeyNavigation::downKeyChanged, this, &robocoprmgame::actionInput);
+    connect(gpkn, &QGamepadKeyNavigation::leftKeyChanged, this, &robocoprmgame::actionInput);
+    connect(gpkn, &QGamepadKeyNavigation::rightKeyChanged, this, &robocoprmgame::actionInput);
 
     //------------------------------------------------------------------------------------------
 
     resume = new QPushButton("RESUME");
     resume->hide();
-    connect(resume, &QPushButton::clicked, this, &SuperCopRMGame::resumeGame);
+    connect(resume, &QPushButton::clicked, this, &robocoprmgame::resumeGame);
 
     exit = new QPushButton("EXIT");
     exit->hide();
-    connect(exit, &QPushButton::clicked, this, &SuperCopRMGame::exitGame);
+    connect(exit, &QPushButton::clicked, this, &robocoprmgame::exitGame);
 
     paused = new QLabel("PAUSED");
     paused->setFont(*pausedFont);
@@ -111,9 +111,14 @@ SuperCopRMGame::SuperCopRMGame(QWidget *parent)
 
     if(showDevOpts)
         qDebug() << "Done.";
+
+    server = new QTcpServer(this);
+    server->listen(QHostAddress::Any, 5300);
+    connected=false;
+    connect(server, SIGNAL(newConnection()), this, SLOT(newConnect()));
 }
 
-SuperCopRMGame::~SuperCopRMGame()
+robocoprmgame::~robocoprmgame()
 {
     delete lb;
 
@@ -122,9 +127,10 @@ SuperCopRMGame::~SuperCopRMGame()
     delete view;
 }
 
-void SuperCopRMGame::keyPressEvent(QKeyEvent *evt)
+void robocoprmgame::keyPressEvent(Qt::Key key)
 {
-    switch(evt->key())
+    qDebug() << "Press";
+    switch(key)
     {
     case Qt::Key_Right:
         isRightPressed = true;
@@ -157,33 +163,34 @@ void SuperCopRMGame::keyPressEvent(QKeyEvent *evt)
     }
 }
 
-void SuperCopRMGame::keyReleaseEvent(QKeyEvent *evt)
+void robocoprmgame::keyReleaseEvent()
 {
-    switch(evt->key())
-    {
-    case Qt::Key_Right:
+    qDebug() << "Release";
+//    switch(key)
+//    {
+//    case Qt::Key_Right:
         isRightPressed = false;
-        break;
+//        break;
 //    case Qt::Key_Down:
 //        isDownPressed = false;
 //        break;
-    case Qt::Key_Up:
+//    case Qt::Key_Up:
         isUpPressed = false;
-        break;
-    case Qt::Key_Left:
+//        break;
+//    case Qt::Key_Left:
         isLeftPressed = false;
-        break;
-    default:
-        break;
-    }
+//        break;
+//    default:
+//        break;
+//    }
 }
 
-void SuperCopRMGame::setLastKeyPress(int keyPress)
+void robocoprmgame::setLastKeyPress(int keyPress)
 {
     this->lastKeyPress = keyPress;
 }
 
-void SuperCopRMGame::pollKey()
+void robocoprmgame::pollKey()
 {
     //Checks if any of the keys are pressed.
     if(isDownPressed)
@@ -198,7 +205,7 @@ void SuperCopRMGame::pollKey()
         lastKeyPress = 0;
 }
 
-void SuperCopRMGame::updateField()
+void robocoprmgame::updateField()
 {
     if(!gamePaused)
     {
@@ -210,7 +217,7 @@ void SuperCopRMGame::updateField()
     }
 }
 
-void SuperCopRMGame::resumeGame()
+void robocoprmgame::resumeGame()
 {
     resume->hide();
     exit->hide();
@@ -218,14 +225,14 @@ void SuperCopRMGame::resumeGame()
     gamePaused = false;
 }
 
-void SuperCopRMGame::exitGame()
+void robocoprmgame::exitGame()
 {
     timer->stop();
     keyTimer->stop();
     this->close();
 }
 
-void SuperCopRMGame::actionInput(Qt::Key key)
+void robocoprmgame::actionInput(Qt::Key key)
 {
     qDebug() << "Action Input";
     switch(key)
@@ -248,17 +255,17 @@ void SuperCopRMGame::actionInput(Qt::Key key)
     }
 }
 
-void SuperCopRMGame::updateRender()
+void robocoprmgame::updateRender()
 {
     this->update();
 }
 
-void SuperCopRMGame::scoreUpdate(int value)
+void robocoprmgame::scoreUpdate(int value)
 {
     gamescore += value;
 }
 
-void SuperCopRMGame::GameOver(bool endOfLevel)
+void robocoprmgame::GameOver(bool endOfLevel)
 {
     if(!endOfLevel)
     {
@@ -283,7 +290,7 @@ void SuperCopRMGame::GameOver(bool endOfLevel)
     setHighScores();
 }
 
-void SuperCopRMGame::paintEvent(QPaintEvent *e)
+void robocoprmgame::paintEvent(QPaintEvent *e)
 {
     Q_UNUSED(e)
 
@@ -345,7 +352,7 @@ void SuperCopRMGame::paintEvent(QPaintEvent *e)
     }
 }//Handles Painting all elements on screen
 
-void SuperCopRMGame::setHighScores()
+void robocoprmgame::setHighScores()
 {
     int scorefile = moveSpeed / 5;
     QString filename = "Assets/highscores"+QString::number(scorefile)+".txt";
@@ -416,12 +423,12 @@ void SuperCopRMGame::setHighScores()
     }
 }//resets high scores if new high score acheived
 
-void SuperCopRMGame::setShowDevOpts(bool devOpts)
+void robocoprmgame::setShowDevOpts(bool devOpts)
 {
     this->showDevOpts = devOpts;
 }
 
-void SuperCopRMGame::InitLevel()
+void robocoprmgame::InitLevel()
 {
     lb->LoadLevel(1, view, showDevOpts);
 
@@ -457,4 +464,52 @@ void SuperCopRMGame::InitLevel()
     lastKeyPress = 0;
     gamescore=0;
     location=0;
+}
+
+void robocoprmgame::newConnect()
+{//Triggered each time a client connects
+    while (server->hasPendingConnections()){
+        qDebug()<<"Has pending connections";
+        //Creates a socket object
+        socket = new QTcpSocket(this);
+        socket=server->nextPendingConnection();
+        //Connects the socket to read and disconnect functions
+        connect(socket, SIGNAL(readyRead()),this, SLOT(readyRead()));
+        connect(socket, SIGNAL(disconnected()),this, SLOT(Disconnected()));
+    }
+}
+
+void robocoprmgame::Disconnected()
+{//When one player disconnects, the game ends
+    connected=false;
+    socket->disconnectFromHost();
+    qDebug() <<" Disconnected";
+}
+
+void robocoprmgame::readyRead()
+{//Triggers when the client sends data andReads the data
+    QString data;
+    data = socket->readAll();
+    qDebug() << "Player has sent" << data ;
+    if(data=="JUMP"){
+        //actionInput(Qt::Key_Up);
+        keyPressEvent(Qt::Key_Up);
+    }
+    else if(data=="LEFT"){
+        //actionInput(Qt::Key_Left);
+        keyPressEvent(Qt::Key_Left);
+    }
+    else if(data=="RIGHT"){
+        //actionInput(Qt::Key_Right);
+        keyPressEvent(Qt::Key_Right);
+    }
+    else if(data=="STOP"){
+        //actionInput(Qt::Key_Down);
+        //keyPressEvent(Qt::Key_Down);
+        keyReleaseEvent();
+    }
+    //ui->Log->setText(ui->Log->toPlainText()+data+'\n');
+    //qDebug() << "log it" ;
+    //sb->setValue(sb->maximum());
+    //qDebug() << "scroll it";
 }

@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui gamepad
+QT       += core gui gamepad quick
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -35,7 +35,8 @@ SOURCES += \
     Game/itembase.cpp \
     Game/enemybase.cpp \
     Game/gamescene.cpp \
-    Game/gameview.cpp
+    Game/gameview.cpp \
+    Game/robocoprmgame.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -49,7 +50,8 @@ HEADERS += \
     Game/itembase.h \
     Game/enemybase.h \
     Game/gamescene.h \
-    Game/gameview.h
+    Game/gameview.h \
+    Game/robocoprmgame.h
 
 FORMS += \
         mainwindow.ui

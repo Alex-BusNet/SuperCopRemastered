@@ -7,6 +7,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     scrmg = NULL;
+    rcrmg = NULL;
 }
 
 MainWindow::~MainWindow()
@@ -21,7 +22,12 @@ void MainWindow::on_exitPB_clicked()
 
 void MainWindow::on_runNNPB_clicked()
 {
+    if(rcrmg != NULL)
+        delete rcrmg;
 
+    rcrmg = new robocoprmgame();
+
+    rcrmg->show();
 }
 
 void MainWindow::on_settingsPB_clicked()

@@ -75,7 +75,7 @@ void MainWindow::readyRead()
 void MainWindow::on_Jump_clicked()
 {
     QByteArray updateData;
-    updateData.append("Jump");
+    updateData.append("JUMP");
     //qDebug() << socket->state();
     if(socket->state() == QAbstractSocket::ConnectedState)
     {
@@ -92,7 +92,7 @@ void MainWindow::on_Jump_clicked()
 void MainWindow::on_Left_clicked()
 {
     QByteArray updateData;
-    updateData.append("Left");
+    updateData.append("LEFT");
     //qDebug() << socket->state();
     if(socket->state() == QAbstractSocket::ConnectedState)
     {
@@ -108,7 +108,7 @@ void MainWindow::on_Left_clicked()
 void MainWindow::on_Stop_clicked()
 {
     QByteArray updateData;
-    updateData.append("Stop");
+    updateData.append("STOP");
     //qDebug() << socket->state();
     if(socket->state() == QAbstractSocket::ConnectedState)
     {
@@ -124,7 +124,7 @@ void MainWindow::on_Stop_clicked()
 void MainWindow::on_Right_clicked()
 {
     QByteArray updateData;
-    updateData.append("Right");
+    updateData.append("RIGHT");
     //qDebug() << socket->state();
     if(socket->state() == QAbstractSocket::ConnectedState)
     {
