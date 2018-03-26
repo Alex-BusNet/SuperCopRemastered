@@ -6,6 +6,8 @@ struct Size { int x; int y; };
 
 enum keyPressed {NONE = 0, RIGHT = 1, UP = 2, DOWN = 3, LEFT = 4, PAUSE = 5};
 
+enum Inputs {MOVE_RIGHT = 0, MOVE_LEFT = 1, SPRINT = 2, JUMP = 3, STOP = 4};
+
 enum Direction {WEST = -1, STAND = 0, EAST = 1};
 
 enum LevelType {GRASS, INDUSTRIAL, MEDIEVIL, CAVE, NO_LEVEL_TYPE};
@@ -15,7 +17,6 @@ enum ItemType {DONUT, ONE_UP, NO_ITEM_TYPE = -1};
 enum EnemyType {NORMAL, FAST, JUMPER, TURRET};
 
 enum PlayerState {IDLE, RUNNING_RIGHT, JUMPING, SLIDING, RUNNING_LEFT, FALLING, PAUSED, VICTORY};
-
 
 enum BlockType {
     BLOCK               = 0,

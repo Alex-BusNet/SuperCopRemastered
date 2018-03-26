@@ -3,6 +3,7 @@
 
 #include <QPixmap>
 #include <QPainter>
+#include <QGraphicsRectItem>
 #include <QRect>
 #include <QString>
 #include "datatypes.h"
@@ -37,6 +38,16 @@ public:
     QRect* GetTopBoundingBox();
     QRect* GetBottomBoundingBox();
 
+    void SetBottomGBB(QGraphicsRectItem* bb);
+    void SetTopGBB(QGraphicsRectItem* bb);
+    void SetLeftGBB(QGraphicsRectItem* bb);
+    void SetRightGBB(QGraphicsRectItem* bb);
+
+    QGraphicsRectItem* GetBottomGBB();
+    QGraphicsRectItem* GetTopGBB();
+    QGraphicsRectItem* GetLeftGBB();
+    QGraphicsRectItem* GetRightGBB();
+
     QPixmap* GetTexture();
 
 private:
@@ -47,6 +58,8 @@ private:
     int posX, posY;
     QRect *boundingBox;
     QPixmap *texture;
+
+    QGraphicsRectItem *bottomBB, *topBB, *leftBB, *rightBB;
 
 //    QString texturePath;
 

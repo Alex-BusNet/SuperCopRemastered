@@ -66,7 +66,7 @@ private:
     int gamescore;
     int location;
 
-    bool isUpPressed, isDownPressed, isLeftPressed, isRightPressed, gamePaused, showDevOpts, gameOver;
+    bool isUpPressed, isDownPressed, isLeftPressed, isRightPressed, isSprintPressed, gamePaused, showDevOpts, gameOver;
 
     vector<Donut*>donuts;
     vector<int>donutspawn;

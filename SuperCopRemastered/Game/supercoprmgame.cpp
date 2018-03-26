@@ -54,12 +54,12 @@ SuperCopRMGame::SuperCopRMGame(QWidget *parent)
         qDebug() << "Creating Timers...";
 
     timer = new QTimer();
-    timer->setInterval(50);
+    timer->setInterval(1000/60);
     connect(timer, &QTimer::timeout, this, &SuperCopRMGame::updateField);
 
-    renderTimer = new QTimer();
-    renderTimer->setInterval(17);
-    connect(renderTimer, &QTimer::timeout, this, &SuperCopRMGame::updateRender);
+//    renderTimer = new QTimer();
+//    renderTimer->setInterval(17);
+//    connect(renderTimer, &QTimer::timeout, this, &SuperCopRMGame::updateRender);
 
     keyTimer = new QTimer();
     keyTimer->setInterval(5);
@@ -126,12 +126,27 @@ void SuperCopRMGame::keyPressEvent(QKeyEvent *evt)
 {
     switch(evt->key())
     {
+    case Qt::Key_A:
+        isLeftPressed = true;
+        break;
+    case Qt::Key_D:
+        isRightPressed = true;
+        break;
+    case Qt::Key_Shift:
+        isSprintPressed = true;
+        break;
+    case Qt::Key_W:
+        isUpPressed = true;
+        break;
+    case Qt::Key_Space:
+        isUpPressed = true;
+        break;
     case Qt::Key_Right:
         isRightPressed = true;
         break;
-//    case Qt::Key_Down:
-//        isDownPressed = true;
-//        break;
+    case Qt::Key_Down:
+        isDownPressed = true;
+        break;
     case Qt::Key_Up:
         isUpPressed = true;
         break;
@@ -161,17 +176,32 @@ void SuperCopRMGame::keyReleaseEvent(QKeyEvent *evt)
 {
     switch(evt->key())
     {
+    case Qt::Key_A:
+        isLeftPressed = false;
+        break;
+    case Qt::Key_D:
+        isRightPressed = false;
+        break;
+    case Qt::Key_Shift:
+        isSprintPressed = false;
+        break;
+    case Qt::Key_W:
+        isUpPressed = false;
+        break;
+    case Qt::Key_Space:
+        isUpPressed = false;
+        break;
     case Qt::Key_Right:
         isRightPressed = false;
         break;
-//    case Qt::Key_Down:
-//        isDownPressed = false;
-//        break;
     case Qt::Key_Up:
         isUpPressed = false;
         break;
     case Qt::Key_Left:
         isLeftPressed = false;
+        break;
+    case Qt::Key_Down:
+        isDownPressed = false;
         break;
     default:
         break;
@@ -202,7 +232,7 @@ void SuperCopRMGame::updateField()
 {
     if(!gamePaused)
     {
-        player->playerAction(lastKeyPress);
+        player->playerAction(lastKeyPress, isSprintPressed);
         player->UpdateFrame();
         player->UpdatePlayer(view);
         lb->UpdateLevel(player, view, showDevOpts);
@@ -228,24 +258,24 @@ void SuperCopRMGame::exitGame()
 void SuperCopRMGame::actionInput(Qt::Key key)
 {
     qDebug() << "Action Input";
-    switch(key)
-    {
-    case Qt::Key_Left:
-        player->playerAction(LEFT);
-        break;
-    case Qt::Key_Right:
-        player->playerAction(RIGHT);
-        break;
-    case Qt::Key_Up:
-        player->playerAction(UP);
-        break;
-    case Qt::Key_Down:
-        player->playerAction(DOWN);
-        break;
-    default:
-        player->playerAction(NONE);
-        break;
-    }
+//    switch(key)
+//    {
+//    case Qt::Key_Left:
+//        player->playerAction(LEFT);
+//        break;
+//    case Qt::Key_Right:
+//        player->playerAction(RIGHT);
+//        break;
+//    case Qt::Key_Up:
+//        player->playerAction(UP);
+//        break;
+//    case Qt::Key_Down:
+//        player->playerAction(DOWN);
+//        break;
+//    default:
+//        player->playerAction(NONE);
+//        break;
+//    }
 }
 
 void SuperCopRMGame::updateRender()
