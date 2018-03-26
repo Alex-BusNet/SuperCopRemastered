@@ -456,13 +456,6 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
 //                            p->clearWallCollided();
                     }
                 }
-//                else
-//                {
-//                    if(devMode)
-//                        qDebug() << "Empty Object collision";
-
-//                    p->SetOnObstactle(false, 0);
-//                }
 
                 if(leftWallCollision)
                 {
@@ -504,8 +497,8 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
                         view->removeRect(obstacles.at(idx)->GetBottomGBB());
                         view->removeRect(obstacles.at(idx)->GetLeftGBB());
                         view->removeRect(obstacles.at(idx)->GetRightGBB());
-                        obstacles.at(idx)->SetType(obstacles.at(idx)->GetLevelType(), BLOCK_EDGE_TOP);
-//                        obstacleItems.at(idx)->setPixmap(*obstacles.at(idx)->GetTexture());
+                        obstacles.at(idx)->SetType(levelFloor.at(0)->GetLevelType(), BLOCK_EDGE_TOP);
+                        obstacleItems.at(idx)->setPixmap(*obstacles.at(idx)->GetTexture());
                     }
 
                     p->playerAction(NONE, false, true);

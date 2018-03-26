@@ -22,6 +22,8 @@ Player::Player(int parentWidth, int parentHeight)
 
     frame = 1;
     framePerSecondCount = 0;
+    heightDelta = 0;
+    lastHeight = 0;
 
     image = new QPixmap(idleImagePath.arg(frame));
     lastActionPressed = 0;
@@ -136,7 +138,10 @@ void Player::Reset()
     speedY = PLAYER_INITIAL_Y_VELOCITY;
     jumpSpeed = PLAYER_INITIAL_Y_VELOCITY;
     frame = 1;
+    heightDelta = 0;
+    lastHeight = 0;
     framePerSecondCount = 0;
+    clearWallCollided();
 }
 
 PlayerState Player::getState()
@@ -311,7 +316,8 @@ void Player::playerAction(int action, bool sprint, bool bonusHit)
             }
             break;
         case UP:
-            if(pState == JUMPING || pState == FALLING) { break; }
+            if(pState == JUMPING) { break; }
+            else if(pState == FALLING && jumping) { break; }
             else if(pState == RUNNING_LEFT || pState == RUNNING_RIGHT) { nextState = pState; pState = JUMPING; speedY = PLAYER_INITIAL_Y_VELOCITY;}
             else if (pState == IDLE) { pState = JUMPING; speedY = PLAYER_INITIAL_Y_VELOCITY; }
             jumpStart = framePerSecondCount;
@@ -329,7 +335,7 @@ void Player::playerAction(int action, bool sprint, bool bonusHit)
         case NONE:
             if(!playerOnObstacle && pState != JUMPING) { pState = FALLING; nextState = IDLE; }
             else if(pState == JUMPING && bonusHit) { pState = FALLING; }
-            else if(pState == JUMPING || pState == FALLING) { break; }
+//            else if(pState == JUMPING || pState == FALLING) { break; }
             else if(pState != IDLE) { nextState = IDLE; lastState = pState; pState = IDLE; }
             break;
         case PAUSE:
@@ -352,35 +358,42 @@ void Player::playerAction(int action, bool sprint, bool bonusHit)
 
 void Player::jump()
 {
-    playerOnObstacle = false;
-
-    QString dir = (playerDirection == EAST) ? "Right" : "Left";
-
-    int currentFrame = framePerSecondCount;
-    if(currentFrame < jumpStart) currentFrame += 60;
-    float height = (std::pow(((float)(currentFrame - jumpStart) / 60.0f), 2.0f) * GRAVITY_FACTOR) / 2.0f;
-    heightDelta += height;
-    qDebug() << "Height: " << height << " heightDelta: " << heightDelta << " TimeDelta: " << (currentFrame - jumpStart);
-
-    if(speedX > PLAYER_IDLE_VELOCITY)
+    if(pState != FALLING)
     {
-        if(playerDirection == EAST)
-            setPosX(posX + PLAYER_X_PX_PER_UPDATE);
-        else
-            setPosX(posX - PLAYER_X_PX_PER_UPDATE);
+        playerOnObstacle = false;
+        jumping = true;
+        QString dir = (playerDirection == EAST) ? "Right" : "Left";
+
+        int currentFrame = framePerSecondCount;
+        if(currentFrame < jumpStart) currentFrame += 60;
+        float height = (std::pow(((float)(currentFrame - jumpStart) / 60.0f), 2.0f) * GRAVITY_FACTOR) / 2.0f;
+        heightDelta = height - lastHeight;
+        qDebug() << "Height: " << height << " heightDelta: " << heightDelta << " TimeDelta: " << (currentFrame - jumpStart);
+
+        if(speedX > PLAYER_IDLE_VELOCITY)
+        {
+            if(playerDirection == EAST)
+                setPosX(posX + PLAYER_X_PX_PER_UPDATE);
+            else
+                setPosX(posX - PLAYER_X_PX_PER_UPDATE);
+        }
+
+        setPosY(posY - heightDelta);
+
+        if(height >= (5.5*UNIT_SCALE_FACTOR))
+        {
+            frame = 1;
+            pState = FALLING;
+            lastState = JUMPING;
+            heightDelta = 0;
+            lastHeight = 0;
+        }
+
+        lastHeight = height;
+
+
+        changeImage(jumpImagePath.arg(dir).arg(frame));
     }
-
-    setPosY(posY - height);
-
-    if(heightDelta >= (5.5*70.0))
-    {
-        frame = 1;
-        pState = FALLING;
-        lastState = JUMPING;
-        heightDelta = 0;
-    }
-
-    changeImage(jumpImagePath.arg(dir).arg(frame));
 }//Controls Player Jumps
 
 void Player::slide()
@@ -437,7 +450,7 @@ void Player::run()
 
     if(pState == FALLING)
     {
-        posX += PLAYER_X_PX_PER_UPDATE;
+        posX += PLAYER_X_PX_PER_UPDATE * PLAYER_DRAG_COEFF;
         playerDirection = EAST;
     }
     else if(!jumping)
@@ -469,7 +482,7 @@ void Player::runInverted()
 
     if(pState == FALLING)
     {
-        posX -= PLAYER_X_PX_PER_UPDATE;
+        posX -= PLAYER_X_PX_PER_UPDATE * PLAYER_DRAG_COEFF;
         playerDirection = WEST;
     }
     else if(!jumping)
@@ -528,10 +541,12 @@ void Player::fall()
 
         if((nextState == RUNNING_LEFT) && !leftWallCollided)
         {
+//            posX -= PLAYER_X_PX_PER_UPDATE;
             playerDirection = WEST;
         }
         else if((nextState == RUNNING_RIGHT) && !rightWallCollided)
         {
+//            posX += PLAYER_X_PX_PER_UPDATE;
             playerDirection = EAST;
         }
     }
@@ -542,13 +557,13 @@ void Player::Celebrate()
     static int celebrationCount = 0, totalCelebrations = 0;
     if(!playerOnObstacle)
     {
-        posY += (40 * GRAVITY_FACTOR);
+        setPosY(posY + (PLAYER_Y_PX_PER_UPDATE * 2));
 
         if((posY + size.y) >= ground)
         {
             SetOnObstactle(true, ground);
 //            setPosY(ground - 89);
-            posX += 70;
+            posX += PLAYER_X_PX_PER_UPDATE;
         }
     }
     else
@@ -652,6 +667,7 @@ void Player::SetOnObstactle(bool onObs, int obsY)
         jumpSpeed = PLAYER_INITIAL_Y_VELOCITY;
         setPosY(obsY - 89);
         heightDelta = 0;
+        lastHeight = 0;
     }
     else
     {

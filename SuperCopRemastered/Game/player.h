@@ -34,8 +34,10 @@
 #define PLAYER_X_PX_PER_UPDATE    9.0f
 // Used with sliding. Currently disabled
 #define COEFF_OF_FRICTION         0.5f
+// Pixels per unit where 1 unit is a single block
+#define UNIT_SCALE_FACTOR         70.0f
 // Gravity is in px/s^2 where 70px = 1 unit
-#define GRAVITY_FACTOR            2880.0f
+#define GRAVITY_FACTOR            1540.0f//3080.0f
 
 class Player
 {
@@ -138,7 +140,7 @@ private:
 
     float speedX, speedY;
     float jumpSpeed;
-    float heightDelta;
+    float heightDelta, lastHeight;
 
     int frame;
     int leftBound, rightBound;
