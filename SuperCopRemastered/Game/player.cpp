@@ -306,7 +306,7 @@ void Player::playerAction(int action, bool sprint, bool bonusHit)
         switch(action)
         {
         case RIGHT:
-            if(pState == FALLING || pState == JUMPING) { nextState = RUNNING_RIGHT; break; }
+            if(pState == FALLING || pState == JUMPING) { nextState = RUNNING_RIGHT; speedX = PLAYER_INITIAL_X_VELOCITY; break; }
             else if(pState != RUNNING_RIGHT)
             {
                 lastState = pState;
@@ -320,10 +320,11 @@ void Player::playerAction(int action, bool sprint, bool bonusHit)
             else if(pState == FALLING && jumping) { break; }
             else if(pState == RUNNING_LEFT || pState == RUNNING_RIGHT) { nextState = pState; pState = JUMPING; speedY = PLAYER_INITIAL_Y_VELOCITY;}
             else if (pState == IDLE) { pState = JUMPING; speedY = PLAYER_INITIAL_Y_VELOCITY; }
+            else { pState = JUMPING; }
             jumpStart = framePerSecondCount;
             break;
         case LEFT:
-            if(pState == FALLING || pState == JUMPING) { nextState = RUNNING_LEFT; break; }
+            if(pState == FALLING || pState == JUMPING) { nextState = RUNNING_LEFT; speedX = PLAYER_INITIAL_X_VELOCITY; break; }
             else if(pState != RUNNING_LEFT)
             {
                 lastState = pState;
@@ -336,6 +337,7 @@ void Player::playerAction(int action, bool sprint, bool bonusHit)
             if(!playerOnObstacle && pState != JUMPING) { pState = FALLING; nextState = IDLE; }
             else if(pState == JUMPING && bonusHit) { pState = FALLING; }
 //            else if(pState == JUMPING || pState == FALLING) { break; }
+            else if(pState == JUMPING && (lastHeight < 2* UNIT_SCALE_FACTOR)) { break; }
             else if(pState != IDLE) { nextState = IDLE; lastState = pState; pState = IDLE; }
             break;
         case PAUSE:
@@ -372,10 +374,10 @@ void Player::jump()
 
         if(speedX > PLAYER_IDLE_VELOCITY)
         {
-            if(playerDirection == EAST)
-                setPosX(posX + PLAYER_X_PX_PER_UPDATE);
-            else
-                setPosX(posX - PLAYER_X_PX_PER_UPDATE);
+            if(playerDirection == EAST && !leftWallCollided)
+                setPosX(posX + PLAYER_FALLING_X_VELOCITY);
+            else if(!rightWallCollided)
+                setPosX(posX - PLAYER_FALLING_X_VELOCITY);
         }
 
         setPosY(posY - heightDelta);
@@ -450,7 +452,7 @@ void Player::run()
 
     if(pState == FALLING)
     {
-        posX += PLAYER_X_PX_PER_UPDATE * PLAYER_DRAG_COEFF;
+        posX += PLAYER_FALLING_X_VELOCITY;
         playerDirection = EAST;
     }
     else if(!jumping)
@@ -482,7 +484,7 @@ void Player::runInverted()
 
     if(pState == FALLING)
     {
-        posX -= PLAYER_X_PX_PER_UPDATE * PLAYER_DRAG_COEFF;
+        posX -= PLAYER_FALLING_X_VELOCITY;
         playerDirection = WEST;
     }
     else if(!jumping)
@@ -514,6 +516,8 @@ void Player::standBy()
     speedX = PLAYER_IDLE_VELOCITY;
     jumpSpeed = PLAYER_INITIAL_Y_VELOCITY;
     speedY = PLAYER_INITIAL_Y_VELOCITY;
+    lastHeight = 0;
+    heightDelta = 0;
 
     //Checks which direction the player was moving last then sets the appropiate standing image
     if(EAST == playerDirection)

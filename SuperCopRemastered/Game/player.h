@@ -22,22 +22,25 @@
 #define PLAYER_INITIAL_X_VELOCITY 1.0f
 #define PLAYER_WALK_VELOCITY      7.0f
 #define PLAYER_MAX_X_VELOCITY     15.0f
-// Vy = 18.182 units/s
-#define PLAYER_INITIAL_Y_VELOCITY 18.182f //5.0f
+
 // Used for drifting
 #define PLAYER_FALLING_X_VELOCITY 7.0f
-#define PLAYER_IDLE_VELOCITY      0.0f
-// Higher drag coeff = reach max speed faster
-#define PLAYER_DRAG_COEFF         0.1f
-#define PLAYER_Y_PX_PER_UPDATE    9.0f
-// X px per update is only used when drifting
 #define PLAYER_X_PX_PER_UPDATE    9.0f
+#define PLAYER_IDLE_VELOCITY      0.0f
+// X px per update is only used when drifting
 // Used with sliding. Currently disabled
 #define COEFF_OF_FRICTION         0.5f
+// Higher drag coeff = reach max speed faster
+#define PLAYER_DRAG_COEFF         0.25f
+
+// Vy = 18.182 units/s
+#define PLAYER_INITIAL_Y_VELOCITY 18.182f //5.0f
+#define PLAYER_Y_PX_PER_UPDATE    9.0f
+
 // Pixels per unit where 1 unit is a single block
 #define UNIT_SCALE_FACTOR         70.0f
 // Gravity is in px/s^2 where 70px = 1 unit
-#define GRAVITY_FACTOR            1540.0f//3080.0f
+#define GRAVITY_FACTOR            3080.0f
 
 class Player
 {
