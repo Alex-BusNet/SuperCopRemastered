@@ -255,7 +255,7 @@ void Player::UpdatePlayer(GameView *view)
     }
 
     // Scrolls the screen left or right as long as the player is not near the edge of the level.
-    if((posX - 200 > leftBound) && (posX + 200 < rightBound) && (posY < (ground + (4 * 70))));
+    if((posX - 200 > leftBound) && (posX + 400 < rightBound) && (posY < (ground + (4 * 70))));
         view->ensureVisible(playerPixmap, 200, 70);
 }
 
@@ -373,13 +373,14 @@ void Player::jump()
 
         if(speedX > PLAYER_IDLE_VELOCITY)
         {
-            if(nextState == RUNNING_LEFT) playerDirection = WEST;
-            else if(nextState == RUNNING_RIGHT) playerDirection = EAST;
 
             if(playerDirection == EAST && !leftWallCollided)
                 setPosX(posX + PLAYER_FALLING_X_VELOCITY);
-            else if(!rightWallCollided)
+            else if(playerDirection == WEST && !rightWallCollided)
                 setPosX(posX - PLAYER_FALLING_X_VELOCITY);
+
+            if(nextState == RUNNING_LEFT) playerDirection = WEST;
+            else if(nextState == RUNNING_RIGHT) playerDirection = EAST;
         }
 
         setPosY(posY - heightDelta);
@@ -568,7 +569,7 @@ void Player::Celebrate()
         if((posY + size.y) >= ground)
         {
             SetOnObstactle(true, ground);
-            posX += PLAYER_X_PX_PER_UPDATE;
+            posX += PLAYER_X_PX_PER_UPDATE * 1.5;
         }
     }
     else

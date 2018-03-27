@@ -489,11 +489,6 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
                     ((BonusBlock*)obstacles.at(idx))->BlockHit();
                     if(((BonusBlock*)obstacles.at(idx))->GetHitsRemaining() <= 0)
                     {
-//                        view->removePixmap(obstacleItems.at(idx));
-//                        view->removeRect(obstacles.at(idx)->GetTopGBB());
-//                        view->removeRect(obstacles.at(idx)->GetBottomGBB());
-//                        view->removeRect(obstacles.at(idx)->GetLeftGBB());
-//                        view->removeRect(obstacles.at(idx)->GetRightGBB());
                         obstacles.at(idx)->SetType(GRASS, BLOCK_EDGE_TOP);
                         obstacleItems.at(idx)->setPixmap(*obstacles.at(idx)->GetTexture());
                     }
@@ -541,15 +536,13 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
             if(floorBlock->GetBoundingBox()->intersects(pCollisionRect))
             {
                 BlockType bt = floorBlock->GetType();
-                bool leftWallCollision = (((bt == WALL_CORNER_LEFT) || (bt == WALL_SIDE_LEFT) || (bt == WALL_CORNER_RIGHT) || (bt == WALL_SIDE_RIGHT)
-                                          || (bt == BLOCK_EDGE_TOP) || (bt == BLOCK))
+                bool leftWallCollision = (((bt != NO_BLOCK_TYPE) && (bt != GAP_BLOCK) && (bt != GOAL) && (bt != GOAL_MIDDLE))
                                           && (floorBlock->GetLeftBoundingBox()->intersects(p->GetViewBB()->rect().toRect())));
 
-                bool rightWallCollision =(((bt == WALL_CORNER_RIGHT) || (bt == WALL_SIDE_RIGHT) || (bt == WALL_CORNER_LEFT) || (bt == WALL_SIDE_LEFT)
-                                           || (bt == BLOCK_EDGE_TOP) || (bt == BLOCK))
+                bool rightWallCollision =(((bt != NO_BLOCK_TYPE) && (bt != GAP_BLOCK) && (bt != GOAL) && (bt != GOAL_MIDDLE))
                                           && (floorBlock->GetRightBoundingBox()->intersects(p->GetViewBB()->rect().toRect())));
 
-                bool topBlockCollision = (((bt != GAP_BLOCK) && (bt != NO_BLOCK_TYPE))
+                bool topBlockCollision = (((bt != NO_BLOCK_TYPE) && (bt != GAP_BLOCK) && (bt != GOAL) && (bt != GOAL_MIDDLE))
                                           && (floorBlock->GetTopBoundingBox()->intersects(p->GetFallViewBB()->rect().toRect()))
                                           && (p->getState() != JUMPING));
 
