@@ -146,7 +146,7 @@ void SuperCopRMGame::keyPressEvent(QKeyEvent *evt)
         isUpPressed = true;
         break;
     case Qt::Key_Right:
-        keyPressState |= 0b0001;
+        keyPressState |= 0b0010;
         isRightPressed = true;
         break;
     case Qt::Key_Down:
@@ -157,7 +157,7 @@ void SuperCopRMGame::keyPressEvent(QKeyEvent *evt)
         isUpPressed = true;
         break;
     case Qt::Key_Left:
-        keyPressState |= 0b0010;
+        keyPressState |= 0b0001;
         isLeftPressed = true;
         break;
     case Qt::Key_Escape:
@@ -203,7 +203,7 @@ void SuperCopRMGame::keyReleaseEvent(QKeyEvent *evt)
         isUpPressed = false;
         break;
     case Qt::Key_Right:
-        keyPressState &= 0b1110;
+        keyPressState &= 0b1101;
         isRightPressed = false;
         break;
     case Qt::Key_Up:
@@ -211,7 +211,7 @@ void SuperCopRMGame::keyReleaseEvent(QKeyEvent *evt)
         isUpPressed = false;
         break;
     case Qt::Key_Left:
-        keyPressState &= 0b1101;
+        keyPressState &= 0b1110;
         isLeftPressed = false;
         break;
     case Qt::Key_Down:
