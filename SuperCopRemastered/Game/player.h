@@ -24,10 +24,10 @@
 #define PLAYER_MAX_X_VELOCITY     15.0f
 
 // Used for drifting
+// X px per update; is only used when drifting
 #define PLAYER_FALLING_X_VELOCITY 7.0f
 #define PLAYER_X_PX_PER_UPDATE    9.0f
 #define PLAYER_IDLE_VELOCITY      0.0f
-// X px per update is only used when drifting
 // Used with sliding. Currently disabled
 #define COEFF_OF_FRICTION         0.5f
 // Higher drag coeff = reach max speed faster
@@ -39,6 +39,8 @@
 
 // Pixels per unit where 1 unit is a single block
 #define UNIT_SCALE_FACTOR         70.0f
+// Minimum units player should jump before falling.
+#define MIN_JUMP_HEIGHT           2.5f
 // Gravity is in px/s^2 where 70px = 1 unit
 #define GRAVITY_FACTOR            3080.0f
 
@@ -110,9 +112,10 @@ public:
     bool isJumping();
     bool isWallCollided();
     bool isOnObstacle();
+    bool hasReachedMinJump();
 
 public slots:
-    void playerAction(int action, bool sprint, bool bonusHit = false);
+    void playerAction(uint8_t action, bool sprint, bool bonusHit = false);
 
 private:
     void jump();

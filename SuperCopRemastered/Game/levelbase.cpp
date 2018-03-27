@@ -333,7 +333,7 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
         return;
     }
 
-    if(collidedItems > 3)
+    if(collidedItems >= 3)
     {
         QGraphicsItem* firstNonPlayer;
         QList<QGraphicsItem*> collideList;
@@ -344,15 +344,15 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
             collideList = p->GetFallViewBB()->collidingItems();
             pCollisionRect = p->GetFallViewBB()->rect().toRect();
         }
-        else if(p->getState() == JUMPING)
-        {
-            collideList = p->GetJumpViewBB()->collidingItems();
-            pCollisionRect = p->GetJumpViewBB()->rect().toRect();
-        }
+//        else if(p->getState() == JUMPING)
+//        {
+//            collideList = p->GetJumpViewBB()->collidingItems();
+//            pCollisionRect = p->GetJumpViewBB()->rect().toRect();
+//        }
         else
         {
-            collideList = p->GetFallViewBB()->collidingItems();
-            pCollisionRect = p->GetFallViewBB()->rect().toRect();
+            collideList = p->GetViewBB()->collidingItems();
+            pCollisionRect = p->GetViewBB()->rect().toRect();
         }
 
         foreach(QGraphicsItem* item, collideList)
@@ -454,13 +454,13 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
                     }
                 }
 
-                if(leftWallCollision)
+                else if(leftWallCollision)
                 {
                     if(devMode)
                         qDebug() << "Left Wall collision";
 
                     p->setWallCollided(EAST, true);
-                    p->setPosX(nearestObsY->GetPosX() - 65);
+                    p->setPosX(nearestObsY->GetPosX() - 55);
 
                 }
                 else if(rightWallCollision)
@@ -515,13 +515,13 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
 
                     p->SetOnObstactle(false, 0);
                 }
-                else if(!leftWallCollision && !rightWallCollision)
-                {
-                    if(devMode)
-                        qDebug() << "Clearing wall collisions";
+//                else if(!leftWallCollision && !rightWallCollision)
+//                {
+//                    if(devMode)
+//                        qDebug() << "Obstacle Clearing wall collisions";
 
-                    p->clearWallCollided();
-                }
+//                    p->clearWallCollided();
+//                }
             }
         }
 
@@ -563,7 +563,7 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
                         qDebug() << "Left Gap Wall collision";
 
                     p->setWallCollided(EAST, true);
-                    p->setPosX(floorBlock->GetPosX() - 65);
+                    p->setPosX(floorBlock->GetPosX() - 55);
 
                 }
                 else if(rightWallCollision)
@@ -573,8 +573,12 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
                     p->setWallCollided(WEST, true);
                     p->setPosX(floorBlock->GetRightEdge());
                 }
-                else
-                    p->clearWallCollided();
+//                else
+//                {
+//                    if(devMode)
+//                        qDebug() << "Floor Clearing wall collisions";
+//                    p->clearWallCollided();
+//                }
             }
         }
 
@@ -592,27 +596,28 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
             donuts.replace(idx, NULL);
         }
     }
+
     else
     {
         QGraphicsItem* firstNonPlayer;
         QList<QGraphicsItem*> collideList;
         QRect pCollisionRect;
 
-        if(p->getState() == FALLING)
-        {
+//        if(p->getState() == FALLING)
+//        {
+//            collideList = p->GetFallViewBB()->collidingItems();
+//            pCollisionRect = p->GetFallViewBB()->rect().toRect();
+//        }
+//        else if(p->getState() == JUMPING)
+//        {
+//            collideList = p->GetJumpViewBB()->collidingItems();
+//            pCollisionRect = p->GetJumpViewBB()->rect().toRect();
+//        }
+//        else
+//        {
             collideList = p->GetFallViewBB()->collidingItems();
             pCollisionRect = p->GetFallViewBB()->rect().toRect();
-        }
-        else if(p->getState() == JUMPING)
-        {
-            collideList = p->GetJumpViewBB()->collidingItems();
-            pCollisionRect = p->GetJumpViewBB()->rect().toRect();
-        }
-        else
-        {
-            collideList = p->GetViewBB()->collidingItems();
-            pCollisionRect = p->GetViewBB()->rect().toRect();
-        }
+//        }
 
         foreach(QGraphicsItem* item, collideList)
         {
@@ -659,6 +664,8 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
         if(fIdx == -1 && oIdx == -1 && feetItems < 3 && p->getState() != JUMPING)
         {
             p->SetOnObstactle(false, 0);
+//            if(devMode)
+//                qDebug() << "FeetItems Clearing wall collisions";
             p->clearWallCollided();
         }
     }

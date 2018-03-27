@@ -127,30 +127,37 @@ void SuperCopRMGame::keyPressEvent(QKeyEvent *evt)
     switch(evt->key())
     {
     case Qt::Key_A:
+        keyPressState |= 0b0001;
         isLeftPressed = true;
         break;
     case Qt::Key_D:
+        keyPressState |= 0b0010;
         isRightPressed = true;
         break;
     case Qt::Key_Shift:
         isSprintPressed = true;
         break;
     case Qt::Key_W:
+        keyPressState |= 0b0100;
         isUpPressed = true;
         break;
     case Qt::Key_Space:
+        keyPressState |= 0b0100;
         isUpPressed = true;
         break;
     case Qt::Key_Right:
+        keyPressState |= 0b0001;
         isRightPressed = true;
         break;
     case Qt::Key_Down:
         isDownPressed = true;
         break;
     case Qt::Key_Up:
+        keyPressState |= 0b0100;
         isUpPressed = true;
         break;
     case Qt::Key_Left:
+        keyPressState |= 0b0010;
         isLeftPressed = true;
         break;
     case Qt::Key_Escape:
@@ -177,27 +184,34 @@ void SuperCopRMGame::keyReleaseEvent(QKeyEvent *evt)
     switch(evt->key())
     {
     case Qt::Key_A:
+        keyPressState &= 0b1110;
         isLeftPressed = false;
         break;
     case Qt::Key_D:
+        keyPressState &= 0b1101;
         isRightPressed = false;
         break;
     case Qt::Key_Shift:
         isSprintPressed = false;
         break;
     case Qt::Key_W:
+        keyPressState &= 0b1011;
         isUpPressed = false;
         break;
     case Qt::Key_Space:
+        keyPressState &= 0b1011;
         isUpPressed = false;
         break;
     case Qt::Key_Right:
+        keyPressState &= 0b1110;
         isRightPressed = false;
         break;
     case Qt::Key_Up:
+        keyPressState &= 0b1011;
         isUpPressed = false;
         break;
     case Qt::Key_Left:
+        keyPressState &= 0b1101;
         isLeftPressed = false;
         break;
     case Qt::Key_Down:
@@ -232,7 +246,7 @@ void SuperCopRMGame::updateField()
 {
     if(!gamePaused)
     {
-        player->playerAction(lastKeyPress, isSprintPressed);
+        player->playerAction(keyPressState, isSprintPressed);
         player->UpdateFrame();
         player->UpdatePlayer(view);
         lb->UpdateLevel(player, view, showDevOpts);
@@ -487,4 +501,5 @@ void SuperCopRMGame::InitLevel()
     lastKeyPress = 0;
     gamescore=0;
     location=0;
+    keyPressState = 0b0000;
 }

@@ -66,6 +66,8 @@ private:
     int gamescore;
     int location;
 
+    uint8_t keyPressState;
+
     bool isUpPressed, isDownPressed, isLeftPressed, isRightPressed, isSprintPressed, gamePaused, showDevOpts, gameOver;
 
     vector<Donut*>donuts;
