@@ -336,7 +336,6 @@ void Player::playerAction(int action, bool sprint, bool bonusHit)
         case NONE:
             if(!playerOnObstacle && pState != JUMPING) { pState = FALLING; nextState = IDLE; }
             else if(pState == JUMPING && bonusHit) { pState = FALLING; }
-//            else if(pState == JUMPING || pState == FALLING) { break; }
             else if(pState == JUMPING && (lastHeight < 2* UNIT_SCALE_FACTOR)) { break; }
             else if(pState != IDLE) { nextState = IDLE; lastState = pState; pState = IDLE; }
             break;
@@ -374,6 +373,9 @@ void Player::jump()
 
         if(speedX > PLAYER_IDLE_VELOCITY)
         {
+            if(nextState == RUNNING_LEFT) playerDirection = WEST;
+            else if(nextState == RUNNING_RIGHT) playerDirection = EAST;
+
             if(playerDirection == EAST && !leftWallCollided)
                 setPosX(posX + PLAYER_FALLING_X_VELOCITY);
             else if(!rightWallCollided)
@@ -545,12 +547,12 @@ void Player::fall()
 
         if((nextState == RUNNING_LEFT) && !leftWallCollided)
         {
-//            posX -= PLAYER_X_PX_PER_UPDATE;
+            setPosX(posX - PLAYER_FALLING_X_VELOCITY);
             playerDirection = WEST;
         }
         else if((nextState == RUNNING_RIGHT) && !rightWallCollided)
         {
-//            posX += PLAYER_X_PX_PER_UPDATE;
+            setPosX(posX + PLAYER_FALLING_X_VELOCITY);
             playerDirection = EAST;
         }
     }
@@ -566,7 +568,6 @@ void Player::Celebrate()
         if((posY + size.y) >= ground)
         {
             SetOnObstactle(true, ground);
-//            setPosY(ground - 89);
             posX += PLAYER_X_PX_PER_UPDATE;
         }
     }
