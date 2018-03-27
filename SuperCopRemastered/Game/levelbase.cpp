@@ -424,16 +424,13 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
                     qDebug() << "Collision with " << idx;
 
                 BlockType bt = nearestObsY->GetType();
-                bool leftWallCollision = (((bt != NO_BLOCK_TYPE) && (bt != GAP_BLOCK) && (bt != GOAL) && (bt != GOAL_MIDDLE))/*((bt == WALL_CORNER_LEFT) || (bt == WALL_SIDE_LEFT) || (bt == WALL_SIDE_RIGHT) || (bt == WALL_CORNER_RIGHT)
-                                           ||(bt == PLATFORM_LEFT) || (bt == PLATFORM_RIGHT) || (bt == BONUS) || (bt == BLOCK_EDGE_TOP) || (bt == BLOCK))*/
+                bool leftWallCollision = (((bt != NO_BLOCK_TYPE) && (bt != GAP_BLOCK) && (bt != GOAL) && (bt != GOAL_MIDDLE))
                                           && (nearestObsY->GetLeftBoundingBox()->intersects(p->GetViewBB()->rect().toRect())));
 
-                bool rightWallCollision =(((bt != NO_BLOCK_TYPE) && (bt != GAP_BLOCK) && (bt != GOAL) && (bt != GOAL_MIDDLE))/*((bt == WALL_CORNER_RIGHT) || (bt == WALL_SIDE_RIGHT) || (bt == WALL_CORNER_LEFT) || (bt == WALL_SIDE_LEFT)
-                                           || (bt == PLATFORM_LEFT) || (bt == PLATFORM_RIGHT) || (bt == BONUS) || (bt == BLOCK_EDGE_TOP) || (bt == BLOCK))*/
+                bool rightWallCollision =(((bt != NO_BLOCK_TYPE) && (bt != GAP_BLOCK) && (bt != GOAL) && (bt != GOAL_MIDDLE))
                                           && (nearestObsY->GetRightBoundingBox()->intersects(p->GetViewBB()->rect().toRect())));
 
-                bool topBlockCollision = (((bt != NO_BLOCK_TYPE) && (bt != GAP_BLOCK) && (bt != GOAL) && (bt != GOAL_MIDDLE))/*((bt == WALL_CORNER_LEFT) || (bt == WALL_CORNER_RIGHT) || (bt == BLOCK) || (bt == BONUS)
-                                           ||(bt == PLATFORM_LEFT) || (bt == PLATFORM_RIGHT) || (bt == BLOCK_EDGE_TOP))*/
+                bool topBlockCollision = (((bt != NO_BLOCK_TYPE) && (bt != GAP_BLOCK) && (bt != GOAL) && (bt != GOAL_MIDDLE))
                                           && (nearestObsY->GetTopBoundingBox()->intersects(p->GetFallViewBB()->rect().toRect()))
                                           && (p->getState() != JUMPING));
 
@@ -492,12 +489,12 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
                     ((BonusBlock*)obstacles.at(idx))->BlockHit();
                     if(((BonusBlock*)obstacles.at(idx))->GetHitsRemaining() <= 0)
                     {
-                        view->removePixmap(obstacleItems.at(idx));
-                        view->removeRect(obstacles.at(idx)->GetTopGBB());
-                        view->removeRect(obstacles.at(idx)->GetBottomGBB());
-                        view->removeRect(obstacles.at(idx)->GetLeftGBB());
-                        view->removeRect(obstacles.at(idx)->GetRightGBB());
-                        obstacles.at(idx)->SetType(levelFloor.at(0)->GetLevelType(), BLOCK_EDGE_TOP);
+//                        view->removePixmap(obstacleItems.at(idx));
+//                        view->removeRect(obstacles.at(idx)->GetTopGBB());
+//                        view->removeRect(obstacles.at(idx)->GetBottomGBB());
+//                        view->removeRect(obstacles.at(idx)->GetLeftGBB());
+//                        view->removeRect(obstacles.at(idx)->GetRightGBB());
+                        obstacles.at(idx)->SetType(GRASS, BLOCK_EDGE_TOP);
                         obstacleItems.at(idx)->setPixmap(*obstacles.at(idx)->GetTexture());
                     }
 
