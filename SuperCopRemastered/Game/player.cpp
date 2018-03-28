@@ -852,7 +852,7 @@ void Player::setPosX(int x)
 
     if(fallViewBB != NULL)
     {
-        fallViewBB->setRect(posX + 15, posY + 69, 30, 30);
+        fallViewBB->setRect(posX + 15, posY + 69, 30, 25);
         fallViewBB->setPos(0,0);
     }
 
@@ -880,7 +880,7 @@ void Player::setPosY(int y)
 
     if(fallViewBB != NULL)
     {
-        fallViewBB->setRect(posX + 15, posY + 69, 30, 30);
+        fallViewBB->setRect(posX + 15, posY + 69, 30, 25);
         fallViewBB->setPos(0,0);
     }
 }

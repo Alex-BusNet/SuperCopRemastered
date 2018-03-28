@@ -450,7 +450,7 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
                     {
                         p->SetOnObstactle(true, nearestObsY->GetPosY());
                         p->setPosY(obstacles.at(idx)->GetPosY() - 89);
-//                            p->clearWallCollided();
+                            p->clearWallCollided();
                     }
                 }
 
@@ -615,8 +615,8 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
         }
         else
         {
-            collideList = p->GetFallViewBB()->collidingItems();
-            pCollisionRect = p->GetFallViewBB()->rect().toRect();
+            collideList = p->GetViewBB()->collidingItems();
+            pCollisionRect = p->GetViewBB()->rect().toRect();
         }
 
         foreach(QGraphicsItem* item, collideList)
@@ -657,6 +657,10 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
             if(p->getState() != JUMPING && p->getState() != FALLING && (obstacles.at(oIdx)->GetType() == NO_BLOCK_TYPE || obstacles.at(oIdx)->GetType() == GAP_BLOCK))
             {
                 p->SetOnObstactle(false, 0);
+                p->clearWallCollided();
+            }
+            else if((collidedItems < 3) && (p->getState() == JUMPING))
+            {
                 p->clearWallCollided();
             }
         }
