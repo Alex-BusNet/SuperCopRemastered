@@ -168,6 +168,7 @@ void LevelBase::LoadLevel(int levelNum, GameView *view, bool devMode)
                                 else
                                     pen = QPen(Qt::transparent);
 
+                                obstacleBBs.push_back(view->addRect(*bb->GetBoundingBox(), pen));
                                 obstacleBBs.push_back(view->addRect(*bb->GetTopBoundingBox(), pen));
                                 bb->SetTopGBB(obstacleBBs.last());
                                 obstacleBBs.push_back(view->addRect(*bb->GetLeftBoundingBox(), pen));
@@ -335,7 +336,7 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
         return;
     }
 
-    if(collidedItems >= 3)
+    if(collidedItems > 3)
     {
         QGraphicsItem* firstNonPlayer;
         QList<QGraphicsItem*> collideList;
@@ -359,7 +360,7 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
 
         foreach(QGraphicsItem* item, collideList)
         {
-            if((item != p->GetViewBB()) && (item != p->GetViewPixmap()))
+            if((item != p->GetViewBB()) && (item != p->GetViewPixmap()) && (item != p->GetJumpViewBB() && (item != p->GetFallViewBB())))
             {
                 // Check if the item is an instance of QGraphicsPixmapItem
                 // Note: This is makes sure we grab the pixmap and not one of the bounding boxes.
@@ -451,7 +452,7 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
                     if(!p->isOnObstacle())
                     {
                         p->SetOnObstactle(true, nearestObsY->GetPosY());
-                        p->setPosY(obstacles.at(idx)->GetPosY() - 89);
+                        p->setPosY(obstacles.at(idx)->GetPosY() - 95);
                             p->clearWallCollided();
                     }
                 }
@@ -462,7 +463,7 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
                         qDebug() << "Left Wall collision";
 
                     p->setWallCollided(EAST, true);
-                    p->setPosX(nearestObsY->GetPosX() - 55);
+                    p->setPosX(nearestObsY->GetPosX() - 80);
 
                 }
                 else if(rightWallCollision)
@@ -471,7 +472,7 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
                         qDebug() << "Right Wall Collision";
 
                     p->setWallCollided(WEST, true);
-                    p->setPosX(nearestObsY->GetRightEdge());
+                    p->setPosX(nearestObsY->GetRightEdge() - 20);
                 }
                 else if(bottomBlockCollision)
                 {
@@ -555,7 +556,8 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
                     // a floor object, and the floor object is not an opening, then
                     // the player must be standing on the ground.
                     qDebug() << "Collision with top of floor object";
-                    p->SetOnObstactle(true, floorBlock->GetPosY());
+                    if(!p->isOnObstacle())
+                        p->SetOnObstactle(true, floorBlock->GetPosY());
 //                    p->clearWallCollided();
                 }
 
@@ -565,7 +567,7 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
                         qDebug() << "Left Gap Wall collision";
 
                     p->setWallCollided(EAST, true);
-                    p->setPosX(floorBlock->GetPosX() - 55);
+                    p->setPosX(floorBlock->GetPosX() - 105);
 
                 }
                 else if(rightWallCollision)
@@ -573,7 +575,7 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
                     if(devMode)
                         qDebug() << "Right Gap Wall collision";
                     p->setWallCollided(WEST, true);
-                    p->setPosX(floorBlock->GetRightEdge());
+                    p->setPosX(floorBlock->GetRightEdge() - 20);
                 }
 //                else
 //                {
@@ -623,7 +625,7 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
 
         foreach(QGraphicsItem* item, collideList)
         {
-            if((item != p->GetViewBB()) && (item != p->GetViewPixmap()))
+            if((item != p->GetViewBB()) && (item != p->GetViewPixmap()) && (item != p->GetJumpViewBB() && (item != p->GetFallViewBB())))
             {
                 // Check if the item is an instance of QGraphicsPixmapItem
                 // Note: This is makes sure we grab the pixmap and not one of the bounding boxes.

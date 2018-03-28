@@ -36,6 +36,11 @@
 
 QCheckBox {
 	color: white;
+	background-color: rgb(1, 102, 254);
+	border: 2px solid white;
+	min-width: 100px;
+	min-height: 50px;
+	padding-left: 25px;
 }</string>
   </property>
   <widget class="QWidget" name="centralWidget">
