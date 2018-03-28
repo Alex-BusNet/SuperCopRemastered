@@ -1,6 +1,6 @@
 #include "supercoprmgame.h"
 
-SuperCopRMGame::SuperCopRMGame(QWidget *parent)
+SuperCopRMGame::SuperCopRMGame(QWidget *parent, bool industrialGraphics)
     : QWidget(parent)
 {
     showDevOpts = true;
@@ -15,6 +15,10 @@ SuperCopRMGame::SuperCopRMGame(QWidget *parent)
     }
 
     lb = new LevelBase(this->width(), this->height());
+    if(industrialGraphics)
+        currentLevelType = INDUSTRIAL;
+    else
+        currentLevelType = GRASS;
 
     if(showDevOpts)
         qDebug() << "Loading player";
@@ -27,7 +31,7 @@ SuperCopRMGame::SuperCopRMGame(QWidget *parent)
     view = new GameView(this);
     view->setGeometry(0, 0 , 1280, 720);
 
-    InitLevel();
+    InitLevel(currentLevelType);
 
     msg = new QMessageBox();
     pbox = new QMessageBox();
@@ -44,10 +48,21 @@ SuperCopRMGame::SuperCopRMGame(QWidget *parent)
     if(showDevOpts)
         qDebug() << "Setting Background...";
 
-    QPixmap bkgnd("Assets/UI/background.png");
-    bkgnd = bkgnd.scaled(this->width(), this->height(), Qt::IgnoreAspectRatio);
     QPalette palette;
-    palette.setBrush(QPalette::Background, bkgnd);
+
+    if(!industrialGraphics)
+    {
+        QPixmap bkgnd("Assets/UI/grass_background.png");
+        bkgnd = bkgnd.scaled(this->width(), this->height(), Qt::IgnoreAspectRatio);
+        palette.setBrush(QPalette::Background, bkgnd);
+    }
+    else
+    {
+        QPixmap bkgnd("Assets/UI/fire_background.png");
+        bkgnd = bkgnd.scaled(this->width(), this->height(), Qt::IgnoreAspectRatio);
+        palette.setBrush(QPalette::Background, bkgnd);
+    }
+
     this->setPalette(palette);
 
     if(showDevOpts)
@@ -312,7 +327,7 @@ void SuperCopRMGame::GameOver(bool endOfLevel)
         delete gameOverBox;
 
         lb->ClearView(view);
-        InitLevel();
+        InitLevel(currentLevelType);
         player->Reset();
         view->ensureVisible(player->GetViewPixmap(), 200, 70);
     }
@@ -371,7 +386,11 @@ void SuperCopRMGame::paintEvent(QPaintEvent *e)
 
     if(gamePaused || gameOver)
     {
-        painter.setPen(QPen(Qt::black));
+        if(currentLevelType == GRASS)
+            painter.setPen(QPen(Qt::black));
+        else
+            painter.setPen(QPen(Qt::white));
+
         painter.setFont(*pausedFont);
         painter.drawText((this->width() / 2) - 110, 100, paused->text());
     }
@@ -465,9 +484,12 @@ void SuperCopRMGame::setShowDevOpts(bool devOpts)
     this->showDevOpts = devOpts;
 }
 
-void SuperCopRMGame::InitLevel()
+void SuperCopRMGame::InitLevel(LevelType lt)
 {
     lb->LoadLevel(1, view, showDevOpts);
+
+    if(lt != GRASS) // Since we only have one level, GRASS is its default.
+        lb->SetLevelType(lt);
 
     if(showDevOpts)
         qDebug() << "Loading player to Scene...";

@@ -209,7 +209,7 @@ void robocoprmgame::updateField()
 {
     if(!gamePaused)
     {
-        player->playerAction(lastKeyPress);
+//        player->playerAction(lastKeyPress);
         player->UpdateFrame();
         player->UpdatePlayer(view);
         lb->UpdateLevel(player, view, showDevOpts);
@@ -234,25 +234,25 @@ void robocoprmgame::exitGame()
 
 void robocoprmgame::actionInput(Qt::Key key)
 {
-    qDebug() << "Action Input";
-    switch(key)
-    {
-    case Qt::Key_Left:
-        player->playerAction(LEFT);
-        break;
-    case Qt::Key_Right:
-        player->playerAction(RIGHT);
-        break;
-    case Qt::Key_Up:
-        player->playerAction(UP);
-        break;
-    case Qt::Key_Down:
-        player->playerAction(DOWN);
-        break;
-    default:
-        player->playerAction(NONE);
-        break;
-    }
+//    qDebug() << "Action Input";
+//    switch(key)
+//    {
+//    case Qt::Key_Left:
+//        player->playerAction(LEFT);
+//        break;
+//    case Qt::Key_Right:
+//        player->playerAction(RIGHT);
+//        break;
+//    case Qt::Key_Up:
+//        player->playerAction(UP);
+//        break;
+//    case Qt::Key_Down:
+//        player->playerAction(DOWN);
+//        break;
+//    default:
+//        player->playerAction(NONE);
+//        break;
+//    }
 }
 
 void robocoprmgame::updateRender()

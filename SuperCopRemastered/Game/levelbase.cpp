@@ -61,7 +61,15 @@ void LevelBase::LoadLevel(int levelNum, GameView *view, bool devMode)
                         floorItems.last()->setPos(xPos * 70, floorHeight - (yPos * 70));
 
                         if(devMode)
-                            view->addText(QString("%1").arg(floorItems.size() / 7))->setPos((xPos * 70) + 30, floorHeight - (yPos * 70) + 30);
+                        {
+                            QGraphicsTextItem *i = view->addText(QString("%1").arg(floorItems.size() / 7));
+                            i->setPos((xPos * 70) + 30, floorHeight - (yPos * 70) + 30);
+
+                            if(lt == GRASS)
+                                i->setDefaultTextColor(Qt::black);
+                            else
+                                i->setDefaultTextColor(Qt::white);
+                        }
 
                         // This loop is used to fill in the scene underneath the floor.
                         for(int k = 0; k < 6; k++)
@@ -157,14 +165,27 @@ void LevelBase::LoadLevel(int levelNum, GameView *view, bool devMode)
                             obstacleItems.last()->setPos(bb->GetPosX(), bb->GetPosY());
 
                             if(devMode)
-                                view->addText(QString("%1").arg(obstacleItems.size() - 1))->setPos(obstacleItems.last()->x() + 28, obstacleItems.last()->y() + 28);
+                            {
+                                QGraphicsTextItem *i = view->addText(QString("%1").arg(obstacleItems.size() - 1));
+                                i->setPos(obstacleItems.last()->x() + 28, obstacleItems.last()->y() + 28);
+
+                                if(levelFloor.first()->GetLevelType() == GRASS)
+                                    i->setDefaultTextColor(Qt::black);
+                                else
+                                    i->setDefaultTextColor(Qt::white);
+                            }
 
                             if(bb->GetBoundingBox() != NULL)
                             {
                                 QPen pen;
 
                                 if(devMode)
-                                    pen = QPen(Qt::black);
+                                {
+                                    if(levelFloor.at(0)->GetLevelType() == GRASS)
+                                        pen = QPen(Qt::black);
+                                    else
+                                        pen = QPen(Qt::white);
+                                }
                                 else
                                     pen = QPen(Qt::transparent);
 
@@ -259,6 +280,11 @@ void LevelBase::drawLevelBase(QPainter &painter, bool devMode)
 {
     if(devMode)
     {
+        if(levelFloor.first()->GetLevelType() == GRASS)
+            painter.setPen(QPen(Qt::black));
+        else
+            painter.setPen(QPen(Qt::white));
+
         painter.drawText(20, 190, QString("Player items collided: %1").arg(collidedItems));
         painter.drawText(20, 200, QString("Player feet collided: %1").arg(feetItems));
         painter.drawText(20, 210, QString("Level Update: %1").arg(updateStatus));
@@ -396,6 +422,8 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
                     view->removePixmap(nearestEnemy->GetGPixmapPtr());
                     delete nearestEnemy;
                     enemies.replace(idx, NULL);
+                    // Player gets a little 'bounce' when they kill enemies
+                    p->setPosY(p->GetPosY() - 40);
                 }
                 else
                 {
@@ -827,6 +855,35 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
 int LevelBase::GetLevelRightBound()
 {
     return levelFloor.last()->GetRightEdge();
+}
+
+void LevelBase::SetLevelType(LevelType lt)
+{
+    foreach(QGraphicsPixmapItem *pi, floorItems)
+    {
+        int idx = floorItems.indexOf(pi);
+        if(idx != -1)
+        {
+            if(levelFloor.at(idx)->GetType() != NO_BLOCK_TYPE && levelFloor.at(idx)->GetLevelType() != NO_LEVEL_TYPE)
+            {
+                levelFloor.at(idx)->SetType(lt, levelFloor.at(idx)->GetType());
+                pi->setPixmap(*levelFloor.at(idx)->GetTexture());
+            }
+        }
+    }
+
+    foreach(QGraphicsPixmapItem *pi, obstacleItems)
+    {
+        int idx = obstacleItems.indexOf(pi);
+        if(idx != -1)
+        {
+            if(obstacles.at(idx)->GetType() != NO_BLOCK_TYPE&& obstacles.at(idx)->GetLevelType() != NO_LEVEL_TYPE)
+            {
+                obstacles.at(idx)->SetType(lt, obstacles.at(idx)->GetType());
+                pi->setPixmap(*obstacles.at(idx)->GetTexture());
+            }
+        }
+    }
 }
 
 int LevelBase::getGround()

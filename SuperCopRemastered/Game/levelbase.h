@@ -40,6 +40,8 @@ public:
 
     int GetLevelRightBound();
 
+    void SetLevelType(LevelType lt);
+
     int getGround();
     QPoint GetPlayerStart();
 

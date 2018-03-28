@@ -29,7 +29,7 @@ using namespace std;
 class SuperCopRMGame : public QWidget
 {
 public:
-    SuperCopRMGame(QWidget *parent = NULL);
+    SuperCopRMGame(QWidget *parent = NULL, bool industrialGraphics = false);
     ~SuperCopRMGame();
 
     void paintEvent(QPaintEvent *e);
@@ -40,7 +40,7 @@ public:
     void setShowDevOpts(bool devOpts);
 
 private:
-    void InitLevel();
+    void InitLevel(LevelType lt);
 
     Player *player;
     QGraphicsPixmapItem *playerPixmap;
@@ -78,6 +78,8 @@ private:
 
     Donut *levelEnd;
     int moveSpeed;
+
+    LevelType currentLevelType;
 
     QPushButton *resume;
     QPushButton *exit;
