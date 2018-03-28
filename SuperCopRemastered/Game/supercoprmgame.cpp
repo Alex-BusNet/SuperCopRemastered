@@ -1,12 +1,17 @@
 #include "supercoprmgame.h"
 
-SuperCopRMGame::SuperCopRMGame(QWidget *parent)
+SuperCopRMGame::SuperCopRMGame(QWidget *parent, bool industrialGraphics)
     : QWidget(parent)
 {
     showDevOpts = true;
 
 //    QWidget::setWindowState(Qt::WindowFullScreen);
     QWidget::setFixedSize(1280, 720);
+
+    if(industrialGraphics)
+        currentLevelType = INDUSTRIAL;
+    else
+        currentLevelType = GRASS;
 
     if(showDevOpts)
     {
@@ -44,10 +49,21 @@ SuperCopRMGame::SuperCopRMGame(QWidget *parent)
     if(showDevOpts)
         qDebug() << "Setting Background...";
 
-    QPixmap bkgnd("Assets/UI/background.png");
-    bkgnd = bkgnd.scaled(this->width(), this->height(), Qt::IgnoreAspectRatio);
     QPalette palette;
-    palette.setBrush(QPalette::Background, bkgnd);
+
+    if(industrialGraphics)
+    {
+        QPixmap bkgnd("Assets/UI/fire_background.png");
+        bkgnd = bkgnd.scaled(this->width(), this->height(), Qt::IgnoreAspectRatio);
+        palette.setBrush(QPalette::Background, bkgnd);
+    }
+    else
+    {
+        QPixmap bkgnd("Assets/UI/grass_background.png");
+        bkgnd = bkgnd.scaled(this->width(), this->height(), Qt::IgnoreAspectRatio);
+        palette.setBrush(QPalette::Background, bkgnd);
+    }
+
     this->setPalette(palette);
 
     if(showDevOpts)
@@ -468,6 +484,9 @@ void SuperCopRMGame::setShowDevOpts(bool devOpts)
 void SuperCopRMGame::InitLevel()
 {
     lb->LoadLevel(1, view, showDevOpts);
+
+    if(currentLevelType == INDUSTRIAL)
+        lb->SetLevelType(INDUSTRIAL);
 
     if(showDevOpts)
         qDebug() << "Loading player to Scene...";

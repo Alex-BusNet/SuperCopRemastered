@@ -43,6 +43,8 @@ public:
     int getGround();
     QPoint GetPlayerStart();
 
+    void SetLevelType(LevelType lt);
+
     void ClearView(GameView *view);
 
 private:

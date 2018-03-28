@@ -25,6 +25,8 @@ private slots:
 
     void on_playSCPB_clicked();
 
+    void on_industrialCB_stateChanged(int arg1);
+
 private:
     Ui::MainWindow *ui;
     SuperCopRMGame *scrmg;

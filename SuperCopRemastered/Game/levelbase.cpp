@@ -257,6 +257,8 @@ void LevelBase::LoadLevel(int levelNum, GameView *view, bool devMode)
 
 void LevelBase::drawLevelBase(QPainter &painter, bool devMode)
 {
+    painter.setPen(QPen(Qt::white));
+
     if(devMode)
     {
         painter.drawText(20, 190, QString("Player items collided: %1").arg(collidedItems));
@@ -837,6 +839,35 @@ int LevelBase::getGround()
 QPoint LevelBase::GetPlayerStart()
 {
     return playerStart;
+}
+
+void LevelBase::SetLevelType(LevelType lt)
+{
+    foreach(QGraphicsPixmapItem *pi, floorItems)
+    {
+        int idx = floorItems.indexOf(pi);
+        if(idx != -1)
+        {
+            if(levelFloor.at(idx)->GetLevelType() != NO_LEVEL_TYPE)
+            {
+                levelFloor.at(idx)->SetType(lt, levelFloor.at(idx)->GetType());
+                pi->setPixmap(*levelFloor.at(idx)->GetTexture());
+            }
+        }
+    }
+
+    foreach(QGraphicsPixmapItem *pi, obstacleItems)
+    {
+        int idx = obstacleItems.indexOf(pi);
+        if(idx != -1)
+        {
+            if(obstacles.at(idx)->GetLevelType() != NO_LEVEL_TYPE)
+            {
+                obstacles.at(idx)->SetType(lt, obstacles.at(idx)->GetType());
+                pi->setPixmap(*obstacles.at(idx)->GetTexture());
+            }
+        }
+    }
 }
 
 void LevelBase::ClearView(GameView *view)

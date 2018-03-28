@@ -78,6 +78,8 @@ Size Player::getSize()
 
 void Player::drawPlayer(QPainter &painter, bool devMode)
 {
+    painter.setPen(QPen(Qt::white));
+
     if(devMode)
     {
         painter.drawText(20, 70, QString("Player last state: %1").arg(PlayerStateStrings[lastState]));

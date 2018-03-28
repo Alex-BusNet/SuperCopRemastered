@@ -29,7 +29,7 @@ using namespace std;
 class SuperCopRMGame : public QWidget
 {
 public:
-    SuperCopRMGame(QWidget *parent = NULL);
+    SuperCopRMGame(QWidget *parent = NULL, bool industrialGraphics = false);
     ~SuperCopRMGame();
 
     void paintEvent(QPaintEvent *e);
@@ -59,6 +59,8 @@ private:
 
     QGamepadKeyNavigation *gpkn;
     QGamepadManager *gpm;
+
+    LevelType currentLevelType;
 
     int picX,picY;
     int picHeight, picWidth;
