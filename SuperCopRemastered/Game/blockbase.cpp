@@ -106,7 +106,7 @@ QRect *BlockBase::GetLeftBoundingBox()
 
 QRect *BlockBase::GetRightBoundingBox()
 {
-    return new QRect(boundingBox->x() + boundingBox->width() - 5, boundingBox->y() + 10, 10, boundingBox->height() - 20);
+    return new QRect(boundingBox->x() + boundingBox->width() - 5, boundingBox->y() + 10, 10, boundingBox->height() -+ 20);
 }
 
 QRect *BlockBase::GetTopBoundingBox()

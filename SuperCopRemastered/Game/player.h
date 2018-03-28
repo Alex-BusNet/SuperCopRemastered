@@ -33,16 +33,21 @@
 // Higher drag coeff = reach max speed faster
 #define PLAYER_DRAG_COEFF         0.25f
 
-// Vy = 18.182 units/s
-#define PLAYER_INITIAL_Y_VELOCITY 18.182f //5.0f
+// Initial Vy is for Minimum jump height (early release of jump button)
+#define PLAYER_INITIAL_Y_VELOCITY 14.8324f
+// Vy for jumping while walking L/R
+#define PLAYER_MID_Y_VELOCITY     18.182f
+// Max Vy is for Max jump height (holding jump button)
+#define PLAYER_MAX_Y_VELOCITY     22.0f
 #define PLAYER_Y_PX_PER_UPDATE    9.0f
 
 // Pixels per unit where 1 unit is a single block
 #define UNIT_SCALE_FACTOR         70.0f
 // Minimum units player should jump before falling.
-#define MIN_JUMP_HEIGHT           2.5f
+#define MIN_JUMP_HEIGHT           2.4f
+#define MID_JUMP_HEIGHT
 // Gravity is in px/s^2 where 70px = 1 unit
-#define GRAVITY_FACTOR            3080.0f
+#define GRAVITY_FACTOR            44.0f//3080.0f
 
 class Player
 {
@@ -129,7 +134,7 @@ private:
 
     bool shouldPlayerSprint;
 
-    bool jumping, pause, running;
+    bool jumping, pause, running, canJump;
     bool playerOnObstacle, leftWallCollided, rightWallCollided;
 
     PlayerState lastState, pState, nextState;

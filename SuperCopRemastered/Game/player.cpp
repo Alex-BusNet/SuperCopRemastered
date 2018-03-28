@@ -49,6 +49,7 @@ Player::Player(int parentWidth, int parentHeight)
 
     jumping = false;
     playerOnObstacle = true;
+    canJump = true;
     pState = lastState = nextState = IDLE;
 
     playerPixmap = NULL;
@@ -133,6 +134,7 @@ void Player::Reset()
     lastActionPressed = NONE;
     playerDirection = EAST;
     jumping = false;
+    canJump = true;
     playerOnObstacle = true;
     speedX = PLAYER_INITIAL_X_VELOCITY;
     speedY = PLAYER_INITIAL_Y_VELOCITY;
@@ -341,29 +343,42 @@ void Player::playerAction(uint8_t action, bool sprint, bool bonusHit)
                 nextState = IDLE;
             else if(nextState == RUNNING_LEFT && ((action & 0b0001) == 0b0001))
                 nextState = IDLE;
+
+            if(pState == RUNNING_RIGHT || pState == RUNNING_LEFT) pState = IDLE;
         }
 
         if((action & 0b0100) == 0b0100) // Is jump pressed?
         {
-            if(pState == RUNNING_LEFT || pState == RUNNING_RIGHT)
+            if(canJump)
             {
-                nextState = pState;
-                pState = JUMPING;
-                speedY = PLAYER_INITIAL_Y_VELOCITY;
-                jumpStart = framePerSecondCount;
-            }
-            else if(pState == IDLE)
-            {
-                pState = JUMPING;
-                speedY = PLAYER_INITIAL_Y_VELOCITY;
-                jumpStart = framePerSecondCount;
-            }
-            else
-            {
-                if(pState != FALLING && !jumping)
+                canJump = false;
+                if(pState == RUNNING_LEFT || pState == RUNNING_RIGHT)
+                {
+                    nextState = pState;
+                    pState = JUMPING;
+                    if(shouldPlayerSprint)
+                        speedY = PLAYER_MAX_Y_VELOCITY;
+                    else
+                        speedY = PLAYER_MID_Y_VELOCITY;
+                    jumpStart = framePerSecondCount;
+                }
+                else if(pState == IDLE)
                 {
                     pState = JUMPING;
+                    speedY = PLAYER_MID_Y_VELOCITY;
                     jumpStart = framePerSecondCount;
+                }
+                else
+                {
+                    if(pState != FALLING && !jumping)
+                    {
+                        pState = JUMPING;
+                        jumpStart = framePerSecondCount;
+                    }
+                    else
+                    {
+                        pState == FALLING;
+                    }
                 }
             }
 
@@ -376,6 +391,7 @@ void Player::playerAction(uint8_t action, bool sprint, bool bonusHit)
                 qDebug() << "Min jump reached";
                 pState = FALLING;
             }
+            canJump = true;
         }
 
         if((action & 0b1111) == 0b0000) // Are no keys pressed?
@@ -472,9 +488,11 @@ void Player::jump()
 
         int currentFrame = framePerSecondCount;
         if(currentFrame < jumpStart) currentFrame += 60;
-        float height = (std::pow(((float)(currentFrame - jumpStart) / 60.0f), 2.0f) * GRAVITY_FACTOR) / 2.0f;
+        float frameDelta = ((float)(currentFrame - jumpStart)) / 60.0f;
+
+        float height = UNIT_SCALE_FACTOR * ((speedY * frameDelta) - (std::pow(frameDelta, 2.0f) * GRAVITY_FACTOR * 0.5f));
         heightDelta = height - lastHeight;
-//        qDebug() << "Height: " << height << " heightDelta: " << heightDelta << " TimeDelta: " << (currentFrame - jumpStart);
+//        qDebug() << "Height: " << height << "\theightDelta: " << heightDelta << "\tTimeDelta: " << (currentFrame - jumpStart) << "\tFrame delta: " << frameDelta;
 
         if(speedX > PLAYER_IDLE_VELOCITY)
         {
@@ -487,15 +505,17 @@ void Player::jump()
             else if(nextState == RUNNING_RIGHT) playerDirection = EAST;
         }
 
-        setPosY(posY - heightDelta);
-
-        if(height >= (5.5*UNIT_SCALE_FACTOR))
+        if((lastHeight != 0) && (heightDelta <= 0))
         {
             frame = 1;
             pState = FALLING;
             lastState = JUMPING;
             heightDelta = 0;
             lastHeight = 0;
+        }
+        else
+        {
+            setPosY(posY - heightDelta);
         }
 
         lastHeight = height;

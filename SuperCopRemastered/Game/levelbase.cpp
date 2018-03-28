@@ -344,11 +344,11 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
             collideList = p->GetFallViewBB()->collidingItems();
             pCollisionRect = p->GetFallViewBB()->rect().toRect();
         }
-//        else if(p->getState() == JUMPING)
-//        {
-//            collideList = p->GetJumpViewBB()->collidingItems();
-//            pCollisionRect = p->GetJumpViewBB()->rect().toRect();
-//        }
+        else if(p->getState() == JUMPING)
+        {
+            collideList = p->GetJumpViewBB()->collidingItems();
+            pCollisionRect = p->GetJumpViewBB()->rect().toRect();
+        }
         else
         {
             collideList = p->GetViewBB()->collidingItems();
@@ -441,7 +441,7 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
                     qDebug() << "Left collision: " << leftWallCollision << " Right wall collision: " << rightWallCollision << " Top block collision: " << topBlockCollision << " Bottom block collision: " << bottomBlockCollision << " Block type: " << nearestObsY->GetType();
                 }
 
-                if(topBlockCollision)
+                if(topBlockCollision && !leftWallCollision && !rightWallCollision)
                 {
                     if(devMode)
                         qDebug() << "Player on obstacle";
@@ -603,21 +603,21 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
         QList<QGraphicsItem*> collideList;
         QRect pCollisionRect;
 
-//        if(p->getState() == FALLING)
-//        {
-//            collideList = p->GetFallViewBB()->collidingItems();
-//            pCollisionRect = p->GetFallViewBB()->rect().toRect();
-//        }
-//        else if(p->getState() == JUMPING)
-//        {
-//            collideList = p->GetJumpViewBB()->collidingItems();
-//            pCollisionRect = p->GetJumpViewBB()->rect().toRect();
-//        }
-//        else
-//        {
+        if(p->getState() == FALLING)
+        {
             collideList = p->GetFallViewBB()->collidingItems();
             pCollisionRect = p->GetFallViewBB()->rect().toRect();
-//        }
+        }
+        else if(p->getState() == JUMPING)
+        {
+            collideList = p->GetJumpViewBB()->collidingItems();
+            pCollisionRect = p->GetJumpViewBB()->rect().toRect();
+        }
+        else
+        {
+            collideList = p->GetFallViewBB()->collidingItems();
+            pCollisionRect = p->GetFallViewBB()->rect().toRect();
+        }
 
         foreach(QGraphicsItem* item, collideList)
         {
