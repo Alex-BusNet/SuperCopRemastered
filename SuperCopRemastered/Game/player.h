@@ -10,6 +10,7 @@
 #include <QRect>
 #include <QGraphicsPixmapItem>
 #include <QGraphicsRectItem>
+#include <chrono>
 
 #define IDLE_FRAME_COUNT          1
 #define RUN_FRAME_COUNT           3
@@ -18,12 +19,35 @@
 #define FALLING_FRAME_COUNT       4
 #define VICTORY_FRAME_COUNT       5
 
-#define PLAYER_INITIAL_X_VELOCITY 20.0f
-#define PLAYER_INITIAL_Y_VELOCITY 5.0f
-#define PLAYER_FALLING_X_VELOCITY 2.0f
-#define PLAYER_Y_PX_PER_UPDATE    9.0f
+#define PLAYER_INITIAL_X_VELOCITY 1.0f
+#define PLAYER_WALK_VELOCITY      7.0f
+#define PLAYER_MAX_X_VELOCITY     15.0f
+
+// Used for drifting
+// X px per update; is only used when drifting
+#define PLAYER_FALLING_X_VELOCITY 7.0f
+#define PLAYER_X_PX_PER_UPDATE    9.0f
+#define PLAYER_IDLE_VELOCITY      0.0f
+// Used with sliding. Currently disabled
 #define COEFF_OF_FRICTION         0.5f
-#define GRAVITY_FACTOR            0.9f
+// Higher drag coeff = reach max speed faster
+#define PLAYER_DRAG_COEFF         0.25f
+
+// Initial Vy is for Minimum jump height (early release of jump button)
+#define PLAYER_INITIAL_Y_VELOCITY 14.8324f
+// Vy for jumping while walking L/R
+#define PLAYER_MID_Y_VELOCITY     18.182f
+// Max Vy is for Max jump height (holding jump button)
+#define PLAYER_MAX_Y_VELOCITY     22.0f
+#define PLAYER_Y_PX_PER_UPDATE    9.0f
+
+// Pixels per unit where 1 unit is a single block
+#define UNIT_SCALE_FACTOR         70.0f
+// Minimum units player should jump before falling.
+#define MIN_JUMP_HEIGHT           2.4f
+#define MID_JUMP_HEIGHT
+// Gravity is in px/s^2 where 70px = 1 unit
+#define GRAVITY_FACTOR            44.0f//3080.0f
 
 class Player
 {
@@ -34,6 +58,7 @@ public:
 
     void drawPlayer(QPainter &painter, bool devMode);
     void changeImage(QString str);
+
     void playerScreenPos();
     void Reset();
 
@@ -64,7 +89,6 @@ public:
     void setPosX(int x);
     void setPosY(int y);
     void setSize(Size s);
-    void setOnGround(bool onGround);
     void setSpeedY(int y);
     void setJumping(bool jump);
     void setWallCollided(int side, bool wallCollided);
@@ -72,9 +96,8 @@ public:
     void setSpeedX(int spd);
     void setRectPosX(int x);
     void setRectPosY(int y);
-    void setInGap(bool gap);
     void SetVictory();
-    void SetOnObstactle(bool onObs);
+    void SetOnObstactle(bool onObs, int obsY);
 
     int GetPosX();
     int GetPosY();
@@ -92,13 +115,12 @@ public:
     Size getSize();
 
     bool isJumping();
-    bool isOnGround();
     bool isWallCollided();
     bool isOnObstacle();
-    bool isInGap();
+    bool hasReachedMinJump();
 
 public slots:
-    void playerAction(int action);
+    void playerAction(uint8_t action, bool sprint, bool bonusHit = false);
 
 private:
     void jump();
@@ -110,12 +132,16 @@ private:
     void fall();
     void Celebrate();
 
-    bool jumping, pause, running;
-    bool onGround, playerOnObstacle, leftWallCollided, rightWallCollided, inGap;
+    bool shouldPlayerSprint;
+
+    bool jumping, pause, running, canJump;
+    bool playerOnObstacle, leftWallCollided, rightWallCollided;
 
     PlayerState lastState, pState, nextState;
     QGraphicsPixmapItem *playerPixmap;
     QGraphicsRectItem *playerBB, *fallViewBB, *jumpViewBB;
+
+    int framePerSecondCount;
 
     int rectPosX, rectPosY, rectSizeX, rectSizeY;
     int posX, posY;
@@ -123,8 +149,9 @@ private:
     Size size;
     QRect *boundingBox, *fallBB, *jumpBB;
 
-    float speedX;
+    float speedX, speedY;
     float jumpSpeed;
+    float heightDelta, lastHeight;
 
     int frame;
     int leftBound, rightBound;
@@ -132,6 +159,9 @@ private:
     int lastActionPressed;
     int playerDirection;
     int glideDistance;
+
+//    std::chrono::steady_clock::time_point jumpStart;
+    int jumpStart;
 
     QString PlayerStateStrings[8] = {"IDLE", "RUNNING_RIGHT", "JUMPING", "SLIDING", "RUNNING_LEFT", "FALLING", "PAUSED", "VICTORY"};
 

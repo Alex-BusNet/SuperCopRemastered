@@ -75,6 +75,8 @@ private:
     QPixmap *floor;
     QRect *rect;
 
+
+    QGraphicsRectItem *nullHolder;
     bool updateStatus;
 
     QPoint playerStart;
@@ -83,6 +85,7 @@ private:
 signals:
     void EnemyDefeated(int value);
     void EndOfGame(bool endOfLevel);
+
 };
 
 #endif // LEVELBASE_H

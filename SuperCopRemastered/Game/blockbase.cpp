@@ -101,22 +101,62 @@ QRect *BlockBase::GetBoundingBox()
 
 QRect *BlockBase::GetLeftBoundingBox()
 {
-    return new QRect(boundingBox->x(), boundingBox->y() + 5, 5, boundingBox->height() - 10);
+    return new QRect(boundingBox->x() - 5, boundingBox->y() + 10, 10, boundingBox->height() - 20);
 }
 
 QRect *BlockBase::GetRightBoundingBox()
 {
-    return new QRect(boundingBox->x() + boundingBox->width() - 5, boundingBox->y() + 5, 5, boundingBox->height() - 10);
+    return new QRect(boundingBox->x() + boundingBox->width() - 5, boundingBox->y() + 10, 10, boundingBox->height() -+ 20);
 }
 
 QRect *BlockBase::GetTopBoundingBox()
 {
-    return new QRect(boundingBox->x() + 5, boundingBox->y() - 10, boundingBox->width() - 10, 20);
+    return new QRect(boundingBox->x(), boundingBox->y() - 20, boundingBox->width(), 40);
 }
 
 QRect *BlockBase::GetBottomBoundingBox()
 {
-    return new QRect(boundingBox->x() + 5, boundingBox->y() + boundingBox->height() - 10, boundingBox->width() - 10, 20);
+    return new QRect(boundingBox->x()+5, boundingBox->y() + boundingBox->height() - 20, boundingBox->width() - 10, 30);
+}
+
+void BlockBase::SetBottomGBB(QGraphicsRectItem *bb)
+{
+    bottomBB = bb;
+}
+
+void BlockBase::SetTopGBB(QGraphicsRectItem *bb)
+{
+    topBB = bb;
+}
+
+void BlockBase::SetLeftGBB(QGraphicsRectItem *bb)
+{
+    leftBB = bb;
+}
+
+void BlockBase::SetRightGBB(QGraphicsRectItem *bb)
+{
+    rightBB = bb;
+}
+
+QGraphicsRectItem *BlockBase::GetBottomGBB()
+{
+    return bottomBB;
+}
+
+QGraphicsRectItem *BlockBase::GetTopGBB()
+{
+    return topBB;
+}
+
+QGraphicsRectItem *BlockBase::GetLeftGBB()
+{
+    return leftBB;
+}
+
+QGraphicsRectItem *BlockBase::GetRightGBB()
+{
+    return rightBB;
 }
 
 QPixmap *BlockBase::GetTexture()
