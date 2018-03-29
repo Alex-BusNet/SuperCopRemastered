@@ -47,6 +47,7 @@ public:
 
     void ClearView(GameView *view);
 
+    QVector<QVector<int>> GetParsedView();
 
 private:
     // The floor of the level. A NO_LEVEL_TYPE represents a gap
