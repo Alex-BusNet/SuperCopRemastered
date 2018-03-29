@@ -786,10 +786,18 @@ void Player::SetOnObstactle(bool onObs, int obsY)
         if(nextState == RUNNING_LEFT)
         {
             pState = RUNNING_LEFT;
+            if(speedX > PLAYER_INITIAL_X_VELOCITY)
+                speedX = PLAYER_MAX_X_VELOCITY;
+            else if( speedX > PLAYER_IDLE_VELOCITY)
+                speedX = PLAYER_INITIAL_X_VELOCITY;
         }
         else if(nextState == RUNNING_RIGHT)
         {
             pState = RUNNING_RIGHT;
+            if(speedX > PLAYER_INITIAL_X_VELOCITY)
+                speedX = PLAYER_MAX_X_VELOCITY;
+            else if( speedX > PLAYER_IDLE_VELOCITY)
+                speedX = PLAYER_INITIAL_X_VELOCITY;
         }
         else if(pState != VICTORY)
         {
@@ -809,7 +817,7 @@ void Player::SetOnObstactle(bool onObs, int obsY)
     {
         pState = FALLING;
         jumping = true;
-        speedX = PLAYER_FALLING_X_VELOCITY;
+//        speedX = PLAYER_FALLING_X_VELOCITY;
     }
 }
 

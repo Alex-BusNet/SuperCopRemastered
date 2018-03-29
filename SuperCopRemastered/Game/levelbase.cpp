@@ -750,7 +750,15 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
                 y = (pos.y() / 70) % 10;
 
                 if(obstacles.at(idx)->GetType() != NO_BLOCK_TYPE && obstacles.at(idx)->GetType() != GAP_BLOCK)
-                    parsedView[y][x] = 1;
+                {
+                    if(obstacles.at(idx)->GetType() == BONUS)
+                        parsedView[y][x] = 5;
+                    else if(obstacles.at(idx)->GetType() == GOAL || obstacles.at(idx)->GetType() == GOAL_MIDDLE || obstacles.at(idx)->GetType() == GOAL_BASE)
+                        parsedView[y][x] = 6;
+                    else
+                        parsedView[y][x] = 1;
+
+                }
             }
 
             // If we are looking at items out side the right most part of the screen,
@@ -996,6 +1004,25 @@ void LevelBase::ClearView(GameView *view)
         }
     }
     enemyBBs.clear();
+
+    foreach(QGraphicsPixmapItem *p, donutItems)
+    {
+        if(p != NULL)
+        {
+            view->removePixmap(p);
+            delete p;
+        }
+    }
+
+    donutItems.clear();
+
+    foreach(ItemBase *i, donuts)
+    {
+        if(i != NULL)
+            delete i;
+    }
+
+    donuts.clear();
 
     view->ClearScene();
 
