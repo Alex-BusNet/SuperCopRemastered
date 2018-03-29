@@ -8,6 +8,11 @@ SuperCopRMGame::SuperCopRMGame(QWidget *parent, bool industrialGraphics)
 //    QWidget::setWindowState(Qt::WindowFullScreen);
     QWidget::setFixedSize(1280, 720);
 
+    if(industrialGraphics)
+        currentLevelType = INDUSTRIAL;
+    else
+        currentLevelType = GRASS;
+
     if(showDevOpts)
     {
         qDebug() << "Height: " << this->height();
@@ -31,7 +36,7 @@ SuperCopRMGame::SuperCopRMGame(QWidget *parent, bool industrialGraphics)
     view = new GameView(this);
     view->setGeometry(0, 0 , 1280, 720);
 
-    InitLevel(currentLevelType);
+    InitLevel();
 
     msg = new QMessageBox();
     pbox = new QMessageBox();
@@ -50,15 +55,15 @@ SuperCopRMGame::SuperCopRMGame(QWidget *parent, bool industrialGraphics)
 
     QPalette palette;
 
-    if(!industrialGraphics)
+    if(industrialGraphics)
     {
-        QPixmap bkgnd("Assets/UI/grass_background.png");
+        QPixmap bkgnd("Assets/UI/fire_background.png");
         bkgnd = bkgnd.scaled(this->width(), this->height(), Qt::IgnoreAspectRatio);
         palette.setBrush(QPalette::Background, bkgnd);
     }
     else
     {
-        QPixmap bkgnd("Assets/UI/fire_background.png");
+        QPixmap bkgnd("Assets/UI/grass_background.png");
         bkgnd = bkgnd.scaled(this->width(), this->height(), Qt::IgnoreAspectRatio);
         palette.setBrush(QPalette::Background, bkgnd);
     }
@@ -156,10 +161,10 @@ void SuperCopRMGame::keyPressEvent(QKeyEvent *evt)
         keyPressState |= 0b0100;
         isUpPressed = true;
         break;
-    case Qt::Key_Space:
-        keyPressState |= 0b0100;
-        isUpPressed = true;
-        break;
+//    case Qt::Key_Space:
+//        keyPressState |= 0b0100;
+//        isUpPressed = true;
+//        break;
     case Qt::Key_Right:
         keyPressState |= 0b0010;
         isRightPressed = true;
@@ -213,10 +218,10 @@ void SuperCopRMGame::keyReleaseEvent(QKeyEvent *evt)
         keyPressState &= 0b1011;
         isUpPressed = false;
         break;
-    case Qt::Key_Space:
-        keyPressState &= 0b1011;
-        isUpPressed = false;
-        break;
+//    case Qt::Key_Space:
+//        keyPressState &= 0b1011;
+//        isUpPressed = false;
+//        break;
     case Qt::Key_Right:
         keyPressState &= 0b1101;
         isRightPressed = false;
@@ -327,7 +332,7 @@ void SuperCopRMGame::GameOver(bool endOfLevel)
         delete gameOverBox;
 
         lb->ClearView(view);
-        InitLevel(currentLevelType);
+        InitLevel();
         player->Reset();
         view->ensureVisible(player->GetViewPixmap(), 200, 70);
     }
@@ -484,12 +489,12 @@ void SuperCopRMGame::setShowDevOpts(bool devOpts)
     this->showDevOpts = devOpts;
 }
 
-void SuperCopRMGame::InitLevel(LevelType lt)
+void SuperCopRMGame::InitLevel()
 {
     lb->LoadLevel(1, view, showDevOpts);
 
-    if(lt != GRASS) // Since we only have one level, GRASS is its default.
-        lb->SetLevelType(lt);
+    if(currentLevelType == INDUSTRIAL)
+        lb->SetLevelType(INDUSTRIAL);
 
     if(showDevOpts)
         qDebug() << "Loading player to Scene...";

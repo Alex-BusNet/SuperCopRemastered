@@ -14,9 +14,9 @@
 
 #define IDLE_FRAME_COUNT          1
 #define RUN_FRAME_COUNT           3
-#define JUMP_FRAME_COUNT          4
+#define JUMP_FRAME_COUNT          1 // Old anim: 4
 #define SLIDE_FRAME_COUNT         8
-#define FALLING_FRAME_COUNT       4
+#define FALLING_FRAME_COUNT       1 // Old anim: 4
 #define VICTORY_FRAME_COUNT       5
 
 #define PLAYER_INITIAL_X_VELOCITY 1.0f
@@ -98,6 +98,8 @@ public:
     void setRectPosY(int y);
     void SetVictory();
     void SetOnObstactle(bool onObs, int obsY);
+
+    void SetLevelType(LevelType lt);
 
     int GetPosX();
     int GetPosY();

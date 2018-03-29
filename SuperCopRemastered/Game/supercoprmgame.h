@@ -40,7 +40,7 @@ public:
     void setShowDevOpts(bool devOpts);
 
 private:
-    void InitLevel(LevelType lt);
+    void InitLevel();
 
     Player *player;
     QGraphicsPixmapItem *playerPixmap;
@@ -60,6 +60,8 @@ private:
     QGamepadKeyNavigation *gpkn;
     QGamepadManager *gpm;
 
+    LevelType currentLevelType;
+
     int picX,picY;
     int picHeight, picWidth;
     int lastKeyPress;
@@ -78,8 +80,6 @@ private:
 
     Donut *levelEnd;
     int moveSpeed;
-
-    LevelType currentLevelType;
 
     QPushButton *resume;
     QPushButton *exit;

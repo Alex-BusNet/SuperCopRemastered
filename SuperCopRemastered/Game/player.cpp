@@ -11,7 +11,7 @@ Player::Player(int parentWidth, int parentHeight)
     posX = 130; //(parent->width() / 5) + 10;
     size.x = 95;
     size.y = 93;
-    posY = parentHeight - 89;
+    posY = parentHeight - 95;
 
     idleImagePath = QString("Assets/Idle/%1/Idle(%2).png");
     runImagePath = QString("Assets/Running/%1/Run(%2).png");
@@ -37,10 +37,10 @@ Player::Player(int parentWidth, int parentHeight)
     rectSizeX = size.x - 30;// - 5;
     rectSizeY = size.y - 15;
 
-    boundingBox = new QRect(posX + 8, posY, 30, size.y);
-    jumpBB = new QRect(posX + 13, posY - 5, 30, 5);
+    boundingBox = new QRect(posX + 30, posY + 45, 42, 35);
+    jumpBB = new QRect(posX + 25, posY, 52, 45);
     jumpViewBB = NULL;
-    fallBB = new QRect(posX + 13, posY + size.y, 30, 40);
+    fallBB = new QRect(posX + 40, posY + 75, 26, 29);
     fallViewBB = NULL;
 
     leftBound = parentWidth / 6;
@@ -78,6 +78,8 @@ Size Player::getSize()
 
 void Player::drawPlayer(QPainter &painter, bool devMode)
 {
+    painter.setPen(QPen(Qt::white));
+
     if(devMode)
     {
         painter.drawText(20, 70, QString("Player last state: %1").arg(PlayerStateStrings[lastState]));
@@ -212,8 +214,8 @@ void Player::SetViewPixmap(QGraphicsPixmapItem *item)
 void Player::SetViewBB(QGraphicsRectItem *item)
 {
     this->playerBB = item;
-    playerBB->setRect(posX, posY, 40, 93);
-    playerBB->setPos(0,0);
+    playerBB->setRect(posX + 30, posY + 45, 42, 35);
+    playerBB->setPos(0, 0);
 }
 
 void Player::SetFallBB(QGraphicsRectItem *item)
@@ -799,7 +801,7 @@ void Player::SetOnObstactle(bool onObs, int obsY)
         nextState = IDLE;
 
         jumpSpeed = PLAYER_INITIAL_Y_VELOCITY;
-        setPosY(obsY - 89);
+        setPosY(obsY - 95);
         heightDelta = 0;
         lastHeight = 0;
     }
@@ -840,19 +842,19 @@ void Player::setPosX(int x)
 
     if(playerBB != NULL)
     {
-        playerBB->setRect(posX + 13, posY + 40, 34, 28);
+        playerBB->setRect(posX + 30, posY + 45, 42, 35);
         playerBB->setPos(0, 0);
     }
 
     if(jumpViewBB != NULL)
     {
-        jumpViewBB->setRect(posX + 8, posY, 44, 40);
+        jumpViewBB->setRect(posX + 25, posY, 52, 45);
         jumpViewBB->setPos(0,0);
     }
 
     if(fallViewBB != NULL)
     {
-        fallViewBB->setRect(posX + 15, posY + 69, 30, 25);
+        fallViewBB->setRect(posX + 40, posY + 75, 26, 29);
         fallViewBB->setPos(0,0);
     }
 
@@ -868,19 +870,19 @@ void Player::setPosY(int y)
 
     if(playerBB != NULL)
     {
-        playerBB->setRect(posX + 13, posY + 40, 34, 28);
+        playerBB->setRect(posX + 30, posY + 45, 42, 35);
         playerBB->setPos(0, 0);
     }
 
     if(jumpViewBB != NULL)
     {
-        jumpViewBB->setRect(posX + 8, posY, 44, 40);
+        jumpViewBB->setRect(posX + 25, posY, 52, 45);
         jumpViewBB->setPos(0,0);
     }
 
     if(fallViewBB != NULL)
     {
-        fallViewBB->setRect(posX + 15, posY + 69, 30, 25);
+        fallViewBB->setRect(posX + 40, posY + 75, 26, 29);
         fallViewBB->setPos(0,0);
     }
 }
