@@ -127,11 +127,15 @@ robocoprmgame::robocoprmgame(QWidget *parent, bool industrialGraphics) :
 
     if(showDevOpts)
         qDebug() << "Done.";
-
     server = new QTcpServer(this);
     server->listen(QHostAddress::Any, 5300);
     connected=false;
     connect(server, SIGNAL(newConnection()), this, SLOT(newConnect()));
+
+    timer = new QTimer();
+    timer->setInterval(100);
+    connect(timer, SIGNAL(timeout()), this, SLOT(sendVisibleTerrain()));
+    timer->start();
 }
 
 robocoprmgame::~robocoprmgame()
@@ -490,6 +494,26 @@ void robocoprmgame::setShowDevOpts(bool devOpts)
     this->showDevOpts = devOpts;
 }
 
+void robocoprmgame::sendVisibleTerrain()
+{
+    if(connected){
+        QVector<QVector<int>> temp = lb->GetParsedView();
+        QByteArray outData;
+        outData.append("VisibleTerrain;");
+        QString str ="";
+        for(int i = 0; i<10;i++){
+            for(int j=0;j<18;j++){
+                int tmp =temp.at(i).at(j);
+                if(tmp !=0){
+                    str = QString::number(tmp)+":"+QString::number(i)+":"+QString::number(j)+";";
+                    outData.append(str);
+                }
+            }
+        }
+        socket->write(outData);
+    }
+}
+
 void robocoprmgame::InitLevel()
 {
     lb->LoadLevel(1, view, showDevOpts);
@@ -539,6 +563,7 @@ void robocoprmgame::newConnect()
         //Connects the socket to read and disconnect functions
         connect(socket, SIGNAL(readyRead()),this, SLOT(readyRead()));
         connect(socket, SIGNAL(disconnected()),this, SLOT(Disconnected()));
+        connected=true;
     }
 }
 

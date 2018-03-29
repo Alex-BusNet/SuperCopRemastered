@@ -101,6 +101,7 @@ private slots:
     void newConnect();
     void Disconnected();
     void readyRead();
+    void sendVisibleTerrain();
 
 };
 

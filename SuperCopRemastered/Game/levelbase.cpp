@@ -1027,4 +1027,18 @@ void LevelBase::ClearView(GameView *view)
 
     view->ClearScene();
 
+}
+
+QVector<QVector<int> > LevelBase::GetParsedView()
+{
+    QVector<QVector<int>> tempVec;
+    for(int i = 0; i<10;i++){
+        QVector<int> innerVec;
+        for(int j=0;j<18;j++){
+           innerVec.push_back(parsedView[i][j]);
+        }
+        tempVec.push_back(innerVec);
+    }
+
+    return tempVec;
 }//Draws the floor
