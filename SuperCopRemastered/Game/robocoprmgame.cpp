@@ -238,6 +238,7 @@ void robocoprmgame::keyReleaseEvent(Qt::Key key)
         isLeftPressed = false;
         break;
     case Qt::Key_Down:
+        keyPressState &= 0b0000;
         isDownPressed = false;
         break;
     default:
@@ -569,6 +570,8 @@ void robocoprmgame::readyRead()
         //actionInput(Qt::Key_Down);
         //keyPressEvent(Qt::Key_Down);
         keyReleaseEvent(Qt::Key_Down);
+        //keyReleaseEvent(Qt::Key_Left);
+        //keyReleaseEvent(Qt::Key_Right);
     }
     //ui->Log->setText(ui->Log->toPlainText()+data+'\n');
     //qDebug() << "log it" ;
