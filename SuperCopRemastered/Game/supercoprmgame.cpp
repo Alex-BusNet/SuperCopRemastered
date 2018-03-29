@@ -20,10 +20,6 @@ SuperCopRMGame::SuperCopRMGame(QWidget *parent, bool industrialGraphics)
     }
 
     lb = new LevelBase(this->width(), this->height());
-    if(industrialGraphics)
-        currentLevelType = INDUSTRIAL;
-    else
-        currentLevelType = GRASS;
 
     if(showDevOpts)
         qDebug() << "Loading player";
@@ -415,7 +411,7 @@ void SuperCopRMGame::paintEvent(QPaintEvent *e)
 
 void SuperCopRMGame::setHighScores()
 {
-    int scorefile = moveSpeed / 5;
+    int scorefile = 0; //moveSpeed / 5;
     QString filename = "Assets/highscores"+QString::number(scorefile)+".txt";
     ifstream scoreset;
     scoreset.open(filename.toStdString().c_str());

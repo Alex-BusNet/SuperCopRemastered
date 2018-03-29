@@ -276,15 +276,13 @@ void LevelBase::LoadLevel(int levelNum, GameView *view, bool devMode)
 
 void LevelBase::drawLevelBase(QPainter &painter, bool devMode)
 {
-    painter.setPen(QPen(Qt::white));
+    if(levelFloor.first()->GetLevelType() == GRASS)
+        painter.setPen(QPen(Qt::black));
+    else
+        painter.setPen(QPen(Qt::white));
 
     if(devMode)
     {
-        if(levelFloor.first()->GetLevelType() == GRASS)
-            painter.setPen(QPen(Qt::black));
-        else
-            painter.setPen(QPen(Qt::white));
-
         painter.drawText(20, 190, QString("Player items collided: %1").arg(collidedItems));
         painter.drawText(20, 200, QString("Player feet collided: %1").arg(feetItems));
         painter.drawText(20, 210, QString("Level Update: %1").arg(updateStatus));
@@ -303,6 +301,8 @@ void LevelBase::drawLevelBase(QPainter &painter, bool devMode)
                 painter.drawText((15 * x) + 215, (15 * y) + 50, QString(" %1 ").arg(parsedView[y][x]));
         }
     }
+
+    painter.drawRect(210, 45, (15*18) + 5, (10*15) + 5);
 
 }
 
@@ -549,13 +549,6 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
 
                         p->SetOnObstactle(false, 0);
                     }
-    //                else if(!leftWallCollision && !rightWallCollision)
-    //                {
-    //                    if(devMode)
-    //                        qDebug() << "Obstacle Clearing wall collisions";
-
-    //                    p->clearWallCollided();
-    //                }
                 }
             }
         }
@@ -639,7 +632,6 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
             donuts.replace(idx, NULL);
         }
     }
-
     else
     {
         QGraphicsItem* firstNonPlayer;
@@ -744,7 +736,7 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
             if(pos.x() >= 0 && pos.x() <= view->width()&& pos.y() >= 0 && pos.y() <= view->height())
             {
                 x = (pos.x() / 70) % 18;
-                y = ((pos.y() / 70) % 10)+1;
+                y = ((pos.y() / 70) % 10) + 1;
 
                 if(y >= 0 && y < 10)
                 {

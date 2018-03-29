@@ -72,15 +72,6 @@ private:
 
     bool isUpPressed, isDownPressed, isLeftPressed, isRightPressed, isSprintPressed, gamePaused, showDevOpts, gameOver;
 
-    vector<Donut*>donuts;
-    vector<int>donutspawn;
-    vector<int>enemyspawn;
-    vector<int>wallSpawn;
-    vector<int>platSpawn;
-
-    Donut *levelEnd;
-    int moveSpeed;
-
     QPushButton *resume;
     QPushButton *exit;
     QLabel *paused;

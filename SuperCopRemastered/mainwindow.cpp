@@ -25,7 +25,7 @@ void MainWindow::on_runNNPB_clicked()
     if(rcrmg != NULL)
         delete rcrmg;
 
-    rcrmg = new robocoprmgame();
+    rcrmg = new robocoprmgame(NULL, ui->industrialCB->isChecked());
 
     rcrmg->show();
 }
