@@ -25,7 +25,7 @@ void MainWindow::on_runNNPB_clicked()
     if(rcrmg != NULL)
         delete rcrmg;
 
-    rcrmg = new robocoprmgame();
+    rcrmg = new robocoprmgame(NULL, ui->industrialCB->isChecked());
 
     rcrmg->show();
 }
@@ -40,7 +40,19 @@ void MainWindow::on_playSCPB_clicked()
     if(scrmg != NULL)
         delete scrmg;
 
-    scrmg = new SuperCopRMGame();
+    scrmg = new SuperCopRMGame(NULL, ui->industrialCB->isChecked());
 
     scrmg->show();
+}
+
+void MainWindow::on_industrialCB_stateChanged(int arg1)
+{
+    if(ui->industrialCB->isChecked())
+    {
+        ui->bgLabel->setPixmap(QPixmap("Assets/UI/fire_background.png"));
+    }
+    else
+    {
+        ui->bgLabel->setPixmap(QPixmap("Assets/UI/grass_background.png"));
+    }
 }

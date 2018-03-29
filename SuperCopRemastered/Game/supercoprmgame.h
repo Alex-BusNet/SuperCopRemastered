@@ -29,7 +29,7 @@ using namespace std;
 class SuperCopRMGame : public QWidget
 {
 public:
-    SuperCopRMGame(QWidget *parent = NULL);
+    SuperCopRMGame(QWidget *parent = NULL, bool industrialGraphics = false);
     ~SuperCopRMGame();
 
     void paintEvent(QPaintEvent *e);
@@ -60,22 +60,17 @@ private:
     QGamepadKeyNavigation *gpkn;
     QGamepadManager *gpm;
 
+    LevelType currentLevelType;
+
     int picX,picY;
     int picHeight, picWidth;
     int lastKeyPress;
     int gamescore;
     int location;
 
-    bool isUpPressed, isDownPressed, isLeftPressed, isRightPressed, gamePaused, showDevOpts, gameOver;
+    uint8_t keyPressState;
 
-    vector<Donut*>donuts;
-    vector<int>donutspawn;
-    vector<int>enemyspawn;
-    vector<int>wallSpawn;
-    vector<int>platSpawn;
-
-    Donut *levelEnd;
-    int moveSpeed;
+    bool isUpPressed, isDownPressed, isLeftPressed, isRightPressed, isSprintPressed, gamePaused, showDevOpts, gameOver;
 
     QPushButton *resume;
     QPushButton *exit;

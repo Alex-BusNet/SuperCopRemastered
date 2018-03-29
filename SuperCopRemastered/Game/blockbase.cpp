@@ -42,7 +42,7 @@ void BlockBase::SetPosition(int x, int y)
 {
     this->posX = x;
     this->posY = y;    
-    boundingBox = new QRect(posX, posY, blockSize.x * xDim, blockSize.y * yDim);
+    boundingBox = new QRect(posX - 10, posY - 10, (blockSize.x * xDim) + 20, (blockSize.y * yDim) + 20);
 }
 
 void BlockBase::SetType(LevelType lType, BlockType bType)
@@ -101,22 +101,62 @@ QRect *BlockBase::GetBoundingBox()
 
 QRect *BlockBase::GetLeftBoundingBox()
 {
-    return new QRect(boundingBox->x(), boundingBox->y() + 5, 5, boundingBox->height() - 10);
+    return new QRect(boundingBox->x() + 5, boundingBox->y() + 15, 10, boundingBox->height() - 25);
 }
 
 QRect *BlockBase::GetRightBoundingBox()
 {
-    return new QRect(boundingBox->x() + boundingBox->width() - 5, boundingBox->y() + 5, 5, boundingBox->height() - 10);
+    return new QRect(boundingBox->x() + boundingBox->width() - 15, boundingBox->y() + 15, 10, boundingBox->height() - 25);
 }
 
 QRect *BlockBase::GetTopBoundingBox()
 {
-    return new QRect(boundingBox->x() + 5, boundingBox->y() - 10, boundingBox->width() - 10, 20);
+    return new QRect(boundingBox->x() + 10, boundingBox->y() - 10, boundingBox->width() - 20, 40);
 }
 
 QRect *BlockBase::GetBottomBoundingBox()
 {
-    return new QRect(boundingBox->x() + 5, boundingBox->y() + boundingBox->height() - 10, boundingBox->width() - 10, 20);
+    return new QRect(boundingBox->x() + 10, boundingBox->y() + boundingBox->height() - 30, boundingBox->width() - 20, 30);
+}
+
+void BlockBase::SetBottomGBB(QGraphicsRectItem *bb)
+{
+    bottomBB = bb;
+}
+
+void BlockBase::SetTopGBB(QGraphicsRectItem *bb)
+{
+    topBB = bb;
+}
+
+void BlockBase::SetLeftGBB(QGraphicsRectItem *bb)
+{
+    leftBB = bb;
+}
+
+void BlockBase::SetRightGBB(QGraphicsRectItem *bb)
+{
+    rightBB = bb;
+}
+
+QGraphicsRectItem *BlockBase::GetBottomGBB()
+{
+    return bottomBB;
+}
+
+QGraphicsRectItem *BlockBase::GetTopGBB()
+{
+    return topBB;
+}
+
+QGraphicsRectItem *BlockBase::GetLeftGBB()
+{
+    return leftBB;
+}
+
+QGraphicsRectItem *BlockBase::GetRightGBB()
+{
+    return rightBB;
 }
 
 QPixmap *BlockBase::GetTexture()

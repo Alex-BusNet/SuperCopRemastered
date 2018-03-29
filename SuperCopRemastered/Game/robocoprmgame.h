@@ -34,11 +34,11 @@ class robocoprmgame : public QWidget
 {
     Q_OBJECT
 public:
-    explicit robocoprmgame(QWidget *parent = 0);
+    explicit robocoprmgame(QWidget *parent = 0, bool industrialGraphics = false);
     ~robocoprmgame();
     void paintEvent(QPaintEvent *e);
     void keyPressEvent(Qt::Key key);
-    void keyReleaseEvent();
+    void keyReleaseEvent(Qt::Key key);
     void setLastKeyPress(int keyPress);
     void setHighScores();
     void setShowDevOpts(bool devOpts);
@@ -64,22 +64,17 @@ private:
     QGamepadKeyNavigation *gpkn;
     QGamepadManager *gpm;
 
+    LevelType currentLevelType;
+
     int picX,picY;
     int picHeight, picWidth;
     int lastKeyPress;
     int gamescore;
     int location;
 
-    bool isUpPressed, isDownPressed, isLeftPressed, isRightPressed, gamePaused, showDevOpts, gameOver;
+    uint8_t keyPressState;
 
-    vector<Donut*>donuts;
-    vector<int>donutspawn;
-    vector<int>enemyspawn;
-    vector<int>wallSpawn;
-    vector<int>platSpawn;
-
-    Donut *levelEnd;
-    int moveSpeed;
+    bool isUpPressed, isDownPressed, isLeftPressed, isRightPressed, isSprintPressed, gamePaused, showDevOpts, gameOver;
 
     QPushButton *resume;
     QPushButton *exit;
@@ -106,6 +101,7 @@ private slots:
     void newConnect();
     void Disconnected();
     void readyRead();
+
 };
 
 #endif // ROBOCOPRMGAME_H

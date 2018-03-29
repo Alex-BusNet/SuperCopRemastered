@@ -159,14 +159,14 @@ void EnemyBase::SetEnemyInfo()
     switch(et)
     {
     case NORMAL:
-        speed = 15; // px per update
+        speed = 5; // px per update
         pointValue = 10;
         direction = WEST;
         color = "green";
         texture = new QPixmap(texturePath.arg(direction == WEST ? "Left" : "Right" ).arg(color).arg(frame));
         break;
     case FAST:
-        speed = 25;
+        speed = 10;
         pointValue = 15;
         direction = WEST;
         color = "red";

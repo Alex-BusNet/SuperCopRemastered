@@ -1,12 +1,17 @@
 #include "supercoprmgame.h"
 
-SuperCopRMGame::SuperCopRMGame(QWidget *parent)
+SuperCopRMGame::SuperCopRMGame(QWidget *parent, bool industrialGraphics)
     : QWidget(parent)
 {
     showDevOpts = true;
 
 //    QWidget::setWindowState(Qt::WindowFullScreen);
     QWidget::setFixedSize(1280, 720);
+
+    if(industrialGraphics)
+        currentLevelType = INDUSTRIAL;
+    else
+        currentLevelType = GRASS;
 
     if(showDevOpts)
     {
@@ -44,22 +49,33 @@ SuperCopRMGame::SuperCopRMGame(QWidget *parent)
     if(showDevOpts)
         qDebug() << "Setting Background...";
 
-    QPixmap bkgnd("Assets/UI/background.png");
-    bkgnd = bkgnd.scaled(this->width(), this->height(), Qt::IgnoreAspectRatio);
     QPalette palette;
-    palette.setBrush(QPalette::Background, bkgnd);
+
+    if(industrialGraphics)
+    {
+        QPixmap bkgnd("Assets/UI/fire_background.png");
+        bkgnd = bkgnd.scaled(this->width(), this->height(), Qt::IgnoreAspectRatio);
+        palette.setBrush(QPalette::Background, bkgnd);
+    }
+    else
+    {
+        QPixmap bkgnd("Assets/UI/grass_background.png");
+        bkgnd = bkgnd.scaled(this->width(), this->height(), Qt::IgnoreAspectRatio);
+        palette.setBrush(QPalette::Background, bkgnd);
+    }
+
     this->setPalette(palette);
 
     if(showDevOpts)
         qDebug() << "Creating Timers...";
 
     timer = new QTimer();
-    timer->setInterval(50);
+    timer->setInterval(1000/60);
     connect(timer, &QTimer::timeout, this, &SuperCopRMGame::updateField);
 
-    renderTimer = new QTimer();
-    renderTimer->setInterval(17);
-    connect(renderTimer, &QTimer::timeout, this, &SuperCopRMGame::updateRender);
+//    renderTimer = new QTimer();
+//    renderTimer->setInterval(17);
+//    connect(renderTimer, &QTimer::timeout, this, &SuperCopRMGame::updateRender);
 
     keyTimer = new QTimer();
     keyTimer->setInterval(5);
@@ -126,16 +142,38 @@ void SuperCopRMGame::keyPressEvent(QKeyEvent *evt)
 {
     switch(evt->key())
     {
-    case Qt::Key_Right:
+    case Qt::Key_A:
+        keyPressState |= 0b0001;
+        isLeftPressed = true;
+        break;
+    case Qt::Key_D:
+        keyPressState |= 0b0010;
         isRightPressed = true;
         break;
-//    case Qt::Key_Down:
-//        isDownPressed = true;
+    case Qt::Key_Shift:
+        isSprintPressed = true;
+        break;
+    case Qt::Key_W:
+        keyPressState |= 0b0100;
+        isUpPressed = true;
+        break;
+//    case Qt::Key_Space:
+//        keyPressState |= 0b0100;
+//        isUpPressed = true;
 //        break;
+    case Qt::Key_Right:
+        keyPressState |= 0b0010;
+        isRightPressed = true;
+        break;
+    case Qt::Key_Down:
+        isDownPressed = true;
+        break;
     case Qt::Key_Up:
+        keyPressState |= 0b0100;
         isUpPressed = true;
         break;
     case Qt::Key_Left:
+        keyPressState |= 0b0001;
         isLeftPressed = true;
         break;
     case Qt::Key_Escape:
@@ -161,17 +199,39 @@ void SuperCopRMGame::keyReleaseEvent(QKeyEvent *evt)
 {
     switch(evt->key())
     {
-    case Qt::Key_Right:
+    case Qt::Key_A:
+        keyPressState &= 0b1110;
+        isLeftPressed = false;
+        break;
+    case Qt::Key_D:
+        keyPressState &= 0b1101;
         isRightPressed = false;
         break;
-//    case Qt::Key_Down:
-//        isDownPressed = false;
+    case Qt::Key_Shift:
+        isSprintPressed = false;
+        break;
+    case Qt::Key_W:
+        keyPressState &= 0b1011;
+        isUpPressed = false;
+        break;
+//    case Qt::Key_Space:
+//        keyPressState &= 0b1011;
+//        isUpPressed = false;
 //        break;
+    case Qt::Key_Right:
+        keyPressState &= 0b1101;
+        isRightPressed = false;
+        break;
     case Qt::Key_Up:
+        keyPressState &= 0b1011;
         isUpPressed = false;
         break;
     case Qt::Key_Left:
+        keyPressState &= 0b1110;
         isLeftPressed = false;
+        break;
+    case Qt::Key_Down:
+        isDownPressed = false;
         break;
     default:
         break;
@@ -202,7 +262,7 @@ void SuperCopRMGame::updateField()
 {
     if(!gamePaused)
     {
-        player->playerAction(lastKeyPress);
+        player->playerAction(keyPressState, isSprintPressed);
         player->UpdateFrame();
         player->UpdatePlayer(view);
         lb->UpdateLevel(player, view, showDevOpts);
@@ -228,24 +288,24 @@ void SuperCopRMGame::exitGame()
 void SuperCopRMGame::actionInput(Qt::Key key)
 {
     qDebug() << "Action Input";
-    switch(key)
-    {
-    case Qt::Key_Left:
-        player->playerAction(LEFT);
-        break;
-    case Qt::Key_Right:
-        player->playerAction(RIGHT);
-        break;
-    case Qt::Key_Up:
-        player->playerAction(UP);
-        break;
-    case Qt::Key_Down:
-        player->playerAction(DOWN);
-        break;
-    default:
-        player->playerAction(NONE);
-        break;
-    }
+//    switch(key)
+//    {
+//    case Qt::Key_Left:
+//        player->playerAction(LEFT);
+//        break;
+//    case Qt::Key_Right:
+//        player->playerAction(RIGHT);
+//        break;
+//    case Qt::Key_Up:
+//        player->playerAction(UP);
+//        break;
+//    case Qt::Key_Down:
+//        player->playerAction(DOWN);
+//        break;
+//    default:
+//        player->playerAction(NONE);
+//        break;
+//    }
 }
 
 void SuperCopRMGame::updateRender()
@@ -327,7 +387,11 @@ void SuperCopRMGame::paintEvent(QPaintEvent *e)
 
     if(gamePaused || gameOver)
     {
-        painter.setPen(QPen(Qt::black));
+        if(currentLevelType == GRASS)
+            painter.setPen(QPen(Qt::black));
+        else
+            painter.setPen(QPen(Qt::white));
+
         painter.setFont(*pausedFont);
         painter.drawText((this->width() / 2) - 110, 100, paused->text());
     }
@@ -347,7 +411,7 @@ void SuperCopRMGame::paintEvent(QPaintEvent *e)
 
 void SuperCopRMGame::setHighScores()
 {
-    int scorefile = moveSpeed / 5;
+    int scorefile = 0; //moveSpeed / 5;
     QString filename = "Assets/highscores"+QString::number(scorefile)+".txt";
     ifstream scoreset;
     scoreset.open(filename.toStdString().c_str());
@@ -425,6 +489,9 @@ void SuperCopRMGame::InitLevel()
 {
     lb->LoadLevel(1, view, showDevOpts);
 
+    if(currentLevelType == INDUSTRIAL)
+        lb->SetLevelType(INDUSTRIAL);
+
     if(showDevOpts)
         qDebug() << "Loading player to Scene...";
 
@@ -457,4 +524,5 @@ void SuperCopRMGame::InitLevel()
     lastKeyPress = 0;
     gamescore=0;
     location=0;
+    keyPressState = 0b0000;
 }
