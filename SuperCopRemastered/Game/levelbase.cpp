@@ -353,7 +353,7 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
 
     feetItems = p->GetFallViewBB()->collidingItems().size();
 
-    if(p->GetPosY() > (getGround() + (5*70)))
+    if(p->GetPosY() + (70) > (getGround() + (0)))
     {
         emit EndOfGame(false);
         return;
