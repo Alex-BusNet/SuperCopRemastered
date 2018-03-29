@@ -23,7 +23,7 @@ LevelBase::~LevelBase()
 
 void LevelBase::LoadLevel(int levelNum, GameView *view, bool devMode)
 {
-    nullHolder = view->addRect(*(new QRect(0,0,5,5)));
+    nullHolder = view->addRect(*(new QRect(0,0,5,5)), QPen(Qt::transparent));
     QFile levelData(QString("Assets/Level/World1_%1.json").arg(levelNum));
 
     if(levelData.open(QIODevice::ReadOnly))
@@ -105,10 +105,7 @@ void LevelBase::LoadLevel(int levelNum, GameView *view, bool devMode)
                         {
                             QPen pen;
 
-//                            if(devMode)
-//                                pen = QPen(Qt::black);
-//                            else
-                                pen = QPen(Qt::transparent);
+                            pen = QPen(Qt::transparent);
 
                             floorBBs.push_back(view->addRect(*bb->GetTopBoundingBox(), pen));
                             floorBBs.push_back(view->addRect(*bb->GetLeftBoundingBox(), pen));
@@ -747,17 +744,20 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
             if(pos.x() >= 0 && pos.x() <= view->width()&& pos.y() >= 0 && pos.y() <= view->height())
             {
                 x = (pos.x() / 70) % 18;
-                y = (pos.y() / 70) % 10;
+                y = ((pos.y() / 70) % 10)+1;
 
-                if(obstacles.at(idx)->GetType() != NO_BLOCK_TYPE && obstacles.at(idx)->GetType() != GAP_BLOCK)
+                if(y >= 0 && y < 10)
                 {
-                    if(obstacles.at(idx)->GetType() == BONUS)
-                        parsedView[y][x] = 5;
-                    else if(obstacles.at(idx)->GetType() == GOAL || obstacles.at(idx)->GetType() == GOAL_MIDDLE || obstacles.at(idx)->GetType() == GOAL_BASE)
-                        parsedView[y][x] = 6;
-                    else
-                        parsedView[y][x] = 1;
+                    if(obstacles.at(idx)->GetType() != NO_BLOCK_TYPE && obstacles.at(idx)->GetType() != GAP_BLOCK)
+                    {
+                        if(obstacles.at(idx)->GetType() == BONUS)
+                            parsedView[y][x] = 5;
+                        else if(obstacles.at(idx)->GetType() == GOAL || obstacles.at(idx)->GetType() == GOAL_MIDDLE || obstacles.at(idx)->GetType() == GOAL_BASE)
+                            parsedView[y][x] = 6;
+                        else
+                            parsedView[y][x] = 1;
 
+                    }
                 }
             }
 
@@ -783,10 +783,13 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
             if(pos.x() >= 0 && pos.x() <= view->width()&& pos.y() >= 0 && pos.y() <= view->height())
             {
                 x = (pos.x() / 70) % 18;
-                y = (pos.y() / 70) % 10;
+                y = ((pos.y() / 70) % 10) + 1;
 
-                if(levelFloor.at(idx)->GetType() != NO_BLOCK_TYPE && levelFloor.at(idx)->GetType() != GAP_BLOCK)
-                    parsedView[y][x] = 1;
+                if(y >= 0 && y < 10)
+                {
+                    if(levelFloor.at(idx)->GetType() != NO_BLOCK_TYPE && levelFloor.at(idx)->GetType() != GAP_BLOCK)
+                        parsedView[y][x] = 1;
+                }
             }
 
             // If we are looking at items out side the right most part of the screen,
@@ -813,9 +816,10 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
                 if(pos.x() >= 0 && pos.x() <= view->width() && pos.y() >= 0 && pos.y() <= view->height())
                 {
                     x = (pos.x() / 70) % 18;
-                    y = (pos.y() / 70) % 10;
+                    y = ((pos.y() / 70) % 10) + 1;
 
-                    parsedView[y][x] = 3;
+                    if(y >= 0 && y < 10)
+                        parsedView[y][x] = 3;
                 }
 
                 // If we are looking at items out side the right most part of the screen,
@@ -845,9 +849,10 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
                     if(pos.x() >= 0 && pos.x() <= view->width() && pos.y() >= 0 && pos.y() <= view->height())
                     {
                         x = (pos.x() / 70) % 18;
-                        y = ((pos.y() / 70) % 10);
+                        y = ((pos.y() / 70) % 10) + 1;
 
-                        parsedView[y][x] = 4;
+                        if(y >= 0 && y < 10)
+                            parsedView[y][x] = 4;
                     }
 
                     // If we are looking at items out side the right most part of the screen,
@@ -873,7 +878,11 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
             x = ((int)pos.x() / 70) % 18;
             y = ((int)pos.y() / 70) % 10;
 
-            parsedView[y][x] = 2;
+            if(y >= 0 && y < 10)
+                parsedView[y][x] = 2;
+
+            if((y + 1) >= 0 && (y + 1) < 10)
+                parsedView[y+1][x] = 2;
         }
     }
 }
