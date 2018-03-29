@@ -94,11 +94,12 @@ void Player::drawPlayer(QPainter &painter, bool devMode)
         painter.drawText(20, 160, QString("Jumping: %1").arg(jumping));
         painter.drawText(20, 170, QString("Should player spring: %1").arg(shouldPlayerSprint));
         painter.drawText(20, 180, QString("Last jump height: %1").arg(lastHeight));
+        painter.drawText(20, 190, QString("Player Pos Y: %2").arg(posY));
     }
 
     painter.drawText(950, 70, QString( "[A]\t= Move Left"));
     painter.drawText(950, 80, QString( "[D]\t= Move Right"));
-    painter.drawText(950, 90, QString( "[W]/[Space]\t= JUMP"));
+    painter.drawText(950, 90, QString( "[W]\t= JUMP"));
     painter.drawText(950, 100, QString("[LShift]\t= Sprint"));
 
 }//Draws the player
@@ -114,7 +115,7 @@ void Player::changeImage(QString str)
 
 void Player::playerScreenPos()
 {
-    if((((lastActionPressed & 0b0010) == 0b0010) && pState != RUNNING_LEFT && pState != JUMPING) && (this->posX + speedX < rightBound) && !rightWallCollided)
+    if((((lastActionPressed & 0b0010) == 0b0010) && pState != RUNNING_LEFT && pState != JUMPING) && (this->posX + 100 < rightBound) && !rightWallCollided)
     {
         this->setPosX(this->GetPosX() + speedX);
     }
@@ -259,7 +260,7 @@ void Player::UpdatePlayer(GameView *view)
     }
 
     // Scrolls the screen left or right as long as the player is not near the edge of the level.
-    if((posX - 200 > leftBound) && (posX + 400 < rightBound) && (posY < (ground + (4 * 70))));
+    if(((posX - 200) > leftBound) && ((posX + 400) < rightBound) && (posY < (ground + (4 * 70))) && (posY > 75))
         view->ensureVisible(playerPixmap, 200, 70);
 }
 

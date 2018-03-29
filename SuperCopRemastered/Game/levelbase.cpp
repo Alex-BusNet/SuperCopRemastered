@@ -283,9 +283,9 @@ void LevelBase::drawLevelBase(QPainter &painter, bool devMode)
 
     if(devMode)
     {
-        painter.drawText(20, 190, QString("Player items collided: %1").arg(collidedItems));
-        painter.drawText(20, 200, QString("Player feet collided: %1").arg(feetItems));
-        painter.drawText(20, 210, QString("Level Update: %1").arg(updateStatus));
+        painter.drawText(20, 200, QString("Player items collided: %1").arg(collidedItems));
+        painter.drawText(20, 210, QString("Player feet collided: %1").arg(feetItems));
+        painter.drawText(20, 220, QString("Level Update: %1").arg(updateStatus));
 
         if(enemies.at(0) != NULL)
             enemies.at(0)->DrawEnemy(painter);
