@@ -380,8 +380,8 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
         }
         else
         {
-            collideList = p->GetViewBB()->collidingItems();
-            pCollisionRect = p->GetViewBB()->rect().toRect();
+            collideList = p->GetFallViewBB()->collidingItems();
+            pCollisionRect = p->GetFallViewBB()->rect().toRect();
         }
 
         foreach(QGraphicsItem* item, collideList)
@@ -461,13 +461,13 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
                 }
                 else
                 {
-                    bool leftWallCollision = ((/*(bt != NO_BLOCK_TYPE) && (bt != GAP_BLOCK) && */(bt != GOAL) && (bt != GOAL_MIDDLE))
+                    bool leftWallCollision = (((bt != GOAL) && (bt != GOAL_MIDDLE))
                                               && (nearestObsY->GetLeftBoundingBox()->intersects(p->GetViewBB()->rect().toRect())));
 
-                    bool rightWallCollision =((/*(bt != NO_BLOCK_TYPE) && (bt != GAP_BLOCK) && */(bt != GOAL) && (bt != GOAL_MIDDLE))
+                    bool rightWallCollision =(((bt != GOAL) && (bt != GOAL_MIDDLE))
                                               && (nearestObsY->GetRightBoundingBox()->intersects(p->GetViewBB()->rect().toRect())));
 
-                    bool topBlockCollision = ((/*(bt != NO_BLOCK_TYPE) && (bt != GAP_BLOCK) &&*/ (bt != GOAL) && (bt != GOAL_MIDDLE))
+                    bool topBlockCollision = (((bt != GOAL) && (bt != GOAL_MIDDLE))
                                               && (nearestObsY->GetTopBoundingBox()->intersects(p->GetFallViewBB()->rect().toRect()))
                                               && (p->getState() != JUMPING));
 
@@ -487,7 +487,7 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
                         {
                             p->SetOnObstactle(true, nearestObsY->GetPosY());
                             p->setPosY(obstacles.at(idx)->GetPosY() - 95);
-                                p->clearWallCollided();
+                            p->clearWallCollided();
                         }
                     }
 
@@ -526,7 +526,7 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
                         ((BonusBlock*)obstacles.at(idx))->BlockHit();
                         if(((BonusBlock*)obstacles.at(idx))->GetHitsRemaining() <= 0)
                         {
-                            obstacles.at(idx)->SetType(GRASS, BLOCK_EDGE_TOP);
+                            obstacles.at(idx)->SetType(levelFloor.at(0)->GetLevelType(), BLOCK_EDGE_TOP);
                             obstacleItems.at(idx)->setPixmap(*obstacles.at(idx)->GetTexture());
                         }
 
