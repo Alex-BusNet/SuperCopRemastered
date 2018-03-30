@@ -25,10 +25,25 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         main.cpp \
-        mainwindow.cpp
+        mainwindow.cpp \
+    robocophandler.cpp \
+    gene.cpp \
+    genome.cpp \
+    species.cpp \
+    pool.cpp \
+    neuron.cpp \
+    network.cpp
 
 HEADERS += \
-        mainwindow.h
+        mainwindow.h \
+    robocophandler.h \
+    gene.h \
+    genome.h \
+    species.h \
+    pool.h \
+    neuron.h \
+    network.h \
+    nnglobals.h
 
 FORMS += \
         mainwindow.ui
