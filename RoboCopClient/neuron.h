@@ -9,8 +9,8 @@ class Neuron
 public:
     Neuron();
 
-private:
-    QVector<Gene> incoming;
+//private:
+    QVector<Gene*> incoming;
     float value;
 };
 

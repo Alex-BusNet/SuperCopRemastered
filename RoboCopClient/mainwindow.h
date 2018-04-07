@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 #include <QTcpSocket>
+#include <QtConcurrent/QtConcurrent>
+#include "robocophandler.h"
 
 namespace Ui {
 class MainWindow;
@@ -33,6 +35,8 @@ private slots:
 private:
     Ui::MainWindow *ui;
     QTcpSocket *socket;
+    RoboCopHandler *rch;
+    int **parsedView;
 };
 
 #endif // MAINWINDOW_H

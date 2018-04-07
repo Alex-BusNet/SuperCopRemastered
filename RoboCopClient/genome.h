@@ -8,6 +8,9 @@
 #include <QVector>
 #include <QMap>
 #include <QString>
+#include <QMap>
+#include <cmath>
+#include <ctime>
 
 typedef struct MutationRates
 {
@@ -24,15 +27,51 @@ class Genome
 {
 public:
     Genome();
+    Genome(Genome &g);
+
+    void GenerateNetwork();
+
+    float GetBiasChance();
+    float GetConnectionsChance();
+    float GetLinkChance();
+    float GetNodeChance();
+    float GetEnableChance();
+    float GetDisableChance();
+    float GetStep();
+
+    int GetFitness();
+    int GetAdjustedFitness();
+    int GetMaxNeuron();
+    int GetGlobalRank();
+
+    void SetFitness(int fit);
+    void SetAdjustedFitness(int adjFit);
+    void SetMaxNeuron(int mn);
+    void SetGlobalRank(int gr);
+    void CopyMutationRates(QMap<QString, float> mr);
+
+    bool ContainsLink(Gene link);
+    bool SameSpecies(const Genome &other, int innovationSize);
+    int Disjoint(const QVector<Gene*> &other, int innovationSize);
+    float Weights(const QVector<Gene*> &other, int innovationSize);
+
+
+    Genome* Crossover(Genome &other, int innovationSize);
+
+
+    QVector<Gene*> genes;
+    Network network;
+
+    int RandomNeuron(bool nonInput);
+
+    QMap<QString, float> mutationRates;
 
 private:
-    QVector<Gene> genes;
+
     int fitness;
     int adjustedFitness;
-    QVector<Network> network;
     int maxNeuron;
     int globalRank;
-    MutationRates mutationRates;
 };
 
 #endif // GENOME_H

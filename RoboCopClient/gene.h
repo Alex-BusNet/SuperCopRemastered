@@ -6,8 +6,9 @@ class Gene
 {
 public:
     Gene();
+    Gene(const Gene &g);
 
-private:
+//private:
     int into;
     int out;
     float weight;

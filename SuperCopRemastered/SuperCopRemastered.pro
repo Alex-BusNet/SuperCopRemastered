@@ -29,7 +29,6 @@ SOURCES += \
     Game/supercoprmgame.cpp \
     Game/levelbase.cpp \
     Game/player.cpp \
-    Game/donut.cpp \
     Game/blockbase.cpp \
     Game/bonusblock.cpp \
     Game/itembase.cpp \
@@ -43,7 +42,6 @@ HEADERS += \
     Game/supercoprmgame.h \
     Game/levelbase.h \
     Game/player.h \
-    Game/donut.h \
     Game/datatypes.h \
     Game/blockbase.h \
     Game/bonusblock.h \

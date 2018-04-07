@@ -9,3 +9,277 @@ Pool::Pool()
     currentFrame = 0;
     maxFitness = 0;
 }
+
+int Pool::NewInnovation()
+{
+    return ++this->innovation;
+}
+
+int Pool::TotalAverageFitness()
+{
+    int total = 0;
+    foreach(Species *s, species)
+    {
+        total += s->GetAverageFitness();
+    }
+
+    return total;
+}
+
+void Pool::RankGlobally()
+{
+    QVector<Genome*> globals;
+    foreach(Species *s, species)
+    {
+        foreach(Genome *g, s->genomes)
+        {
+            globals.push_back(g);
+        }
+    }
+
+    for(int i = 0; i < globals.size(); i++)
+    {
+        for(int j  = i+1; j < globals.size(); j++)
+        {
+            Genome* a = globals[i];
+            Genome* b = globals[j];
+
+            if(a->GetFitness() > b->GetFitness())
+            {
+                Genome* temp = a;
+                a = b;
+                b = temp;
+            }
+        }
+    }
+
+    for(int i = 0; i < globals.size(); i++)
+    {
+        globals[i]->SetGlobalRank(i);
+    }
+}
+
+void Pool::NextGenome()
+{
+    currentGenome++;
+    if(currentGenome > species[currentSpecies]->genomes.size())
+    {
+        currentGenome = 1;
+        currentSpecies++;
+        if(currentSpecies > species.size())
+        {
+            NewGeneration();
+            currentSpecies = 1;
+        }
+    }
+}
+
+void Pool::NewGeneration()
+{
+    CullSpecies(false);
+    RankGlobally();
+    RemoveStaleSpecies();
+    RankGlobally();
+
+    foreach(Species *s, species)
+    {
+        s->CalculateAverageFitness();
+    }
+
+    RemoveWeakSpecies();
+
+    int sum = TotalAverageFitness();
+
+    QVector<Genome*> children;
+    foreach(Species *s, species)
+    {
+        int breed = std::floor(s->GetAverageFitness() / sum * RoboCop::Population) - 1;
+        for(int i = 0; i < breed; i++)
+        {
+            children.push_back(s->BreedChild(innovation));
+        }
+    }
+
+    CullSpecies(true);
+
+    while(children.size() + species.size() < RoboCop::Population)
+    {
+        Species *s = species[rand() % species.size()];
+        children.push_back(s->BreedChild(innovation));
+    }
+
+    for(int c = 0; c < children.size(); c++)
+    {
+        AddToSpecies(children[c]);
+    }
+
+    generation++;
+
+    ///Write backup file?
+}
+
+QMap<QString, bool> Pool::EvaluateNetwork(QVector<int> inputs)
+{
+    return species[currentSpecies]->genomes[currentGenome]->network.EvaluateNetwork(inputs);
+}
+
+void Pool::CullSpecies(bool cutToOne)
+{
+    foreach(Species *s, species)
+    {
+        // Sort species from most fit to least fit
+        for(int i = 0; i < s->genomes.size(); i++)
+        {
+            for(int j = i+1; j < s->genomes.size(); j++)
+            {
+                Genome* a = s->genomes[i];
+                Genome* b = s->genomes[j];
+
+                if(a->GetFitness() < b->GetFitness())
+                {
+                    Genome *temp = a;
+                    a = b;
+                    b = temp;
+                }
+            }
+        }
+
+        int remaining = std::ceil(s->genomes.size() / 2);
+        if(cutToOne) { remaining = 1; }
+
+        while(s->genomes.size() > remaining)
+        {
+            s->genomes.removeLast();
+        }
+    }
+}
+
+void Pool::RemoveStaleSpecies()
+{
+    QVector<Species*> survived;
+
+    foreach(Species *s, species)
+    {
+        // Sort species from most fit to least fit
+        for(int i = 0; i < s->genomes.size(); i++)
+        {
+            for(int j = i+1; j < s->genomes.size(); j++)
+            {
+                Genome *a = s->genomes[i];
+                Genome *b = s->genomes[j];
+
+                /// This condition needs to be checked
+                if(a->GetFitness() < b->GetFitness())
+                {
+                    Genome *temp = a;
+                    a = b;
+                    b = temp;
+                }
+            }
+        }
+
+        if(s->genomes[0]->GetFitness() > s->GetTopFitness())
+        {
+            s->SetTopFitness(s->genomes[0]->GetFitness());
+            s->SetStaleness(0);
+        }
+
+        if((s->GetStaleness() < RoboCop::StaleSpecies) || (s->GetTopFitness() >= maxFitness))
+        {
+            survived.push_back(s);
+        }
+    }
+
+    this->species = survived;
+
+}
+
+void Pool::RemoveWeakSpecies()
+{
+    QVector<Species*> survived;
+    int sum = TotalAverageFitness();
+
+    foreach(Species *s, species)
+    {
+        int breed = std::floor(s->GetAverageFitness() / sum * RoboCop::Population);
+        if(breed >= 1)
+            survived.push_back(s);
+    }
+
+    this->species = survived;
+}
+
+void Pool::SetCurrentFrame(int frame)
+{
+    this->currentFrame = frame;
+}
+
+void Pool::SetMaxFitness(int mf)
+{
+    this->maxFitness = mf;
+}
+
+void Pool::SetCurrentSpecies(int cs)
+{
+    this->currentSpecies = cs;
+}
+
+void Pool::SetCurrentGenome(int gm)
+{
+    this->currentGenome = gm;
+}
+
+bool Pool::FitnessAlreadyMeasured()
+{
+    return (species[currentSpecies])->genomes[currentGenome]->GetFitness() != 0;
+}
+
+void Pool::AddToSpecies(Genome *child)
+{
+    bool foundSpecies = false;
+    foreach(Species *s, species)
+    {
+        if(!foundSpecies && s->genomes[0]->SameSpecies(*child, innovation))
+        {
+            s->genomes.push_back(child);
+            foundSpecies = true;
+        }
+    }
+
+    if(!foundSpecies)
+    {
+        Species *s = new Species();
+        s->genomes.push_back(child);
+        this->species.push_back(s);
+    }
+}
+
+int Pool::GetCurrentGenome()
+{
+    return this->currentGenome;
+}
+
+int Pool::GetInnovation()
+{
+    return this->innovation;
+}
+
+int Pool::GetGeneration()
+{
+    return this->generation;
+}
+
+int Pool::GetCurrentSpecies()
+{
+    return this->currentSpecies;
+}
+
+int Pool::GetCurrentFrame()
+{
+    return this->currentFrame;
+}
+
+int Pool::GetMaxFitness()
+{
+    return this->maxFitness;
+}

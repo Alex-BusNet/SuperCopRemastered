@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -9,6 +10,19 @@ MainWindow::MainWindow(QWidget *parent) :
     //Creates Socket Object
     //Socket sends and recieves data
     socket = new QTcpSocket(this);
+
+    rch = new RoboCopHandler();
+
+    parsedView = new int *[10];
+    for(int y = 0; y < 10; y++)
+    {
+        parsedView[y] = new int[18];
+        for(int x = 0; x < 18; x++)
+        {
+            parsedView[y][x] = 0;
+        }
+    }
+
 }
 
 MainWindow::~MainWindow()
@@ -38,9 +52,16 @@ void MainWindow::on_Connect_clicked()
             socket->close();
         }
 
-        //Connects the socket to slots for reading back data and reseting variables
-        connect(socket, SIGNAL(readyRead()),this, SLOT(readyRead()));
-        connect(socket, SIGNAL(disconnected()),this, SLOT(Disconnected()));
+        if(socket->state() != QAbstractSocket::UnconnectedState)
+        {
+            //Connects the socket to slots for reading back data and reseting variables
+            connect(socket, SIGNAL(readyRead()),this, SLOT(readyRead()));
+            connect(socket, SIGNAL(disconnected()),this, SLOT(Disconnected()));
+
+            ///TODO: We should properly handle this concurrent task better
+            if(rch != NULL)
+                QtConcurrent::run(*rch, RoboCopHandler::GameLoop);
+        }
     }
     else{
         qDebug() <<"Already Connected";
@@ -71,7 +92,7 @@ void MainWindow::readyRead()
         socket->disconnectFromHost();
     }
     else if(command=="VisibleTerrain"){
-        int parsedView[10][18];
+        qDebug() << "Clearing parsedView";
         for(int y = 0; y < 10; y++)
         {
             for(int x = 0; x < 18; x++)
@@ -79,28 +100,38 @@ void MainWindow::readyRead()
                 parsedView[y][x] = 0;
             }
         }
+
+        qDebug() << "Splitting data";
         QStringList  pieces =data.split(";");
         //If the server is indicating the game has ended
         for(int i=1; i<pieces.length()-1; i++){
             QStringList arraySet = pieces.at(i).split(":");
             qDebug()<<"test "<<arraySet.length()<<" "<<pieces.at(i);
+            qDebug() << arraySet.at(1) << " " << arraySet.at(2) << " " << arraySet.at(0);
             parsedView[arraySet.at(1).toInt()][arraySet.at(2).toInt()] = arraySet.at(0).toInt();
         }
+
+        qDebug() << "Formatting display string";
         QString disp = "";
         for(int y = 0; y < 10; y++)
         {
             for(int x = 0; x < 18; x++)
             {
                 if(parsedView[y][x] != 0){
-                    disp=disp+QString::number(parsedView[y][x]);
+                    disp=disp+" "+QString::number(parsedView[y][x]);
                 }
                 else{
-                    disp=disp+" ";
+                    disp=disp+"  ";
                 }
             }
             disp=disp+"\n";
         }
+        qDebug() << "Setting display string";
         ui->Log->setText(disp);
+
+        qDebug() << "Done";
+
+        //if(rch != NULL) { rch->SetInputs(parsedView); }
     }
 }
 
