@@ -54,7 +54,7 @@ private:
     GameView *view;
 
     QWidget* parent;
-    QTimer *timer, *renderTimer;
+    QTimer *timer, *renderTimer, *sTimer;
     QTimer *keyTimer;
     QMessageBox *msg;
     QMessageBox *pbox;

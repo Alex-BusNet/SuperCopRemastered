@@ -83,8 +83,10 @@ void MainWindow::readyRead()
     //qDebug()<<data;
 
     //Splits the data based on ';'
+    qDebug() << "Data: " << data;
     QString command = data.split(";").first();
     //ui->Log->setText(ui->Log->toPlainText()+data);
+    qDebug() << "Command: " << command;
     if(command=="END"){
         //If the server is indicating the game has ended
         //Displays who won to the player and disconnects from the server
@@ -92,6 +94,8 @@ void MainWindow::readyRead()
         socket->disconnectFromHost();
     }
     else if(command=="VisibleTerrain"){
+        QString b = data.split("VisibleTerrain").last();
+        qDebug() << "b: " << b;
         qDebug() << "Clearing parsedView";
         for(int y = 0; y < 10; y++)
         {
@@ -102,13 +106,17 @@ void MainWindow::readyRead()
         }
 
         qDebug() << "Splitting data";
-        QStringList  pieces =data.split(";");
+        QStringList  pieces = b.split(";");
+        qDebug() << "Pieces: " << pieces;
         //If the server is indicating the game has ended
         for(int i=1; i<pieces.length()-1; i++){
-            QStringList arraySet = pieces.at(i).split(":");
-            qDebug()<<"test "<<arraySet.length()<<" "<<pieces.at(i);
-            qDebug() << arraySet.at(1) << " " << arraySet.at(2) << " " << arraySet.at(0);
-            parsedView[arraySet.at(1).toInt()][arraySet.at(2).toInt()] = arraySet.at(0).toInt();
+            if(pieces.at(i) != "")
+            {
+                QStringList arraySet = pieces.at(i).split(":");
+                qDebug()<<"test "<<arraySet.length()<<" "<<pieces.at(i);
+                qDebug() << arraySet.at(1) << " " << arraySet.at(2) << " " << arraySet.at(0);
+                parsedView[arraySet.at(1).toInt()][arraySet.at(2).toInt()] = arraySet.at(0).toInt();
+            }
         }
 
         qDebug() << "Formatting display string";

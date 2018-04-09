@@ -132,10 +132,10 @@ robocoprmgame::robocoprmgame(QWidget *parent, bool industrialGraphics) :
     connected=false;
     connect(server, SIGNAL(newConnection()), this, SLOT(newConnect()));
 
-    timer = new QTimer();
-    timer->setInterval(100);
-    connect(timer, SIGNAL(timeout()), this, SLOT(sendVisibleTerrain()));
-    timer->start();
+    sTimer = new QTimer();
+    sTimer->setInterval(100);
+    connect(sTimer, SIGNAL(timeout()), this, SLOT(sendVisibleTerrain()));
+    sTimer->start();
 }
 
 robocoprmgame::~robocoprmgame()
