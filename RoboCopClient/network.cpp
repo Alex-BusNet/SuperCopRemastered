@@ -8,7 +8,7 @@ Network::Network()
 QMap<QString, bool> Network::EvaluateNetwork(QVector<int> inputs)
 {
     QMap<QString, bool> out;
-    for(int i = 0; i < 6; i++)
+    for(int i = 0; i < RoboCop::Outputs; i++)
     {
         out.insert(RoboCop::ButtonNames[i], false);
     }
