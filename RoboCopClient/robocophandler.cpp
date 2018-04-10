@@ -7,6 +7,17 @@ RoboCopHandler::RoboCopHandler()
     pool = new Pool();
     timeout = 0;
     playerPosX = 0;
+    
+    inputs = new int *[10];
+    for(int y = 0; y < 10; y++0)
+    {
+        inputs[y] = new int[18];
+        for(int x = 0; x < 18; x++)
+        {
+            inputs[y][x] = 0;
+        }
+    }
+    
     for(int i = 0; i < RoboCop::Population; i++)
     {
         Genome *b = BasicGenome();
