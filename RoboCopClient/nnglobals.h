@@ -4,11 +4,11 @@
 
 namespace RoboCop
 {
-    static const QString ButtonNames[] = {"RIGHT", "LEFT", "SPRINT", "LEFT", "UP", "NONE"};
+    static const QString ButtonNames[] = {"RIGHT", "LEFT", "SPRINT", "JUMP", "NONE"};
     static const int BoxRadius = 35; //px
     static int InputSize = (18*10);
     static int Inputs = InputSize + 1;
-    static int Outputs = 6;
+    static int Outputs = 5;
     static int Population = 300;
 
     static const float DeltaDisjoint = 2.0f;

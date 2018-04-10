@@ -32,6 +32,8 @@ private slots:
 
     void on_Right_clicked();
 
+    void KeyStateUpdate(uint8_t ksu);
+
 private:
     Ui::MainWindow *ui;
     QTcpSocket *socket;

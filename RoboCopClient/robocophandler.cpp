@@ -5,6 +5,8 @@ RoboCopHandler::RoboCopHandler()
 {
     srand(time(0));
     pool = new Pool();
+    timeout = 0;
+    playerPosX = 0;
     for(int i = 0; i < RoboCop::Population; i++)
     {
         Genome *b = BasicGenome();
@@ -12,6 +14,25 @@ RoboCopHandler::RoboCopHandler()
     }
 
     InitializeRun();
+}
+
+RoboCopHandler::RoboCopHandler(const RoboCopHandler &rch)
+{
+    /*
+     * Copy c'tor
+     */
+
+    pool = rch.pool;
+    inputs = rch.inputs;
+    controls = rch.controls;
+    timeout = rch.timeout;
+    playerPosX = rch.playerPosX;
+    rightmost = rch.rightmost;
+}
+
+RoboCopHandler::~RoboCopHandler()
+{
+
 }
 
 void RoboCopHandler::GameLoop()
@@ -82,14 +103,13 @@ void RoboCopHandler::ClearControls()
 
 void RoboCopHandler::InitializeRun()
 {
-    /// Load save state
-
     pool->SetCurrentFrame(0);
     timeout = RoboCop::TimeoutConstant;
     ClearControls();
 
     Genome *g = pool->species[pool->GetCurrentSpecies()]->genomes[pool->GetCurrentGenome()];
     g->GenerateNetwork();
+//    EvaluateCurrent();
 }
 
 void RoboCopHandler::SetInputs(int **in)
@@ -123,6 +143,21 @@ void RoboCopHandler::EvaluateCurrent()
 void RoboCopHandler::SetControls(QMap<QString, bool> cState)
 {
     controls = cState;
+    uint8_t keyPressState = 0b0000;
+
+    if(cState["JUMP"])
+        keyPressState |= 0b0100;
+
+    if(cState["RIGHT"])
+        keyPressState |= 0b0010;
+
+    if(cState["LEFT"])
+        keyPressState |= 0b0001;
+
+    if(cState["SPRINT"])
+        keyPressState |= 0b1000;
+
+    emit keyStateUpdate(keyPressState);
 }
 
 void RoboCopHandler::Mutate(Genome *g)
@@ -281,5 +316,35 @@ Genome* RoboCopHandler::BasicGenome()
     g->SetMaxNeuron(RoboCop::Inputs);
     Mutate(g);
     return g;
+}
+
+Pool* RoboCopHandler::GetPool()
+{
+    return pool;
+}
+
+QVector<int> RoboCopHandler::GetInputs()
+{
+    return inputs;
+}
+
+int RoboCopHandler::GetPlayerPosX()
+{
+    return playerPosX;
+}
+
+int RoboCopHandler::GetRightMost()
+{
+    return rightmost;
+}
+
+int RoboCopHandler::GetTimeout()
+{
+    return timeout;
+}
+
+QMap<QString, bool> RoboCopHandler::GetControls()
+{
+    return controls;
 }
 

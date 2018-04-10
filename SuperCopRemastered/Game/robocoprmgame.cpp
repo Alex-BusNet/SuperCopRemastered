@@ -167,10 +167,6 @@ void robocoprmgame::keyPressEvent(Qt::Key key)
         keyPressState |= 0b0100;
         isUpPressed = true;
         break;
-//    case Qt::Key_Space:
-//        keyPressState |= 0b0100;
-//        isUpPressed = true;
-//        break;
     case Qt::Key_Right:
         keyPressState |= 0b0010;
         isRightPressed = true;
@@ -225,10 +221,6 @@ void robocoprmgame::keyReleaseEvent(Qt::Key key)
         keyPressState &= 0b1011;
         isUpPressed = false;
         break;
-//    case Qt::Key_Space:
-//        keyPressState &= 0b1011;
-//        isUpPressed = false;
-//        break;
     case Qt::Key_Right:
         keyPressState &= 0b1101;
         isRightPressed = false;
@@ -274,7 +266,6 @@ void robocoprmgame::updateField()
 {
     if(!gamePaused)
     {
-//        player->playerAction(lastKeyPress);
         player->playerAction(keyPressState, isSprintPressed);
         player->UpdateFrame();
         player->UpdatePlayer(view);
@@ -344,6 +335,9 @@ void robocoprmgame::GameOver(bool endOfLevel)
         InitLevel();
         player->Reset();
         view->ensureVisible(player->GetViewPixmap(), 200, 70);
+        QByteArray outData;
+        outData.append("LevelReset;");
+        socket->write(outData);
     }
     else
     {
@@ -578,26 +572,44 @@ void robocoprmgame::readyRead()
 {//Triggers when the client sends data andReads the data
     QString data;
     data = socket->readAll();
-    qDebug() << "Player has sent" << data ;
-    if(data=="JUMP"){
-        //actionInput(Qt::Key_Up);
-        keyPressEvent(Qt::Key_Up);
+    QStringList buttonStates = data.split(";");
+
+    if(buttonStates.first() == "Controls")
+    {
+        // NN Controls.
+        QString b = buttonStates.last();
+        keyPressState = b.toUInt(NULL, 2);
+        qDebug() << "keyPressState";
     }
-    else if(data=="LEFT"){
-        //actionInput(Qt::Key_Left);
-        keyPressEvent(Qt::Key_Left);
+    else
+    {
+        // Manual controls from NN controller
+        qDebug() << "Player has sent" << data ;
+        if(data=="JUMP"){
+            //actionInput(Qt::Key_Up);
+            keyPressEvent(Qt::Key_Up);
+        }
+        else if(data=="LEFT"){
+            //actionInput(Qt::Key_Left);
+            keyPressEvent(Qt::Key_Left);
+        }
+        else if(data=="RIGHT"){
+            //actionInput(Qt::Key_Right);
+            keyPressEvent(Qt::Key_Right);
+        }
+        else if(data=="SPRINT")
+        {
+            isSprintPressed = !isSprintPressed;
+        }
+        else if(data=="NONE"){
+            //actionInput(Qt::Key_Down);
+            //keyPressEvent(Qt::Key_Down);
+            keyReleaseEvent(Qt::Key_Down);
+            //keyReleaseEvent(Qt::Key_Left);
+            //keyReleaseEvent(Qt::Key_Right);
+        }
     }
-    else if(data=="RIGHT"){
-        //actionInput(Qt::Key_Right);
-        keyPressEvent(Qt::Key_Right);
-    }
-    else if(data=="STOP"){
-        //actionInput(Qt::Key_Down);
-        //keyPressEvent(Qt::Key_Down);
-        keyReleaseEvent(Qt::Key_Down);
-        //keyReleaseEvent(Qt::Key_Left);
-        //keyReleaseEvent(Qt::Key_Right);
-    }
+
     //ui->Log->setText(ui->Log->toPlainText()+data+'\n');
     //qDebug() << "log it" ;
     //sb->setValue(sb->maximum());

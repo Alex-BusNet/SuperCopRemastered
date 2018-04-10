@@ -2,6 +2,7 @@
 #define ROBOCOPHANDLER_H
 
 // Used to manage the NN / Genetic Algorithm
+#include <QObject>
 
 #include "nnglobals.h"
 #include "gene.h"
@@ -14,10 +15,13 @@
 #include <ctime>
 #include <cmath>
 
-class RoboCopHandler
+class RoboCopHandler : public QObject
 {
+    Q_OBJECT
 public:
     RoboCopHandler();
+    RoboCopHandler(const RoboCopHandler &rch);
+    ~RoboCopHandler();
 
     void GameLoop();
 
@@ -39,6 +43,13 @@ public:
 
     Genome *BasicGenome();
 
+    Pool *GetPool();
+    QVector<int> GetInputs();
+    int GetPlayerPosX();
+    int GetRightMost();
+    int GetTimeout();
+    QMap<QString, bool> GetControls();
+
 private:
     Pool *pool;
     QVector<int> inputs;
@@ -47,6 +58,9 @@ private:
     int timeout;
 
     QMap<QString, bool>controls;
+
+signals:
+    void keyStateUpdate(uint8_t keyState);
 };
 
 #endif // ROBOCOPHANDLER_H

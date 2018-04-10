@@ -13,6 +13,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     rch = new RoboCopHandler();
 
+    connect(rch, &RoboCopHandler::keyStateUpdate, this, &MainWindow::KeyStateUpdate);
+
     parsedView = new int *[10];
     for(int y = 0; y < 10; y++)
     {
@@ -59,8 +61,8 @@ void MainWindow::on_Connect_clicked()
             connect(socket, SIGNAL(disconnected()),this, SLOT(Disconnected()));
 
             ///TODO: We should properly handle this concurrent task better
-            if(rch != NULL)
-                QtConcurrent::run(*rch, RoboCopHandler::GameLoop);
+//            if(rch != NULL)
+//                QtConcurrent::run(*rch, RoboCopHandler::GameLoop);
         }
     }
     else{
@@ -78,6 +80,7 @@ void MainWindow::Disconnected()
 void MainWindow::readyRead()
 {//Triggered anytime the server sends data
     //Reads Socket Data sent by the server
+    qDebug() << "ReadyRead()";
     QString data;
     data = socket->readAll();
     //qDebug()<<data;
@@ -110,7 +113,8 @@ void MainWindow::readyRead()
         qDebug() << "Pieces: " << pieces;
         //If the server is indicating the game has ended
         for(int i=1; i<pieces.length()-1; i++){
-            if(pieces.at(i) != "")
+            QString p = pieces.at(i);
+            if(!p.isEmpty() && !p.isNull())
             {
                 QStringList arraySet = pieces.at(i).split(":");
                 qDebug()<<"test "<<arraySet.length()<<" "<<pieces.at(i);
@@ -140,6 +144,10 @@ void MainWindow::readyRead()
         qDebug() << "Done";
 
         //if(rch != NULL) { rch->SetInputs(parsedView); }
+    }
+    else if(command=="LevelReset")
+    {
+//        if(rch != NULL) {rch->InitializeRun();}
     }
 }
 
@@ -206,4 +214,12 @@ void MainWindow::on_Right_clicked()
     {
         qDebug() << socket->errorString();
     }
+}
+
+void MainWindow::KeyStateUpdate(uint8_t ksu)
+{
+    QByteArray bArr;
+    bArr.append("Controls;");
+    bArr.append(QString::number(ksu, 2));
+    socket->write(bArr);
 }
