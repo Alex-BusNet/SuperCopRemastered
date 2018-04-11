@@ -24,3 +24,21 @@ Gene::Gene(const Gene &g)
     this->enabled = g.enabled;
     this->innovation = g.innovation;
 }
+
+void Gene::SaveGene(QJsonObject &obj)
+{
+    obj["into"] = into;
+    obj["out"] = out;
+    obj["weight"] = weight;
+    obj["innovation"] = innovation;
+    obj["enabled"] = enabled;
+}
+
+void Gene::LoadGene(const QJsonObject &obj)
+{
+    into = obj["into"].toInt();
+    out = obj["out"].toInt();
+    weight = (float)obj["weight"].toDouble();
+    innovation = obj["innovation"].toInt();
+    enabled = obj["enabled"].toBool();
+}

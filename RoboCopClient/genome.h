@@ -58,6 +58,8 @@ public:
 
     Genome* Crossover(Genome &other, int innovationSize);
 
+    void SaveGenome(QJsonObject &obj);
+    void LoadGenome(const QJsonObject &obj);
 
     QVector<Gene*> genes;
     Network network;

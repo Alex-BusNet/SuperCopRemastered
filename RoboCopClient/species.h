@@ -24,6 +24,9 @@ public:
 
     QVector<Genome*> genomes;
 
+    void SaveSpecies(QJsonObject &obj);
+    void LoadSpecies(const QJsonObject &obj);
+
 private:
     int topFitness;
     int staleness;

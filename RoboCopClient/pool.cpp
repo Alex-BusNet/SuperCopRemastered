@@ -1,4 +1,5 @@
 #include "pool.h"
+#include <QFile>
 
 Pool::Pool()
 {
@@ -12,13 +13,13 @@ Pool::Pool()
 
 int Pool::NewInnovation()
 {
-    qDebug() << "NewInnovation()";
+//    qDebug() << "NewInnovation()";
     return ++this->innovation;
 }
 
 int Pool::TotalAverageFitness()
 {
-    qDebug() << "TotalAverageFitness()";
+//    qDebug() << "TotalAverageFitness()";
     int total = 0;
     foreach(Species *s, species)
     {
@@ -30,7 +31,7 @@ int Pool::TotalAverageFitness()
 
 void Pool::RankGlobally()
 {
-    qDebug() << "RankGlobally()";
+//    qDebug() << "RankGlobally()";
     QVector<Genome*> globals;
     foreach(Species *s, species)
     {
@@ -76,11 +77,13 @@ void Pool::NextGenome()
             currentSpecies = 0;
         }
     }
+
+    qDebug() << "\tGenome: " << currentGenome << " Species: " << currentSpecies;
 }
 
 void Pool::NewGeneration()
 {
-    qDebug() << "NewGeneration()";
+//    qDebug() << "NewGeneration()";
     CullSpecies(false);
     RankGlobally();
     RemoveStaleSpecies();
@@ -120,12 +123,12 @@ void Pool::NewGeneration()
 
     generation++;
 
-    ///Write backup file?
+    SaveFile(QString("States/backup.%1.RC_1.json").arg(generation));
 }
 
 QMap<QString, bool> Pool::EvaluateNetwork(QVector<int> inputs)
 {
-    qDebug() << "Pool::EvaluateNetwork()";
+//    qDebug() << "Pool::EvaluateNetwork()";
     return species[currentSpecies]->genomes[currentGenome]->network.EvaluateNetwork(inputs);
 }
 
@@ -134,77 +137,87 @@ void Pool::CullSpecies(bool cutToOne)
     qDebug() << "CullSpecies()";
     foreach(Species *s, species)
     {
-        // Sort species from most fit to least fit
-        for(int i = 0; i < s->genomes.size(); i++)
+        if(s->genomes.size() > 0)
         {
-            for(int j = i+1; j < s->genomes.size(); j++)
+            // Sort species from most fit to least fit
+            for(int i = 0; i < s->genomes.size(); i++)
             {
-                Genome* a = s->genomes[i];
-                Genome* b = s->genomes[j];
-
-                if(a->GetFitness() < b->GetFitness())
+                for(int j = i+1; j < s->genomes.size(); j++)
                 {
-                    Genome *temp = a;
-                    a = b;
-                    b = temp;
+                    Genome* a = s->genomes[i];
+                    Genome* b = s->genomes[j];
+
+                    if(a->GetFitness() < b->GetFitness())
+                    {
+                        Genome *temp = a;
+                        a = b;
+                        b = temp;
+                    }
                 }
             }
-        }
 
-        int remaining = std::ceil(s->genomes.size() / 2);
-        if(cutToOne) { remaining = 1; }
+            int remaining = std::ceil(s->genomes.size() / 2);
+            if(cutToOne) { remaining = 1; }
 
-        while(s->genomes.size() > remaining)
-        {
-            s->genomes.removeLast();
+            while(s->genomes.size() > remaining)
+            {
+                s->genomes.removeLast();
+            }
         }
     }
+
+    qDebug() << "--Finished CullSpecies()";
 }
 
 void Pool::RemoveStaleSpecies()
 {
     qDebug() << "RemoveStaleSpecies()";
     QVector<Species*> survived;
-
     foreach(Species *s, species)
     {
-        // Sort species from most fit to least fit
-        for(int i = 0; i < s->genomes.size(); i++)
+        if(s->genomes.size() > 0)
         {
-            for(int j = i+1; j < s->genomes.size(); j++)
+            qDebug() << "Genome size: " << s->genomes.size();
+            // Sort species from most fit to least fit
+            for(int i = 0; i < s->genomes.size(); i++)
             {
-                Genome *a = s->genomes[i];
-                Genome *b = s->genomes[j];
-
-                /// This condition needs to be checked
-                if(a->GetFitness() < b->GetFitness())
+                for(int j = i+1; j < s->genomes.size(); j++)
                 {
-                    Genome *temp = a;
-                    a = b;
-                    b = temp;
+                    Genome *a = s->genomes[i];
+                    Genome *b = s->genomes[j];
+
+                    /// This condition needs to be checked
+                    if(a->GetFitness() < b->GetFitness())
+                    {
+                        Genome *temp = a;
+                        a = b;
+                        b = temp;
+                    }
                 }
             }
-        }
 
-        if(s->genomes[0]->GetFitness() > s->GetTopFitness())
-        {
-            s->SetTopFitness(s->genomes[0]->GetFitness());
-            s->SetStaleness(0);
-        }
+            if(s->genomes[0]->GetFitness() > s->GetTopFitness())
+            {
+                s->SetTopFitness(s->genomes[0]->GetFitness());
+                s->SetStaleness(0);
+            }
 
-        if((s->GetStaleness() < RoboCop::StaleSpecies) || (s->GetTopFitness() >= maxFitness))
-        {
-            survived.push_back(s);
+            if((s->GetStaleness() < RoboCop::StaleSpecies) || (s->GetTopFitness() >= maxFitness))
+            {
+                survived.push_back(s);
+            }
         }
     }
 
     this->species = survived;
 
+    qDebug() << "--Finished RemoveStaleSpecies()";
+
 }
 
 void Pool::RemoveWeakSpecies()
 {
-    qDebug() << "RemoveWeakSpecies()";
+//    qDebug() << "RemoveWeakSpecies()";
     QVector<Species*> survived;
     int sum = TotalAverageFitness();
 
@@ -220,31 +233,31 @@ void Pool::RemoveWeakSpecies()
 
 void Pool::SetCurrentFrame(int frame)
 {
-    qDebug() << "SetCurrentFrame()";
+//    qDebug() << "SetCurrentFrame()";
     this->currentFrame = frame;
 }
 
 void Pool::SetMaxFitness(int mf)
 {
-    qDebug() << "SetMaxFitness()";
+//    qDebug() << "SetMaxFitness()";
     this->maxFitness = mf;
 }
 
 void Pool::SetCurrentSpecies(int cs)
 {
-    qDebug() << "SetCurrentSpecies()";
+//    qDebug() << "SetCurrentSpecies()";
     this->currentSpecies = cs;
 }
 
 void Pool::SetCurrentGenome(int gm)
 {
-    qDebug() << "SetCurrentGenome()";
+//    qDebug() << "SetCurrentGenome()";
     this->currentGenome = gm;
 }
 
 bool Pool::FitnessAlreadyMeasured()
 {
-    qDebug() << "FitnessAlreadyMeasured()";
+//    qDebug() << "FitnessAlreadyMeasured()";
     Species *s = species[currentSpecies];
     Genome *g = s->genomes[currentGenome];
     return g->GetFitness() != 0;
@@ -252,7 +265,7 @@ bool Pool::FitnessAlreadyMeasured()
 
 void Pool::AddToSpecies(Genome *child)
 {
-    qDebug() << "AddToSpecies()";
+//    qDebug() << "AddToSpecies()";
     bool foundSpecies = false;
     foreach(Species *s, species)
     {
@@ -273,36 +286,90 @@ void Pool::AddToSpecies(Genome *child)
 
 int Pool::GetCurrentGenome()
 {
-    qDebug() << "GetCurrentGenome()";
+//    qDebug() << "GetCurrentGenome()";
     return this->currentGenome;
 }
 
 int Pool::GetInnovation()
 {
-    qDebug() << "GetInnovation()";
+//    qDebug() << "GetInnovation()";
     return this->innovation;
 }
 
 int Pool::GetGeneration()
 {
-    qDebug() << "GetGeneration()";
+//    qDebug() << "GetGeneration()";
     return this->generation;
 }
 
 int Pool::GetCurrentSpecies()
 {
-    qDebug() << "GetCurrentSpecies()";
+//    qDebug() << "GetCurrentSpecies()";
     return this->currentSpecies;
 }
 
 int Pool::GetCurrentFrame()
 {
-    qDebug() << "GetCurrentFrame()";
+//    qDebug() << "GetCurrentFrame()";
     return this->currentFrame;
 }
 
 int Pool::GetMaxFitness()
 {
-    qDebug() << "GetMaxFitness()";
+//    qDebug() << "GetMaxFitness()";
     return this->maxFitness;
+}
+
+void Pool::SavePool(QJsonObject &obj)
+{
+    obj["generation"] = generation;
+    obj["maxfitness"] = maxFitness;
+    QJsonArray arr;
+
+    foreach(Species *s, species)
+    {
+        QJsonObject sObj;
+        s->SaveSpecies(sObj);
+        arr.push_back(sObj);
+    }
+
+    obj["species"] = arr;
+}
+
+void Pool::LoadPool(QJsonObject &obj)
+{
+    generation = obj["generation"].toInt();
+    maxFitness = obj["maxfitness"].toInt();
+    QJsonArray arr = obj["species"].toArray();
+
+    for(int i = 0; i < arr.size(); i++)
+    {
+        QJsonObject sObj = arr.at(i).toObject();
+        Species *s = new Species();
+        s->LoadSpecies(sObj);
+        species.push_back(s);
+    }
+}
+
+void Pool::SaveFile(QString filename)
+{
+    QFile saveState(filename);
+
+    if(saveState.open(QIODevice::WriteOnly))
+    {
+        QJsonDocument doc;
+        QJsonObject obj;
+
+        SavePool(obj);
+
+        doc.setObject(obj);
+        saveState.write(doc.toJson());
+        saveState.flush();
+        saveState.close();
+    }
+}
+
+void Pool::LoadFile(QString filename)
+{
+
 }

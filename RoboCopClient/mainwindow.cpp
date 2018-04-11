@@ -14,6 +14,11 @@ MainWindow::MainWindow(QWidget *parent) :
     rch = new RoboCopHandler();
 
     connect(rch, &RoboCopHandler::keyStateUpdate, this, &MainWindow::KeyStateUpdate);
+    connect(rch, &RoboCopHandler::FitnessUpdate, this, &MainWindow::fitnessUpdate);
+    connect(rch, &RoboCopHandler::GenerationUpdate, this, &MainWindow::generationStatus);
+    connect(rch, &RoboCopHandler::GenomeUpdate, this, &MainWindow::genomeStatus);
+    connect(rch, &RoboCopHandler::MaxFitnessUpdate, this, &MainWindow::maxFitnessUpdate);
+    connect(rch, &RoboCopHandler::SpeciesUpdate, this, &MainWindow::speciesStatus);
 
     parsedView = new int *[10];
     for(int y = 0; y < 10; y++)
@@ -29,6 +34,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+    if(rchThread.isRunning())
+    {
+        rchThread.cancel();
+    }
+
     delete ui;
 }
 
@@ -64,7 +74,7 @@ void MainWindow::on_Connect_clicked()
             if(rch != NULL)
             {
                 rch->InitializePool();
-                QtConcurrent::run(*rch, RoboCopHandler::GameLoop);
+                rchThread = QtConcurrent::run(*rch, RoboCopHandler::GameLoop);
             }
         }
     }
@@ -146,11 +156,11 @@ void MainWindow::readyRead()
 
         qDebug() << "\tDone";
 
-        //if(rch != NULL) { rch->SetInputs(parsedView); }
+        if(rch != NULL) { rch->SetInputs(parsedView); }
     }
     else if(command=="LevelReset")
     {
-//        if(rch != NULL) {rch->InitializeRun();}
+        if(rch != NULL) {rch->InitializeRun();}
     }
 }
 
@@ -225,4 +235,34 @@ void MainWindow::KeyStateUpdate(uint8_t ksu)
     bArr.append("Controls;");
     bArr.append(QString::number(ksu, 2));
     socket->write(bArr);
+}
+
+void MainWindow::genomeStatus(int num)
+{
+    qDebug() << "\t\t\tGenomeStatus() " << num;
+    ui->genomeNumLabel->setText(QString::number(num));
+}
+
+void MainWindow::speciesStatus(int num)
+{
+    qDebug() << "\t\t\tSpeciesStatus() " << num;
+    ui->speciesNumLabel->setText(QString::number(num));
+}
+
+void MainWindow::generationStatus(int num)
+{
+    qDebug() << "\t\t\tGenerationStatus()" << num;
+    ui->genNumberLabel->setText(QString::number(num));
+}
+
+void MainWindow::fitnessUpdate(int num)
+{
+    qDebug() << "\t\t\tFitnessStatus()" << num;
+    ui->fitnessNumLabel->setText(QString::number(num));
+}
+
+void MainWindow::maxFitnessUpdate(int num)
+{
+    qDebug() << "\t\t\tMaxFitnessStatus()" << num;
+    ui->maxFitNumLabel->setText(QString::number(num));
 }

@@ -2,12 +2,18 @@
 #define GENE_H
 
 #include <QDebug>
+#include <QJsonDocument>
+#include <QJsonArray>
+#include <QJsonObject>
 
 class Gene
 {
 public:
     Gene();
     Gene(const Gene &g);
+
+    void SaveGene(QJsonObject &obj);
+    void LoadGene(const QJsonObject &obj);
 
 //private:
     int into;

@@ -41,6 +41,9 @@ public:
     int GetCurrentFrame();
     int GetMaxFitness();
 
+    void SavePool(QJsonObject &obj);
+    void LoadPool(QJsonObject &obj);
+
 private:
     int generation;
     int innovation;
@@ -48,6 +51,9 @@ private:
     int currentGenome;
     int currentFrame;
     int maxFitness;
+
+    void SaveFile(QString filename);
+    void LoadFile(QString filename);
 };
 
 #endif // POOL_H

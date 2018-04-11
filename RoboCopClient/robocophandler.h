@@ -58,10 +58,20 @@ private:
     int rightmost = 0;
     int timeout;
 
+    QString filepath;
+
     QMap<QString, bool>controls;
+
+    void SaveFile(QString filename);
+    void LoadFile(QString filename);
 
 signals:
     void keyStateUpdate(uint8_t keyState);
+    void GenomeUpdate(int num);
+    void SpeciesUpdate(int num);
+    void GenerationUpdate(int num);
+    void FitnessUpdate(int num);
+    void MaxFitnessUpdate(int num);
 };
 
 #endif // ROBOCOPHANDLER_H

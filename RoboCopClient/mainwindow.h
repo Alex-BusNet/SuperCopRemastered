@@ -34,11 +34,18 @@ private slots:
 
     void KeyStateUpdate(uint8_t ksu);
 
+    void genomeStatus(int num);
+    void speciesStatus(int num);
+    void generationStatus(int num);
+    void fitnessUpdate(int num);
+    void maxFitnessUpdate(int num);
+
 private:
     Ui::MainWindow *ui;
     QTcpSocket *socket;
     RoboCopHandler *rch;
     int **parsedView;
+    QFuture<void> rchThread;
 };
 
 #endif // MAINWINDOW_H
