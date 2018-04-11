@@ -5,6 +5,7 @@
 #include <QTcpSocket>
 #include <QtConcurrent/QtConcurrent>
 #include "robocophandler.h"
+#include <QThread>
 
 namespace Ui {
 class MainWindow;
@@ -33,7 +34,7 @@ private slots:
     void on_Right_clicked();
 
     void KeyStateUpdate(uint8_t ksu);
-
+    void ResetLevel();
     void genomeStatus(int num);
     void speciesStatus(int num);
     void generationStatus(int num);
@@ -43,9 +44,9 @@ private slots:
 private:
     Ui::MainWindow *ui;
     QTcpSocket *socket;
-    RoboCopHandler *rch;
+    RoboCopHandler rch;
     int **parsedView;
-    QFuture<void> rchThread;
+//    QFuture<void> rchThread;
 };
 
 #endif // MAINWINDOW_H

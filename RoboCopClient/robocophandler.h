@@ -11,11 +11,11 @@
 #include "neuron.h"
 #include "network.h"
 #include "species.h"
-
+#include <QThread>
 #include <ctime>
 #include <cmath>
 
-class RoboCopHandler : public QObject
+class RoboCopHandler : public QThread //QObject
 {
     Q_OBJECT
 public:
@@ -24,6 +24,8 @@ public:
     ~RoboCopHandler();
 
     void GameLoop();
+
+
 
     void InitializeRun();
     void InitializePool();
@@ -50,6 +52,9 @@ public:
     int GetRightMost();
     int GetTimeout();
     QMap<QString, bool> GetControls();
+
+protected:
+        void run();
 
 private:
     Pool *pool;

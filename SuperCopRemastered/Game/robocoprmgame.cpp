@@ -3,7 +3,7 @@
 robocoprmgame::robocoprmgame(QWidget *parent, bool industrialGraphics) :
     QWidget(parent)
 {
-    showDevOpts = true;
+    showDevOpts = false;
 
 //    QWidget::setWindowState(Qt::WindowFullScreen);
     QWidget::setFixedSize(1280, 720);
@@ -579,36 +579,43 @@ void robocoprmgame::readyRead()
         // NN Controls.
         QString b = buttonStates.last();
         keyPressState = b.toUInt(NULL, 2);
-        qDebug() << "keyPressState";
+//        qDebug() << "keyPressState: " << keyPressState;
     }
-    else
+    else if("Reset")
     {
-        // Manual controls from NN controller
-        qDebug() << "Player has sent" << data ;
-        if(data=="JUMP"){
-            //actionInput(Qt::Key_Up);
-            keyPressEvent(Qt::Key_Up);
-        }
-        else if(data=="LEFT"){
-            //actionInput(Qt::Key_Left);
-            keyPressEvent(Qt::Key_Left);
-        }
-        else if(data=="RIGHT"){
-            //actionInput(Qt::Key_Right);
-            keyPressEvent(Qt::Key_Right);
-        }
-        else if(data=="SPRINT")
-        {
-            isSprintPressed = !isSprintPressed;
-        }
-        else if(data=="NONE"){
-            //actionInput(Qt::Key_Down);
-            //keyPressEvent(Qt::Key_Down);
-            keyReleaseEvent(Qt::Key_Down);
-            //keyReleaseEvent(Qt::Key_Left);
-            //keyReleaseEvent(Qt::Key_Right);
-        }
+        lb->ClearView(view);
+        InitLevel();
+        player->Reset();
+        view->ensureVisible(player->GetViewPixmap(), 200, 70);
     }
+//    else
+//    {
+//        // Manual controls from NN controller
+//        qDebug() << "Player has sent" << data ;
+//        if(data=="JUMP"){
+//            //actionInput(Qt::Key_Up);
+//            keyPressEvent(Qt::Key_Up);
+//        }
+//        else if(data=="LEFT"){
+//            //actionInput(Qt::Key_Left);
+//            keyPressEvent(Qt::Key_Left);
+//        }
+//        else if(data=="RIGHT"){
+//            //actionInput(Qt::Key_Right);
+//            keyPressEvent(Qt::Key_Right);
+//        }
+//        else if(data=="SPRINT")
+//        {
+//            isSprintPressed = !isSprintPressed;
+//        }
+//        else if(data=="NONE"){
+//            //actionInput(Qt::Key_Down);
+//            //keyPressEvent(Qt::Key_Down);
+//            keyReleaseEvent(Qt::Key_Down);
+//            //keyReleaseEvent(Qt::Key_Left);
+//            //keyReleaseEvent(Qt::Key_Right);
+//        }
+//    }
 
     //ui->Log->setText(ui->Log->toPlainText()+data+'\n');
     //qDebug() << "log it" ;

@@ -65,7 +65,7 @@ void Pool::RankGlobally()
 
 void Pool::NextGenome()
 {
-    qDebug() << "NextGenome()";
+//    qDebug() << "NextGenome()";
     currentGenome++;
     if(currentGenome > (species[currentSpecies]->genomes.size() - 1))
     {
@@ -78,7 +78,7 @@ void Pool::NextGenome()
         }
     }
 
-    qDebug() << "\tGenome: " << currentGenome << " Species: " << currentSpecies;
+//    qDebug() << "\tGenome: " << currentGenome << " Species: " << currentSpecies;
 }
 
 void Pool::NewGeneration()
@@ -109,21 +109,23 @@ void Pool::NewGeneration()
     }
 
     CullSpecies(true);
-
+    qDebug() << "Children: " << children.size() << " Species: " << species.size();
     while(children.size() + species.size() < RoboCop::Population)
     {
         Species *s = species[rand() % species.size()];
         children.push_back(s->BreedChild(innovation));
     }
 
+    qDebug() << "Adding Children..";
     for(int c = 0; c < children.size(); c++)
     {
         AddToSpecies(children[c]);
     }
 
     generation++;
-
+    qDebug() << "Saving...";
     SaveFile(QString("States/backup.%1.RC_1.json").arg(generation));
+    qDebug() << "Done";
 }
 
 QMap<QString, bool> Pool::EvaluateNetwork(QVector<int> inputs)
@@ -135,6 +137,7 @@ QMap<QString, bool> Pool::EvaluateNetwork(QVector<int> inputs)
 void Pool::CullSpecies(bool cutToOne)
 {
     qDebug() << "CullSpecies()";
+    qDebug() << "Species: " << species.size();
     foreach(Species *s, species)
     {
         if(s->genomes.size() > 0)
@@ -156,16 +159,15 @@ void Pool::CullSpecies(bool cutToOne)
                 }
             }
 
-            int remaining = std::ceil(s->genomes.size() / 2);
+            int remaining = std::ceil((s->genomes.size()+1) / 2);
             if(cutToOne) { remaining = 1; }
 
-            while(s->genomes.size() > remaining)
+            while((s->genomes.size()) > remaining)
             {
                 s->genomes.removeLast();
             }
         }
     }
-
     qDebug() << "--Finished CullSpecies()";
 }
 
@@ -177,7 +179,6 @@ void Pool::RemoveStaleSpecies()
     {
         if(s->genomes.size() > 0)
         {
-            qDebug() << "Genome size: " << s->genomes.size();
             // Sort species from most fit to least fit
             for(int i = 0; i < s->genomes.size(); i++)
             {

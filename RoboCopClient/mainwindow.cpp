@@ -11,14 +11,13 @@ MainWindow::MainWindow(QWidget *parent) :
     //Socket sends and recieves data
     socket = new QTcpSocket(this);
 
-    rch = new RoboCopHandler();
-
-    connect(rch, &RoboCopHandler::keyStateUpdate, this, &MainWindow::KeyStateUpdate);
-    connect(rch, &RoboCopHandler::FitnessUpdate, this, &MainWindow::fitnessUpdate);
-    connect(rch, &RoboCopHandler::GenerationUpdate, this, &MainWindow::generationStatus);
-    connect(rch, &RoboCopHandler::GenomeUpdate, this, &MainWindow::genomeStatus);
-    connect(rch, &RoboCopHandler::MaxFitnessUpdate, this, &MainWindow::maxFitnessUpdate);
-    connect(rch, &RoboCopHandler::SpeciesUpdate, this, &MainWindow::speciesStatus);
+    qRegisterMetaType<uint8_t>("uint8_t");
+    connect(&rch, &RoboCopHandler::keyStateUpdate, this, &MainWindow::KeyStateUpdate);
+    connect(&rch, &RoboCopHandler::FitnessUpdate, this, &MainWindow::fitnessUpdate);
+    connect(&rch, &RoboCopHandler::GenerationUpdate, this, &MainWindow::generationStatus);
+    connect(&rch, &RoboCopHandler::GenomeUpdate, this, &MainWindow::genomeStatus);
+    connect(&rch, &RoboCopHandler::MaxFitnessUpdate, this, &MainWindow::maxFitnessUpdate);
+    connect(&rch, &RoboCopHandler::SpeciesUpdate, this, &MainWindow::speciesStatus);
 
     parsedView = new int *[10];
     for(int y = 0; y < 10; y++)
@@ -34,10 +33,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    if(rchThread.isRunning())
-    {
-        rchThread.cancel();
-    }
+    if(rch.isRunning())
+        rch.quit();
 
     delete ui;
 }
@@ -70,12 +67,7 @@ void MainWindow::on_Connect_clicked()
             connect(socket, SIGNAL(readyRead()),this, SLOT(readyRead()));
             connect(socket, SIGNAL(disconnected()),this, SLOT(Disconnected()));
 
-            ///TODO: We should properly handle this concurrent task better
-            if(rch != NULL)
-            {
-                rch->InitializePool();
-                rchThread = QtConcurrent::run(*rch, RoboCopHandler::GameLoop);
-            }
+            rch.start();
         }
     }
     else{
@@ -93,7 +85,7 @@ void MainWindow::Disconnected()
 void MainWindow::readyRead()
 {//Triggered anytime the server sends data
     //Reads Socket Data sent by the server
-    qDebug() << "\tReadyRead()";
+//    qDebug() << "\tReadyRead()";
     QString data;
     data = socket->readAll();
     //qDebug()<<data;
@@ -112,7 +104,7 @@ void MainWindow::readyRead()
     else if(command=="VisibleTerrain"){
         QString b = data.split("VisibleTerrain").last();
 //        qDebug() << "b: " << b;
-        qDebug() << "\tClearing parsedView";
+//        qDebug() << "\tClearing parsedView";
         for(int y = 0; y < 10; y++)
         {
             for(int x = 0; x < 18; x++)
@@ -121,7 +113,7 @@ void MainWindow::readyRead()
             }
         }
 
-        qDebug() << "\tSplitting data";
+//        qDebug() << "\tSplitting data";
         QStringList  pieces = b.split(";");
 //        qDebug() << "Pieces: " << pieces;
         //If the server is indicating the game has ended
@@ -136,7 +128,7 @@ void MainWindow::readyRead()
             }
         }
 
-        qDebug() << "\tFormatting display string";
+//        qDebug() << "\tFormatting display string";
         QString disp = "";
         for(int y = 0; y < 10; y++)
         {
@@ -151,16 +143,16 @@ void MainWindow::readyRead()
             }
             disp=disp+"\n";
         }
-        qDebug() << "\tSetting display string";
+//        qDebug() << "\tSetting display string";
         ui->Log->setText(disp);
 
-        qDebug() << "\tDone";
+//        qDebug() << "\tDone";
 
-        if(rch != NULL) { rch->SetInputs(parsedView); }
+        rch.SetInputs(parsedView);
     }
     else if(command=="LevelReset")
     {
-        if(rch != NULL) {rch->InitializeRun();}
+        rch.InitializeRun();
     }
 }
 
@@ -231,38 +223,42 @@ void MainWindow::on_Right_clicked()
 
 void MainWindow::KeyStateUpdate(uint8_t ksu)
 {
+    ui->keyStateNumLabel->setText(QString("0b%1").arg(ksu, 4, 2, QChar('0')));
     QByteArray bArr;
     bArr.append("Controls;");
     bArr.append(QString::number(ksu, 2));
     socket->write(bArr);
 }
 
+void MainWindow::ResetLevel()
+{
+    qDebug() << "\t\t\tResetLevel()";
+    QByteArray bArr;
+    bArr.append("Reset;");
+    socket->write(bArr);
+}
+
 void MainWindow::genomeStatus(int num)
 {
-    qDebug() << "\t\t\tGenomeStatus() " << num;
     ui->genomeNumLabel->setText(QString::number(num));
 }
 
 void MainWindow::speciesStatus(int num)
 {
-    qDebug() << "\t\t\tSpeciesStatus() " << num;
     ui->speciesNumLabel->setText(QString::number(num));
 }
 
 void MainWindow::generationStatus(int num)
 {
-    qDebug() << "\t\t\tGenerationStatus()" << num;
     ui->genNumberLabel->setText(QString::number(num));
 }
 
 void MainWindow::fitnessUpdate(int num)
 {
-    qDebug() << "\t\t\tFitnessStatus()" << num;
     ui->fitnessNumLabel->setText(QString::number(num));
 }
 
 void MainWindow::maxFitnessUpdate(int num)
 {
-    qDebug() << "\t\t\tMaxFitnessStatus()" << num;
     ui->maxFitNumLabel->setText(QString::number(num));
 }

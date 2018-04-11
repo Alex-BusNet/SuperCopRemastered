@@ -580,13 +580,13 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
                                               && (floorBlock->GetTopBoundingBox()->intersects(p->GetFallViewBB()->rect().toRect()))
                                               && (p->getState() != JUMPING));
 
-                    qDebug() << "Floor " << "leftWall: " << leftWallCollision << " rightWall: " << rightWallCollision << " topBlock: " << topBlockCollision;
+//                    qDebug() << "Floor " << "leftWall: " << leftWallCollision << " rightWall: " << rightWallCollision << " topBlock: " << topBlockCollision;
                     if(topBlockCollision)
                     {
                         // If the player didn't collide with the left or right side of
                         // a floor object, and the floor object is not an opening, then
                         // the player must be standing on the ground.
-                        qDebug() << "Collision with top of floor object";
+//                        qDebug() << "Collision with top of floor object";
                         if(!p->isOnObstacle())
                             p->SetOnObstactle(true, floorBlock->GetPosY());
     //                    p->clearWallCollided();

@@ -11,6 +11,8 @@ RoboCopHandler::RoboCopHandler()
     if(!QDir(filepath).exists())
         QDir().mkdir(filepath);
 
+//    qRegisterMetaType<uint8_t>();
+
 }
 
 /*
@@ -38,10 +40,6 @@ void RoboCopHandler::GameLoop()
         Species *s = pool->species[pool->GetCurrentSpecies()];
         Genome *g = s->genomes[pool->GetCurrentGenome()];
 
-        emit SpeciesUpdate(pool->GetCurrentSpecies());
-        emit GenomeUpdate(pool->GetCurrentGenome());
-        emit GenerationUpdate(pool->GetGeneration());
-
         if(pool->GetCurrentFrame() % 5 == 0)
             EvaluateCurrent();
 
@@ -62,7 +60,6 @@ void RoboCopHandler::GameLoop()
 
         if(timeout + timeoutBonus <= 0)
         {
-            qDebug() << "timeout less than 0";
             int fitness = rightmost - pool->GetCurrentFrame() / 2;
             if(rightmost > (70 * 205)) // Need to check what rightmost max should be
                 fitness += 1000;
@@ -71,12 +68,10 @@ void RoboCopHandler::GameLoop()
                 fitness = -1;
 
             g->SetFitness(fitness);
-            emit FitnessUpdate(g->GetFitness());
 
             if(fitness > pool->GetMaxFitness())
             {
                 pool->SetMaxFitness(fitness);
-                emit MaxFitnessUpdate(pool->GetMaxFitness());
                 SaveFile(filepath + "/backup." + pool->GetGeneration() + ".RC_1.json");
             }
 
@@ -91,15 +86,27 @@ void RoboCopHandler::GameLoop()
 
         //--------------------------
         // NN State info goes here
+
+        emit SpeciesUpdate(pool->GetCurrentSpecies());
+        emit GenomeUpdate(pool->GetCurrentGenome());
+        emit GenerationUpdate(pool->GetGeneration());
+        emit FitnessUpdate(g->GetFitness());
+        emit MaxFitnessUpdate(pool->GetMaxFitness());
+
         //--------------------------
 
         pool->SetCurrentFrame(pool->GetCurrentFrame() + 1);
-
 
         for(long i = 0; i < 1000000L; i++) {;}
 
         // Advance game frame?
     }
+}
+
+void RoboCopHandler::run()
+{
+    InitializePool();
+    GameLoop();
 }
 
 void RoboCopHandler::ClearControls()
@@ -141,7 +148,7 @@ void RoboCopHandler::InitializePool()
 
 void RoboCopHandler::SetInputs(int **in)
 {
-    qDebug() << "SetInputs()";
+//    qDebug() << "SetInputs()";
     for(int y = 0; y < 10; y++)
     {
         for(int x = 0; x < 18; x++)
@@ -149,7 +156,7 @@ void RoboCopHandler::SetInputs(int **in)
             inputs.push_back(in[y][x]);
         }
     }
-    qDebug() << "--Finished SetInputs()";
+//    qDebug() << "--Finished SetInputs()";
 }
 
 void RoboCopHandler::SetPosition(int x)
@@ -167,6 +174,8 @@ void RoboCopHandler::EvaluateCurrent()
     {
         controls["LEFT"] = controls["RIGHT"] = false;
     };
+
+    SetControls(controls);
 }
 
 void RoboCopHandler::SetControls(QMap<QString, bool> cState)
