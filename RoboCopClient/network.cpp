@@ -7,6 +7,7 @@ Network::Network()
 
 QMap<QString, bool> Network::EvaluateNetwork(QVector<int> inputs)
 {
+    qDebug() << "EvaluateNetwork()";
     QMap<QString, bool> out;
     for(int i = 0; i < RoboCop::Outputs; i++)
     {
@@ -58,5 +59,6 @@ QMap<QString, bool> Network::EvaluateNetwork(QVector<int> inputs)
 
 float Network::sigmoid(float val)
 {
+    qDebug() << "Sigmoid()";
     return 2.0f / (1.0f + std::exp2f(-val));
 }

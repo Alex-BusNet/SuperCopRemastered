@@ -1,6 +1,7 @@
 #ifndef GENE_H
 #define GENE_H
 
+#include <QDebug>
 
 class Gene
 {

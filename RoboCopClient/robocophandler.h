@@ -26,6 +26,7 @@ public:
     void GameLoop();
 
     void InitializeRun();
+    void InitializePool();
     void SetInputs(int **in);
     void SetPosition(int x);
 

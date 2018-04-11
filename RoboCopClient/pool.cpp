@@ -12,11 +12,13 @@ Pool::Pool()
 
 int Pool::NewInnovation()
 {
+    qDebug() << "NewInnovation()";
     return ++this->innovation;
 }
 
 int Pool::TotalAverageFitness()
 {
+    qDebug() << "TotalAverageFitness()";
     int total = 0;
     foreach(Species *s, species)
     {
@@ -28,6 +30,7 @@ int Pool::TotalAverageFitness()
 
 void Pool::RankGlobally()
 {
+    qDebug() << "RankGlobally()";
     QVector<Genome*> globals;
     foreach(Species *s, species)
     {
@@ -61,21 +64,23 @@ void Pool::RankGlobally()
 
 void Pool::NextGenome()
 {
+    qDebug() << "NextGenome()";
     currentGenome++;
-    if(currentGenome > species[currentSpecies]->genomes.size())
+    if(currentGenome > (species[currentSpecies]->genomes.size() - 1))
     {
-        currentGenome = 1;
+        currentGenome = 0;
         currentSpecies++;
-        if(currentSpecies > species.size())
+        if(currentSpecies > (species.size() - 1))
         {
             NewGeneration();
-            currentSpecies = 1;
+            currentSpecies = 0;
         }
     }
 }
 
 void Pool::NewGeneration()
 {
+    qDebug() << "NewGeneration()";
     CullSpecies(false);
     RankGlobally();
     RemoveStaleSpecies();
@@ -120,11 +125,13 @@ void Pool::NewGeneration()
 
 QMap<QString, bool> Pool::EvaluateNetwork(QVector<int> inputs)
 {
+    qDebug() << "Pool::EvaluateNetwork()";
     return species[currentSpecies]->genomes[currentGenome]->network.EvaluateNetwork(inputs);
 }
 
 void Pool::CullSpecies(bool cutToOne)
 {
+    qDebug() << "CullSpecies()";
     foreach(Species *s, species)
     {
         // Sort species from most fit to least fit
@@ -156,6 +163,7 @@ void Pool::CullSpecies(bool cutToOne)
 
 void Pool::RemoveStaleSpecies()
 {
+    qDebug() << "RemoveStaleSpecies()";
     QVector<Species*> survived;
 
     foreach(Species *s, species)
@@ -196,6 +204,7 @@ void Pool::RemoveStaleSpecies()
 
 void Pool::RemoveWeakSpecies()
 {
+    qDebug() << "RemoveWeakSpecies()";
     QVector<Species*> survived;
     int sum = TotalAverageFitness();
 
@@ -211,31 +220,39 @@ void Pool::RemoveWeakSpecies()
 
 void Pool::SetCurrentFrame(int frame)
 {
+    qDebug() << "SetCurrentFrame()";
     this->currentFrame = frame;
 }
 
 void Pool::SetMaxFitness(int mf)
 {
+    qDebug() << "SetMaxFitness()";
     this->maxFitness = mf;
 }
 
 void Pool::SetCurrentSpecies(int cs)
 {
+    qDebug() << "SetCurrentSpecies()";
     this->currentSpecies = cs;
 }
 
 void Pool::SetCurrentGenome(int gm)
 {
+    qDebug() << "SetCurrentGenome()";
     this->currentGenome = gm;
 }
 
 bool Pool::FitnessAlreadyMeasured()
 {
-    return (species[currentSpecies])->genomes[currentGenome]->GetFitness() != 0;
+    qDebug() << "FitnessAlreadyMeasured()";
+    Species *s = species[currentSpecies];
+    Genome *g = s->genomes[currentGenome];
+    return g->GetFitness() != 0;
 }
 
 void Pool::AddToSpecies(Genome *child)
 {
+    qDebug() << "AddToSpecies()";
     bool foundSpecies = false;
     foreach(Species *s, species)
     {
@@ -256,30 +273,36 @@ void Pool::AddToSpecies(Genome *child)
 
 int Pool::GetCurrentGenome()
 {
+    qDebug() << "GetCurrentGenome()";
     return this->currentGenome;
 }
 
 int Pool::GetInnovation()
 {
+    qDebug() << "GetInnovation()";
     return this->innovation;
 }
 
 int Pool::GetGeneration()
 {
+    qDebug() << "GetGeneration()";
     return this->generation;
 }
 
 int Pool::GetCurrentSpecies()
 {
+    qDebug() << "GetCurrentSpecies()";
     return this->currentSpecies;
 }
 
 int Pool::GetCurrentFrame()
 {
+    qDebug() << "GetCurrentFrame()";
     return this->currentFrame;
 }
 
 int Pool::GetMaxFitness()
 {
+    qDebug() << "GetMaxFitness()";
     return this->maxFitness;
 }

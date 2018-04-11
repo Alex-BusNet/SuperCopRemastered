@@ -40,6 +40,7 @@ Genome::Genome(Genome &g) : Genome()
 
 void Genome::GenerateNetwork()
 {
+    qDebug() << "GenerateNetwork()";
     int i = 0;
     for(; i < RoboCop::Inputs; i++)
     {
@@ -86,86 +87,103 @@ void Genome::GenerateNetwork()
 
 float Genome::GetBiasChance()
 {
+    qDebug() << "GetBiasChance()";
     return this->mutationRates["bias"];
 }
 
 float Genome::GetConnectionsChance()
 {
+    qDebug() << "GetConnectionsChance()";
     return this->mutationRates["connections"];
 }
 
 float Genome::GetLinkChance()
 {
+    qDebug() << "GetLinkChance()";
     return this->mutationRates["link"];
 }
 
 float Genome::GetNodeChance()
 {
+    qDebug() << "GetNodeChance()";
     return this->mutationRates["node"];
 }
 
 float Genome::GetEnableChance()
 {
+    qDebug() << "GetEnableChance()";
     return this->mutationRates["enable"];
 }
 
 float Genome::GetDisableChance()
 {
+    qDebug() << "GetDisableChance()";
     return this->mutationRates["disable"];
 }
 
 float Genome::GetStep()
 {
+    qDebug() << "GetStep()";
     return this->mutationRates["step"];
 }
 
 int Genome::GetFitness()
 {
+    qDebug() << "GetFitness()";
     return this->fitness;
 }
 
 int Genome::GetAdjustedFitness()
 {
+    qDebug() << "GetAdjustedFitness()";
     return this->adjustedFitness;
 }
 
 int Genome::GetMaxNeuron()
 {
+    qDebug() << "GetMaxNeuron()";
     return this->maxNeuron;
 }
 
 int Genome::GetGlobalRank()
 {
+    qDebug() << "GetGlobalRank()";
     return this->globalRank;
 }
 
 void Genome::SetFitness(int fit)
 {
+    qDebug() << "SetFitness()";
     this->fitness = fit;
 }
 
 void Genome::SetAdjustedFitness(int adjFit)
 {
+    qDebug() << "SetAdjustedFitness()";
     this->adjustedFitness = adjFit;
 }
 
 void Genome::SetMaxNeuron(int mn)
 {
+    qDebug() << "SetMaxNeuron()";
     this->maxNeuron = mn;
 }
 
 void Genome::SetGlobalRank(int gr)
 {
+    qDebug() << "SetGlobalRank()";
     this->globalRank = gr;
 }
 
 void Genome::CopyMutationRates(QMap<QString, float> mr)
 {
+    qDebug() << "CopyMutationRates()";
     this->mutationRates = mr;
 }
 
 bool Genome::ContainsLink(Gene link)
 {
+    qDebug() << "ContainsLink()";
     foreach(Gene *g, genes)
     {
         if(g->into == link.into && g->out == link.out)
@@ -177,6 +195,7 @@ bool Genome::ContainsLink(Gene link)
 
 bool Genome::SameSpecies(const Genome &other, int innovationSize)
 {
+    qDebug() << "SameSpecies()";
     float dd = RoboCop::DeltaDisjoint * Disjoint(other.genes, innovationSize);
     float dw = RoboCop::DeltaWeights * Weights(other.genes, innovationSize);
     return (dd + dw) < RoboCop::DeltaThreshold;
@@ -184,6 +203,7 @@ bool Genome::SameSpecies(const Genome &other, int innovationSize)
 
 int Genome::Disjoint(const QVector<Gene*> &other, int innovationSize)
 {
+    qDebug() << "Disjoint()";
     bool i1[innovationSize];
     bool i2[innovationSize];
 
@@ -224,6 +244,7 @@ int Genome::Disjoint(const QVector<Gene*> &other, int innovationSize)
 
 float Genome::Weights(const QVector<Gene*> &other, int innovationSize)
 {
+    qDebug() << "Weights()";
     Gene *i2[innovationSize];
 
     for(int i = 0; i < innovationSize; i++)
@@ -254,6 +275,7 @@ float Genome::Weights(const QVector<Gene*> &other, int innovationSize)
 
 Genome* Genome::Crossover(Genome &other, int innovationSize)
 {
+    qDebug() << "Crossover()";
     if(other.GetFitness() > this->fitness)
     {
         return other.Crossover(*this, innovationSize);
@@ -289,6 +311,7 @@ Genome* Genome::Crossover(Genome &other, int innovationSize)
 
 int Genome::RandomNeuron(bool nonInput)
 {
+    qDebug() << "RandomNeuron()";
     QVector<bool> neurons;
     int i = 0;
     if(!nonInput)
