@@ -7,6 +7,7 @@ RoboCopHandler::RoboCopHandler()
     srand(time(0));
 
     filepath = "States";
+    frameUpdate = false;
 
     if(!QDir(filepath).exists())
         QDir().mkdir(filepath);
@@ -18,7 +19,7 @@ RoboCopHandler::RoboCopHandler()
 /*
  * Copy c'tor
  */
-RoboCopHandler::RoboCopHandler(const RoboCopHandler &rch)
+RoboCopHandler::RoboCopHandler(const RoboCopHandler &rch) : QThread()
 {
     pool = rch.pool;
     inputs = rch.inputs;
@@ -37,69 +38,74 @@ void RoboCopHandler::GameLoop()
 {
     while(true)
     {
-        Species *s = pool->species[pool->GetCurrentSpecies()];
-        Genome *g = s->genomes[pool->GetCurrentGenome()];
-
-        if(pool->GetCurrentFrame() % 5 == 0)
-            EvaluateCurrent();
-
-        SetControls(controls);
-
-        /// GET POSITIONS
-
-        if (playerPosX > rightmost)
+        if(frameUpdate)
         {
-            qDebug() << "\t\tPlayer posX greater than rightmost";
-            rightmost = playerPosX;
-            timeout = RoboCop::TimeoutConstant;
-        }
+            frameUpdate = false;
 
-        timeout--;
+            Species *s = pool->species[pool->GetCurrentSpecies()];
+            Genome *g = s->genomes[pool->GetCurrentGenome()];
 
-        int timeoutBonus = pool->GetCurrentFrame() / 4;
+            if(pool->GetCurrentFrame() % 5 == 0)
+                EvaluateCurrent();
 
-        if(timeout + timeoutBonus <= 0)
-        {
-            int fitness = rightmost - pool->GetCurrentFrame() / 2;
-            if(rightmost > (70 * 205)) // Need to check what rightmost max should be
-                fitness += 1000;
+            SetControls(controls);
 
-            if(fitness == 0)
-                fitness = -1;
+            /// GET POSITIONS
 
-            g->SetFitness(fitness);
-
-            if(fitness > pool->GetMaxFitness())
+            if (playerPosX > rightmost)
             {
-                pool->SetMaxFitness(fitness);
-                SaveFile(filepath + "/backup." + pool->GetGeneration() + ".RC_1.json");
+                qDebug() << "\t\tPlayer posX greater than rightmost";
+                rightmost = playerPosX;
+                timeout = RoboCop::TimeoutConstant;
             }
 
-            pool->SetCurrentSpecies(0);
-            pool->SetCurrentGenome(0);
+            timeout--;
 
-            while(pool->FitnessAlreadyMeasured())
-                pool->NextGenome();
+            int timeoutBonus = pool->GetCurrentFrame() / 4;
 
-            InitializeRun();
+            if(timeout + timeoutBonus <= 0)
+            {
+                int fitness = rightmost - pool->GetCurrentFrame() / 2;
+                if(rightmost > (70 * 205)) // Need to check what rightmost max should be
+                    fitness += 1000;
+
+                if(fitness == 0)
+                    fitness = -1;
+
+                g->SetFitness(fitness);
+
+                if(fitness > pool->GetMaxFitness())
+                {
+                    pool->SetMaxFitness(fitness);
+                    SaveFile(filepath + "/backup." + pool->GetGeneration() + ".RC_1.json");
+                }
+
+                pool->SetCurrentSpecies(0);
+                pool->SetCurrentGenome(0);
+
+                while(pool->FitnessAlreadyMeasured())
+                    pool->NextGenome();
+
+                InitializeRun();
+            }
+
+            //--------------------------
+            // NN State info goes here
+
+            emit SpeciesUpdate(pool->GetCurrentSpecies());
+            emit GenomeUpdate(pool->GetCurrentGenome());
+            emit GenerationUpdate(pool->GetGeneration());
+            emit FitnessUpdate(g->GetFitness());
+            emit MaxFitnessUpdate(pool->GetMaxFitness());
+
+            //--------------------------
+
+            pool->SetCurrentFrame(pool->GetCurrentFrame() + 1);
+
+            for(long i = 0; i < 1000000L; i++) {;}
+
+            // Advance game frame?
         }
-
-        //--------------------------
-        // NN State info goes here
-
-        emit SpeciesUpdate(pool->GetCurrentSpecies());
-        emit GenomeUpdate(pool->GetCurrentGenome());
-        emit GenerationUpdate(pool->GetGeneration());
-        emit FitnessUpdate(g->GetFitness());
-        emit MaxFitnessUpdate(pool->GetMaxFitness());
-
-        //--------------------------
-
-        pool->SetCurrentFrame(pool->GetCurrentFrame() + 1);
-
-        for(long i = 0; i < 1000000L; i++) {;}
-
-        // Advance game frame?
     }
 }
 
@@ -123,11 +129,13 @@ void RoboCopHandler::InitializeRun()
 //    qDebug() << "InitializeRun()";
     pool->SetCurrentFrame(0);
     timeout = RoboCop::TimeoutConstant;
+    emit NewSpecies();
     ClearControls();
 
     Genome *g = pool->species[pool->GetCurrentSpecies()]->genomes[pool->GetCurrentGenome()];
     g->GenerateNetwork();
     EvaluateCurrent();
+//    qDebug() << "--Finished InitializeRun()";
 }
 
 void RoboCopHandler::InitializePool()
@@ -144,6 +152,8 @@ void RoboCopHandler::InitializePool()
     }
 
     InitializeRun();
+
+//    qDebug() << "--Finished InitializePool()";
 }
 
 void RoboCopHandler::SetInputs(int **in)
@@ -173,7 +183,7 @@ void RoboCopHandler::EvaluateCurrent()
     if(controls["LEFT"] && controls["RIGHT"])
     {
         controls["LEFT"] = controls["RIGHT"] = false;
-    };
+    }
 
     SetControls(controls);
 }
@@ -317,7 +327,8 @@ void RoboCopHandler::NodeMutate(Genome *g)
 
     g->SetMaxNeuron(g->GetMaxNeuron() + 1);
 
-    Gene *gene = g->genes[rand() % g->genes.size()];
+    int idx = rand() % g->genes.size();
+    Gene *gene = g->genes[idx];
     if(!gene->enabled) { return; }
 
     gene->enabled = false;
@@ -351,7 +362,7 @@ void RoboCopHandler::EnableDisableMutate(Genome *g, bool enable)
         return;
 
     Gene *g1 = candidates[rand() % candidates.size()];
-    g1->enabled != g1->enabled;
+    g1->enabled = !g1->enabled;
 }
 
 Genome* RoboCopHandler::BasicGenome()
@@ -440,5 +451,10 @@ void RoboCopHandler::LoadFile(QString filename)
 
     InitializeRun();
     pool->SetCurrentFrame(pool->GetCurrentFrame() + 1);
+}
+
+void RoboCopHandler::FrameUpdated()
+{
+    frameUpdate = true;
 }
 

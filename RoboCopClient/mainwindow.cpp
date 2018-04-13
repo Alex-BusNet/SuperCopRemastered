@@ -18,6 +18,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(&rch, &RoboCopHandler::GenomeUpdate, this, &MainWindow::genomeStatus);
     connect(&rch, &RoboCopHandler::MaxFitnessUpdate, this, &MainWindow::maxFitnessUpdate);
     connect(&rch, &RoboCopHandler::SpeciesUpdate, this, &MainWindow::speciesStatus);
+    connect(&rch, &RoboCopHandler::NewSpecies, this, &MainWindow::ResetLevel);
 
     parsedView = new int *[10];
     for(int y = 0; y < 10; y++)
@@ -119,7 +120,7 @@ void MainWindow::readyRead()
         //If the server is indicating the game has ended
         for(int i=1; i<pieces.length()-1; i++){
             QString p = pieces.at(i);
-            if(!p.isEmpty() && !p.isNull())
+            if(!p.isEmpty() && !p.isNull() && (p != "NextFrame"))
             {
                 QStringList arraySet = pieces.at(i).split(":");
 //                qDebug()<<"test "<<arraySet.length()<<" "<<pieces.at(i);
@@ -153,6 +154,10 @@ void MainWindow::readyRead()
     else if(command=="LevelReset")
     {
         rch.InitializeRun();
+    }
+    else if(command == "NextFrame")
+    {
+        rch.FrameUpdated();
     }
 }
 
@@ -232,10 +237,11 @@ void MainWindow::KeyStateUpdate(uint8_t ksu)
 
 void MainWindow::ResetLevel()
 {
-    qDebug() << "\t\t\tResetLevel()";
+//    qDebug() << "\t\t\tResetLevel()";
     QByteArray bArr;
     bArr.append("Reset;");
     socket->write(bArr);
+//    qDebug() << "\t\t\t--Finished ResetLevel()";
 }
 
 void MainWindow::genomeStatus(int num)

@@ -25,8 +25,6 @@ public:
 
     void GameLoop();
 
-
-
     void InitializeRun();
     void InitializePool();
     void SetInputs(int **in);
@@ -54,7 +52,7 @@ public:
     QMap<QString, bool> GetControls();
 
 protected:
-        void run();
+    void run();
 
 private:
     Pool *pool;
@@ -62,6 +60,8 @@ private:
     int playerPosX;
     int rightmost = 0;
     int timeout;
+
+    bool frameUpdate;
 
     QString filepath;
 
@@ -77,6 +77,10 @@ signals:
     void GenerationUpdate(int num);
     void FitnessUpdate(int num);
     void MaxFitnessUpdate(int num);
+    void NewSpecies();
+
+public slots:
+    void FrameUpdated();
 };
 
 #endif // ROBOCOPHANDLER_H

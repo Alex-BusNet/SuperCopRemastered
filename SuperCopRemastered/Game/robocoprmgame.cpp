@@ -266,6 +266,9 @@ void robocoprmgame::updateField()
 {
     if(!gamePaused)
     {
+        if(socket != NULL && socket->state() == QAbstractSocket::ConnectedState)
+            socket->write("NextFrame;");
+
         player->playerAction(keyPressState, isSprintPressed);
         player->UpdateFrame();
         player->UpdatePlayer(view);
@@ -571,9 +574,10 @@ void robocoprmgame::Disconnected()
 void robocoprmgame::readyRead()
 {//Triggers when the client sends data andReads the data
     QString data;
-    data = socket->readAll();
+    data = socket->readLine();
+    qDebug() << "Data: " << data;
     QStringList buttonStates = data.split(";");
-
+    qDebug() << "buttonStates: " << buttonStates;
     if(buttonStates.first() == "Controls")
     {
         // NN Controls.
@@ -581,7 +585,7 @@ void robocoprmgame::readyRead()
         keyPressState = b.toUInt(NULL, 2);
 //        qDebug() << "keyPressState: " << keyPressState;
     }
-    else if("Reset")
+    else if(buttonStates.first() == "Reset")
     {
         lb->ClearView(view);
         InitLevel();

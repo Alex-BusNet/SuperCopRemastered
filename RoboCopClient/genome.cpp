@@ -53,7 +53,7 @@ void Genome::GenerateNetwork()
         this->network.neurons.push_back(NULL);
     }
 
-    // Sort genes
+    // Sort genes from lowest out to highest out
     for(i = 0; i < genes.size(); i++)
     {
         for(int j = i+1; j < genes.size(); j++)

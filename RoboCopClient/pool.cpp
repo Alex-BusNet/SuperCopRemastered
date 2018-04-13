@@ -31,7 +31,7 @@ int Pool::TotalAverageFitness()
 
 void Pool::RankGlobally()
 {
-//    qDebug() << "RankGlobally()";
+    qDebug() << "RankGlobally()";
     QVector<Genome*> globals;
     foreach(Species *s, species)
     {
@@ -41,9 +41,10 @@ void Pool::RankGlobally()
         }
     }
 
+    // Sort genomes from lowest fitness to highest fitness
     for(int i = 0; i < globals.size(); i++)
     {
-        for(int j  = i+1; j < globals.size(); j++)
+        for(int j = i+1; j < globals.size(); j++)
         {
             Genome* a = globals[i];
             Genome* b = globals[j];
@@ -83,7 +84,7 @@ void Pool::NextGenome()
 
 void Pool::NewGeneration()
 {
-//    qDebug() << "NewGeneration()";
+    qDebug() << "NewGeneration()";
     CullSpecies(false);
     RankGlobally();
     RemoveStaleSpecies();
@@ -102,6 +103,7 @@ void Pool::NewGeneration()
     foreach(Species *s, species)
     {
         int breed = std::floor(s->GetAverageFitness() / sum * RoboCop::Population) - 1;
+        qDebug() << "Breed: " << breed;
         for(int i = 0; i < breed; i++)
         {
             children.push_back(s->BreedChild(innovation));
@@ -125,19 +127,20 @@ void Pool::NewGeneration()
     generation++;
     qDebug() << "Saving...";
     SaveFile(QString("States/backup.%1.RC_1.json").arg(generation));
-    qDebug() << "Done";
+    qDebug() << "--Finished NewGeneration()";
 }
 
 QMap<QString, bool> Pool::EvaluateNetwork(QVector<int> inputs)
 {
 //    qDebug() << "Pool::EvaluateNetwork()";
+//    qDebug() << "Species: " << species.size() << " CurrentSpecies: " << currentSpecies << " Current Genome: " << currentGenome;
     return species[currentSpecies]->genomes[currentGenome]->network.EvaluateNetwork(inputs);
 }
 
 void Pool::CullSpecies(bool cutToOne)
 {
-    qDebug() << "CullSpecies()";
-    qDebug() << "Species: " << species.size();
+//    qDebug() << "CullSpecies()";
+//    qDebug() << "Species: " << species.size();
     foreach(Species *s, species)
     {
         if(s->genomes.size() > 0)
@@ -168,7 +171,7 @@ void Pool::CullSpecies(bool cutToOne)
             }
         }
     }
-    qDebug() << "--Finished CullSpecies()";
+//    qDebug() << "--Finished CullSpecies()";
 }
 
 void Pool::RemoveStaleSpecies()
@@ -187,7 +190,6 @@ void Pool::RemoveStaleSpecies()
                     Genome *a = s->genomes[i];
                     Genome *b = s->genomes[j];
 
-                    /// This condition needs to be checked
                     if(a->GetFitness() < b->GetFitness())
                     {
                         Genome *temp = a;
@@ -197,19 +199,25 @@ void Pool::RemoveStaleSpecies()
                 }
             }
 
+            qDebug() << s->genomes[0]->GetFitness() << s->GetTopFitness() << maxFitness << s->GetStaleness() << RoboCop::StaleSpecies;
+
             if(s->genomes[0]->GetFitness() > s->GetTopFitness())
             {
                 s->SetTopFitness(s->genomes[0]->GetFitness());
                 s->SetStaleness(0);
             }
+            else
+                s->SetStaleness(s->GetStaleness() + 1);
 
             if((s->GetStaleness() < RoboCop::StaleSpecies) || (s->GetTopFitness() >= maxFitness))
             {
+                qDebug() << "\t\tAdding species to survived" << s->GetAverageFitness();
                 survived.push_back(s);
             }
         }
     }
 
+    qDebug() << "\tSurvived size: " << survived.size();
     this->species = survived;
 
     qDebug() << "--Finished RemoveStaleSpecies()";
@@ -218,18 +226,22 @@ void Pool::RemoveStaleSpecies()
 
 void Pool::RemoveWeakSpecies()
 {
-//    qDebug() << "RemoveWeakSpecies()";
+    qDebug() << "RemoveWeakSpecies()";
     QVector<Species*> survived;
     int sum = TotalAverageFitness();
-
+    qDebug() << "\tTotal average fitness: " << sum;
     foreach(Species *s, species)
     {
-        int breed = std::floor(s->GetAverageFitness() / sum * RoboCop::Population);
+        qDebug() << "\tAverage fitness: " << s->GetAverageFitness();
+        int breed = std::floor(((float)s->GetAverageFitness() / (float)sum) * RoboCop::Population);
+        qDebug() << "\t\tBreed: " << breed;
         if(breed >= 1)
             survived.push_back(s);
     }
 
+    qDebug() << "\tSurvived size: " << survived.size();
     this->species = survived;
+    qDebug() << "--Finished RemoveWeakSpecies()";
 }
 
 void Pool::SetCurrentFrame(int frame)
