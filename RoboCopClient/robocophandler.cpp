@@ -8,6 +8,7 @@ RoboCopHandler::RoboCopHandler()
 
     filepath = "States";
     frameUpdate = false;
+    gameRunning = false;
 
     if(!QDir(filepath).exists())
         QDir().mkdir(filepath);
@@ -36,7 +37,7 @@ RoboCopHandler::~RoboCopHandler()
 
 void RoboCopHandler::GameLoop()
 {
-    while(true)
+    while(gameRunning)
     {
         if(frameUpdate)
         {
@@ -112,7 +113,16 @@ void RoboCopHandler::GameLoop()
 void RoboCopHandler::run()
 {
     InitializePool();
+    gameRunning = true;
     GameLoop();
+}
+
+int RoboCopHandler::end(int retcode)
+{
+    gameRunning = false;
+    this->SaveFile(QString("RC_1_Gen%1.json").arg(pool->GetGeneration()));
+    this->exit(retcode);
+    return 0;
 }
 
 void RoboCopHandler::ClearControls()
@@ -314,7 +324,7 @@ void RoboCopHandler::LinkMutate(Genome *g, bool bias)
 
     g->ContainsLink(*l);
 
-    l->innovation = pool->NewInnovation();
+    l->innovation = pool->NewInnovation() - 1;
     l->weight = ((float)rand() / (float)RAND_MAX) * 4 - 2;
 
     g->genes.push_back(l);

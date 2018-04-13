@@ -51,6 +51,8 @@ public:
     int GetTimeout();
     QMap<QString, bool> GetControls();
 
+    int end(int retcode = 0);
+
 protected:
     void run();
 
@@ -61,7 +63,7 @@ private:
     int rightmost = 0;
     int timeout;
 
-    bool frameUpdate;
+    bool frameUpdate, gameRunning;
 
     QString filepath;
 

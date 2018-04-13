@@ -275,21 +275,24 @@ float Genome::Weights(const QVector<Gene*> &other, int innovationSize)
 
 Genome* Genome::Crossover(Genome &other, int innovationSize)
 {
-//    qDebug() << "Crossover()";
+    qDebug() << "Crossover()";
     if(other.GetFitness() > this->fitness)
     {
         return other.Crossover(*this, innovationSize);
     }
 
-    Genome* child;
+    Genome* child = new Genome();
     QVector<Gene*> innovations2;
     innovations2.fill(NULL, innovationSize);
 
+    qDebug() << "\tInnovationSize: " << innovationSize;
     foreach(Gene *g, other.genes)
     {
+        qDebug() << "\tInnovation: " << g->innovation;
         innovations2[g->innovation] = g;
     }
 
+    qDebug() << "Crossing genes";
     for(int i = 0; i < this->genes.size(); i++)
     {
         Gene* g1 = this->genes[i];
@@ -301,11 +304,11 @@ Genome* Genome::Crossover(Genome &other, int innovationSize)
         else
             child->genes.push_back(new Gene(*g1));
     }
-
+    qDebug() << "Setting max neuron";
     child->SetMaxNeuron(std::max(this->maxNeuron, other.GetMaxNeuron()));
 
     child->CopyMutationRates(this->mutationRates);
-
+    qDebug() << "--Finished";
     return child;
 }
 

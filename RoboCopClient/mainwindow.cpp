@@ -7,6 +7,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    this->setWindowTitle("RoboCop NEAT Controller");
     //Creates Socket Object
     //Socket sends and recieves data
     socket = new QTcpSocket(this);
@@ -69,10 +70,17 @@ void MainWindow::on_Connect_clicked()
             connect(socket, SIGNAL(disconnected()),this, SLOT(Disconnected()));
 
             rch.start();
+            ui->Connect->setText("Disconnect");
         }
     }
-    else{
-        qDebug() <<"Already Connected";
+    else
+    {
+        Disconnected();
+        ui->Connect->setText("Connect");
+        if(rch.isRunning())
+            rch.exit();
+
+//        qDebug() <<"Already Connected";
     }
 
 }
@@ -232,6 +240,7 @@ void MainWindow::KeyStateUpdate(uint8_t ksu)
     QByteArray bArr;
     bArr.append("Controls;");
     bArr.append(QString::number(ksu, 2));
+    bArr.append(";");
     socket->write(bArr);
 }
 
@@ -267,4 +276,18 @@ void MainWindow::fitnessUpdate(int num)
 void MainWindow::maxFitnessUpdate(int num)
 {
     ui->maxFitNumLabel->setText(QString::number(num));
+}
+
+void MainWindow::on_closePB_clicked()
+{
+    if(socket->state() == QAbstractSocket::ConnectedState)
+    {
+        ResetLevel();
+        Disconnected();
+    }
+
+    if(rch.isRunning())
+        rch.end();
+
+    this->close();
 }

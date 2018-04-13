@@ -25,7 +25,6 @@ void LevelBase::LoadLevel(int levelNum, GameView *view, bool devMode)
 {
     nullHolder = view->addRect(*(new QRect(0,0,5,5)), QPen(Qt::transparent));
     QFile levelData(QString("Assets/Level/World1_%1.json").arg(levelNum));
-    static int resetCount = -1;
 
     if(levelData.open(QIODevice::ReadOnly))
     {
@@ -44,7 +43,7 @@ void LevelBase::LoadLevel(int levelNum, GameView *view, bool devMode)
                 if(type == 1)
                 {
                     // Floor definition
-                    qDebug() << "(" << resetCount++ << ") " << "Loading floor definition...";
+                    qDebug() << "Loading floor definition...";
 
                     defArr = topObject["blockdefinitions"].toArray();
                     for(int j = 0; j < defArr.size(); j++)

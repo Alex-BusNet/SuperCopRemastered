@@ -575,17 +575,19 @@ void robocoprmgame::readyRead()
 {//Triggers when the client sends data andReads the data
     QString data;
     data = socket->readLine();
-    qDebug() << "Data: " << data;
+//    qDebug() << "Data: " << data;
     QStringList buttonStates = data.split(";");
-    qDebug() << "buttonStates: " << buttonStates;
-    if(buttonStates.first() == "Controls")
+//    qDebug() << "buttonStates: " << buttonStates;
+
+    if(buttonStates.contains("Controls"))
     {
         // NN Controls.
-        QString b = buttonStates.last();
+        QString b = buttonStates.at(buttonStates.indexOf("Controls") + 1);
         keyPressState = b.toUInt(NULL, 2);
 //        qDebug() << "keyPressState: " << keyPressState;
     }
-    else if(buttonStates.first() == "Reset")
+
+    if(buttonStates.contains("Reset"))
     {
         lb->ClearView(view);
         InitLevel();

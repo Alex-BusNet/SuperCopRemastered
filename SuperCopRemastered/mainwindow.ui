@@ -25,6 +25,10 @@
   <property name="windowTitle">
    <string>SuperCop: Remastered</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>../build-SuperCopRemastered-Desktop_Qt_5_9_2_MinGW_32bit-Debug/Assets/UI/SCRM_Icon.png</normaloff>../build-SuperCopRemastered-Desktop_Qt_5_9_2_MinGW_32bit-Debug/Assets/UI/SCRM_Icon.png</iconset>
+  </property>
   <property name="styleSheet">
    <string notr="true">QPushButton { 
 	background-color: rgb(1, 102, 254);

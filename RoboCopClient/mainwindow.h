@@ -41,6 +41,8 @@ private slots:
     void fitnessUpdate(int num);
     void maxFitnessUpdate(int num);
 
+    void on_closePB_clicked();
+
 private:
     Ui::MainWindow *ui;
     QTcpSocket *socket;
