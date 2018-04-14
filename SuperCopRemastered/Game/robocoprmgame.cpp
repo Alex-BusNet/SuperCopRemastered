@@ -339,17 +339,17 @@ void robocoprmgame::GameOver(bool endOfLevel)
 {
     if(!endOfLevel)
     {
-        QMessageBox *gameOverBox = new QMessageBox();
-        gameOverBox->setText("YOU LOSE!");
-        gameOverBox->exec();
-        delete gameOverBox;
-
+//        QMessageBox *gameOverBox = new QMessageBox();
+//        gameOverBox->setText("YOU LOSE!");
+//        gameOverBox->exec();
+//        delete gameOverBox;
+        qDebug() << "Player died..";
         lb->ClearView(view);
         InitLevel();
         player->Reset();
         view->ensureVisible(player->GetViewPixmap(), 200, 70);
         QByteArray outData;
-        outData.append("LevelReset;");
+        outData.append("LevelReset__");
         socket->write(outData);
     }
     else
@@ -545,7 +545,7 @@ void robocoprmgame::InitLevel()
         qDebug() << "Setting player start position...";
 
     player->setPosX(lb->GetPlayerStart().x());
-    player->setPosY(lb->GetPlayerStart().y());
+    player->setPosY(lb->GetPlayerStart().y() - 10);
 
     player->SetLevelBounds(0, lb->GetLevelRightBound());
 
@@ -598,6 +598,9 @@ void robocoprmgame::readyRead()
         // NN Controls.
         QString b = buttonStates.at(buttonStates.indexOf("Controls") + 1);
         keyPressState = b.toUInt(NULL, 2);
+
+        if((keyPressState & 0b1000) == 0b1000) { isSprintPressed = true; }
+        else { isSprintPressed = false; }
     }
 
     if(buttonStates.contains("Reset"))

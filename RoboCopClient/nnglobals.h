@@ -1,6 +1,7 @@
 #ifndef NNGLOBALS_H
 #define NNGLOBALS_H
 #include <QString>
+#include <random>
 
 namespace RoboCop
 {
@@ -24,9 +25,15 @@ namespace RoboCop
     static const float StepSize = 0.1f;
     static const float DisableMutationChance = 0.4f;
     static const float EnableMutationChance = 0.2f;
-    static const long MaxNodes = 100000;//1000000L;
-    static const int TimeoutConstant = 20; // seconds? milliseconds?
+    static const long MaxNodes = 1000000L;
+    static const float TimeoutConstant = 60.0f; // frames
 
+    static std::random_device rd;
+    static std::mt19937 gen(rd());
+    static std::uniform_real_distribution<> dis(0.0f, 1.0f);
+
+    // Returns a random value between 0 and 1
+    static float random() { return dis(gen); }
 }
 
 #endif // NNGLOBALS_H

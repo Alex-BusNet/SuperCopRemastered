@@ -44,6 +44,7 @@ HEADERS += \
     neuron.h \
     network.h \
     nnglobals.h \
+    sorthelper.h
 
 FORMS += \
         mainwindow.ui

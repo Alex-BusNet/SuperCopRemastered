@@ -6,6 +6,8 @@
 #include <cmath>
 #include <ctime>
 
+class Genome;
+
 class Species
 {
 public:
@@ -13,9 +15,9 @@ public:
 
     void CalculateAverageFitness();
 
-    int GetTopFitness();
+    float GetTopFitness();
     int GetStaleness();
-    int GetAverageFitness();
+    float GetAverageFitness();
 
     void SetTopFitness(int fit);
     void SetStaleness(int stale);
@@ -28,9 +30,9 @@ public:
     void LoadSpecies(const QJsonObject &obj);
 
 private:
-    int topFitness;
+    float topFitness;
     int staleness;
-    int averageFitness;
+    float averageFitness;
 };
 
 #endif // SPECIES_H

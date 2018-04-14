@@ -36,7 +36,7 @@ private slots:
     void KeyStateUpdate(uint8_t ksu);
     void ResetLevel();
     void genomeStatus(int num);
-    void speciesStatus(int num);
+    void speciesStatus(int num, int size);
     void generationStatus(int num);
     void fitnessUpdate(int num);
     void maxFitnessUpdate(int num);
@@ -46,7 +46,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     QTcpSocket *socket;
-    RoboCopHandler rch;
+    RoboCopHandler *rch;
     int **parsedView;
 //    QFuture<void> rchThread;
 };

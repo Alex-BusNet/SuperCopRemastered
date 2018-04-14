@@ -2,26 +2,24 @@
 
 Species::Species()
 {
-    topFitness = 0;
+    topFitness = 0.0f;
     staleness = 0;
-    averageFitness = 0;
-
-    srand(time(0));
+    averageFitness = 0.0f;
 }
 
 void Species::CalculateAverageFitness()
 {
 //    qDebug() << "CalculateAverageFitness()";
-    int total = 0;
+    float total = 0.0f;
     foreach(Genome *gm, genomes)
     {
-        total += gm->GetGlobalRank();
+        total += (float)gm->GetGlobalRank();
     }
 
-    averageFitness = total / genomes.size();
+    averageFitness = total / (float)genomes.size();
 }
 
-int Species::GetTopFitness()
+float Species::GetTopFitness()
 {
 //    qDebug() << "GetTopFitness()";
     return this->topFitness;
@@ -33,7 +31,7 @@ int Species::GetStaleness()
     return this->staleness;
 }
 
-int Species::GetAverageFitness()
+float Species::GetAverageFitness()
 {
 //    qDebug() << "GetAverageFitness()";
     return this->averageFitness;
@@ -56,7 +54,7 @@ Genome *Species::BreedChild(int innovationSize)
 //    qDebug() << "BreedChild()";
 
     Genome *child;
-    float p = ((float)rand() / (float)RAND_MAX);
+    float p = RoboCop::random();
     if(p < RoboCop::CrossoverChance)
     {
         Genome *g1 = genomes[rand() % genomes.size()];
@@ -70,6 +68,7 @@ Genome *Species::BreedChild(int innovationSize)
         child = new Genome(*g);
     }
 
+    Genome::Mutate(child);
     return child;
 }
 

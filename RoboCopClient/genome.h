@@ -4,6 +4,7 @@
 #include "gene.h"
 #include "network.h"
 #include "nnglobals.h"
+#include "robocophandler.h"
 
 #include <QVector>
 #include <QMap>
@@ -12,24 +13,21 @@
 #include <cmath>
 #include <ctime>
 
-typedef struct MutationRates
-{
-    float MutateConnectionsChance;
-    float LinkMutationChance;
-    float BiasMutationChance;
-    float NodeMutationChance;
-    float EnableMutationChance;
-    float DisableMutationChance;
-    float StepSize;
-} MutationRates;
-
 class Genome
 {
 public:
     Genome();
     Genome(Genome &g);
 
+    static Genome* BasicGenome();
+
     void GenerateNetwork();
+
+    static void Mutate(Genome *g);
+    static void PointMutate(Genome *g);
+    static void LinkMutate(Genome *g, bool bias);
+    static void NodeMutate(Genome *g);
+    static void EnableDisableMutate(Genome *g, bool enable);
 
     float GetBiasChance();
     float GetConnectionsChance();
@@ -39,13 +37,13 @@ public:
     float GetDisableChance();
     float GetStep();
 
-    int GetFitness();
-    int GetAdjustedFitness();
+    float GetFitness();
+    float GetAdjustedFitness();
     int GetMaxNeuron();
     int GetGlobalRank();
 
-    void SetFitness(int fit);
-    void SetAdjustedFitness(int adjFit);
+    void SetFitness(float fit);
+    void SetAdjustedFitness(float adjFit);
     void SetMaxNeuron(int mn);
     void SetGlobalRank(int gr);
     void CopyMutationRates(QMap<QString, float> mr);
@@ -62,7 +60,7 @@ public:
     void LoadGenome(const QJsonObject &obj);
 
     QVector<Gene*> genes;
-    Network network;
+    Network *network;
 
     int RandomNeuron(bool nonInput);
 
@@ -70,8 +68,8 @@ public:
 
 private:
 
-    int fitness;
-    int adjustedFitness;
+    float fitness;
+    float adjustedFitness;
     int maxNeuron;
     int globalRank;
 };

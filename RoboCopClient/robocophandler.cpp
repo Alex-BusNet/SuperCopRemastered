@@ -2,14 +2,29 @@
 #include <QDebug>
 #include <QDir>
 
+Q_GLOBAL_STATIC(RoboCopHandler, rch)
+
 RoboCopHandler::RoboCopHandler()
 {
     filepath = "States";
     frameUpdate = false;
     gameRunning = false;
+    reset = false;
+    playerPosX = 0;
+    rightmost = 0;
+
+    srand(time(0));
 
     if(!QDir(filepath).exists())
         QDir().mkdir(filepath);
+
+    for(int i = 0; i < RoboCop::Outputs; i++)
+    {
+        if(!controls.contains(RoboCop::ButtonNames[i]))
+            controls.insert(RoboCop::ButtonNames[i], false);
+        else
+            controls[RoboCop::ButtonNames[i]] = false;
+    }
 }
 
 /*
@@ -23,6 +38,12 @@ RoboCopHandler::RoboCopHandler(const RoboCopHandler &rch) : QThread()
     timeout = rch.timeout;
     playerPosX = rch.playerPosX;
     rightmost = rch.rightmost;
+    filepath = rch.filepath;
+    playerPosX = 0;
+    rightmost = 0;
+    frameUpdate = false;
+    gameRunning = false;
+    reset = false;
 }
 
 RoboCopHandler::~RoboCopHandler()
@@ -30,11 +51,15 @@ RoboCopHandler::~RoboCopHandler()
 
 }
 
+RoboCopHandler *RoboCopHandler::instance()
+{
+    return rch;
+}
+
 void RoboCopHandler::GameLoop()
 {
     while(gameRunning)
     {
-
         if(frameUpdate)
         {
             frameUpdate = false;
@@ -49,18 +74,20 @@ void RoboCopHandler::GameLoop()
 
             if (playerPosX > rightmost)
             {
-                qDebug() << "\t\tPlayer posX greater than rightmost";
                 rightmost = playerPosX;
                 timeout = RoboCop::TimeoutConstant;
             }
 
             timeout--;
 
-            int timeoutBonus = pool->GetCurrentFrame() / 4;
+            float timeoutBonus = (float)pool->GetCurrentFrame() / 4.0f;
 
-            if(timeout + timeoutBonus <= 0)
+            if((timeout + timeoutBonus <= 0) || reset)
             {
-                int fitness = rightmost - pool->GetCurrentFrame() / 2;
+                if(reset) { reset = false; }
+
+                float fitness = (float)rightmost - (float)pool->GetCurrentFrame() / 2.0f;
+
                 if(rightmost > (70 * 205)) // Need to check what rightmost max should be
                     fitness += 1000;
 
@@ -75,33 +102,27 @@ void RoboCopHandler::GameLoop()
                     SaveFile(filepath + "/backup." + pool->GetGeneration() + ".RC_1.json");
                 }
 
-
                 pool->SetCurrentSpecies(0);
                 pool->SetCurrentGenome(0);
-
 
                 while(pool->FitnessAlreadyMeasured())
                     pool->NextGenome();
 
-                InitializeRun();
+                InitializeRun(false);
             }
 
             //--------------------------
             // NN State info goes here
 
-            emit SpeciesUpdate(pool->GetCurrentSpecies());
+            emit SpeciesUpdate(pool->GetCurrentSpecies(), pool->species.size());
             emit GenomeUpdate(pool->GetCurrentGenome());
             emit GenerationUpdate(pool->GetGeneration());
-            emit FitnessUpdate(g->GetFitness());
-            emit MaxFitnessUpdate(pool->GetMaxFitness());
+            emit FitnessUpdate(std::floor((float)rightmost - (float)pool->GetCurrentFrame() / 2.0f - (timeout + timeoutBonus) * 2.0f / 3.0f));
+            emit MaxFitnessUpdate(std::floor(pool->GetMaxFitness()));
 
             //--------------------------
 
             pool->SetCurrentFrame(pool->GetCurrentFrame() + 1);
-
-            for(long i = 0; i < 1000000L; i++) {;}
-
-            // Advance game frame?
         }
 
     }
@@ -131,12 +152,16 @@ void RoboCopHandler::ClearControls()
     }
 }
 
-void RoboCopHandler::InitializeRun()
+void RoboCopHandler::InitializeRun(bool playerDied)
 {
 //    qDebug() << "InitializeRun()";
     pool->SetCurrentFrame(0);
+    rightmost = 0;
     timeout = RoboCop::TimeoutConstant;
-    emit NewSpecies(); // Send reset command back to RoboCop
+
+    if(!playerDied)
+        emit NewSpecies(); // Send reset command back to RoboCop
+
     ClearControls();
 
     Genome *g = pool->species[pool->GetCurrentSpecies()]->genomes[pool->GetCurrentGenome()];
@@ -154,13 +179,18 @@ void RoboCopHandler::InitializePool()
 
     for(int i = 0; i < RoboCop::Population; i++)
     {
-        Genome *b = BasicGenome();
+        Genome *b = Genome::BasicGenome();
         pool->AddToSpecies(b);
     }
 
-    InitializeRun();
+    InitializeRun(false);
 
-//    qDebug() << "--Finished InitializePool()";
+    //    qDebug() << "--Finished InitializePool()";
+}
+
+void RoboCopHandler::LevelReset()
+{
+    reset = true;
 }
 
 void RoboCopHandler::SetInputs(int **in)
@@ -217,179 +247,6 @@ void RoboCopHandler::SetControls(QMap<QString, bool> cState)
         keyPressState |= 0b1000;
 
     emit keyStateUpdate(keyPressState);
-}
-
-void RoboCopHandler::Mutate(Genome *g)
-{
-//    qDebug() << "Mutate()";
-    srand(time(0));
-    foreach(QString s, g->mutationRates.keys())
-    {
-        if((rand() % 2) == 1)
-            g->mutationRates[s] *= 0.95f; // Values from MarI/O
-        else
-            g->mutationRates[s] *= 1.05263f; // Values from MarI/O
-    }
-
-    float p = g->mutationRates["connections"];
-
-    if(((float)rand() / (float)RAND_MAX) < p)
-        PointMutate(g);
-
-    p = g->mutationRates["link"];
-    while (p > 0)
-    {
-        if (((float)rand() / (float)RAND_MAX) < p)
-            LinkMutate(g, false);
-
-        p -= 1;
-    }
-
-    p = g->mutationRates["bias"];
-    while(p > 0)
-    {
-        if (((float)rand() / (float)RAND_MAX) < p)
-            LinkMutate(g, true);
-
-        p -= 1;
-    }
-
-    p = g->mutationRates["node"];
-    while(p > 0)
-    {
-        if (((float)rand() / (float)RAND_MAX) < p)
-            NodeMutate(g);
-
-        p -= 1;
-    }
-
-    p = g->mutationRates["enable"];
-    while(p > 0)
-    {
-        if (((float)rand() / (float)RAND_MAX) < p)
-            EnableDisableMutate(g, true);
-
-        p -= 1;
-    }
-
-    p = g->mutationRates["disable"];
-    while(p > 0)
-    {
-        if (((float)rand() / (float)RAND_MAX) < p)
-            EnableDisableMutate(g, false);
-
-        p -= 1;
-    }
-}
-
-void RoboCopHandler::PointMutate(Genome *g)
-{
-//    qDebug() << "PointMutate()";
-    srand(time(0));
-    float step = g->GetStep();
-
-    for(int i = 0; i < g->genes.size(); i++)
-    {
-        Gene *gene = g->genes[i];
-        float p = ((float)rand() / (float)RAND_MAX);
-        if(p < RoboCop::PerturbChance)
-            gene->weight += (((float)rand() / (float)RAND_MAX) * step * 2) - step;
-        else
-            gene->weight = ((float)rand() / (float)RAND_MAX) * 4 - 2;
-    }
-}
-
-void RoboCopHandler::LinkMutate(Genome *g, bool bias)
-{
-//    qDebug() << "LinkMutate()";
-    srand(time(0));
-    int neuron1 = g->RandomNeuron(false);
-    int neuron2 = g->RandomNeuron(true);
-
-    qDebug() << "neuron1: " << neuron1;
-    qDebug() << "neuron2: " << neuron2;
-
-    Gene *l = new Gene();
-    // Check if both selected neurons are inputs.
-    if(neuron1 <= RoboCop::Inputs && neuron2 <= RoboCop::Inputs)
-        return;
-
-    if(neuron2 <= RoboCop::Inputs)
-    {
-        // Swap Input and Output
-        // (We want neuron2 to be the output neuron)
-        int temp = neuron1;
-        neuron1 = neuron2;
-        neuron2 = temp;
-    }
-
-    l->into = neuron1;
-    l->out = neuron2;
-
-    if(bias) { l->into = RoboCop::Inputs; }
-
-    g->ContainsLink(*l);
-
-    l->innovation = pool->NewInnovation() - 1;
-    l->weight = ((float)rand() / (float)RAND_MAX) * 4 - 2;
-
-    g->genes.push_back(l);
-}
-
-void RoboCopHandler::NodeMutate(Genome *g)
-{
-//    qDebug() << "NodeMutate()";
-    srand(time(0));
-    if(g->genes.size() == 0) { return; }
-
-    g->SetMaxNeuron(g->GetMaxNeuron() + 1);
-
-    int idx = rand() % g->genes.size();
-    Gene *gene = g->genes[idx];
-    if(!gene->enabled) { return; }
-
-    gene->enabled = false;
-
-    Gene *g1 = new Gene(*gene);
-    g1->out = g->GetMaxNeuron();
-    g1->weight = 1.0;
-    g1->innovation = pool->NewInnovation() - 1;
-    g1->enabled = true;
-    g->genes.push_back(g1);
-
-    Gene *g2 = new Gene(*gene);
-    g2->into = g->GetMaxNeuron();
-    g2->innovation = pool->NewInnovation() - 1;
-    g2->enabled = true;;
-    g->genes.push_back(g2);
-}
-
-void RoboCopHandler::EnableDisableMutate(Genome *g, bool enable)
-{
-//    qDebug() << "EnableDisableMutate()";
-    srand(time(0));
-    QVector<Gene*> candidates;
-
-    foreach(Gene *gene, g->genes)
-    {
-        if(gene->enabled == !enable)
-            candidates.push_back(gene);
-    }
-
-    if(candidates.size() == 0)
-        return;
-
-    Gene *g1 = candidates[rand() % candidates.size()];
-    g1->enabled = !g1->enabled;
-}
-
-Genome* RoboCopHandler::BasicGenome()
-{
-//    qDebug() << "BasicGenome()";
-    Genome *g = new Genome();
-    g->SetMaxNeuron(RoboCop::Inputs);
-    Mutate(g);
-    return g;
 }
 
 Pool* RoboCopHandler::GetPool()
@@ -467,7 +324,7 @@ void RoboCopHandler::LoadFile(QString filename)
         pool->NextGenome();
     }
 
-    InitializeRun();
+    InitializeRun(false);
     pool->SetCurrentFrame(pool->GetCurrentFrame() + 1);
 }
 

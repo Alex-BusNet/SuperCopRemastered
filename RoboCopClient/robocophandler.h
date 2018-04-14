@@ -15,7 +15,9 @@
 #include <ctime>
 #include <cmath>
 
-class RoboCopHandler : public QThread //QObject
+class Pool;
+
+class RoboCopHandler : public QThread
 {
     Q_OBJECT
 public:
@@ -23,10 +25,15 @@ public:
     RoboCopHandler(const RoboCopHandler &rch);
     ~RoboCopHandler();
 
+    static RoboCopHandler *instance();
+
     void GameLoop();
 
-    void InitializeRun();
+    void InitializeRun(bool playerDied);
     void InitializePool();
+
+    void LevelReset();
+
     void SetInputs(int **in);
     void SetPosition(int x);
 
@@ -35,14 +42,6 @@ public:
 
     void SetControls(QMap<QString, bool> cState);
     void ClearControls();
-
-    void Mutate(Genome *g);
-    void PointMutate(Genome *g);
-    void LinkMutate(Genome *g, bool bias);
-    void NodeMutate(Genome *g);
-    void EnableDisableMutate(Genome *g, bool enable);
-
-    Genome *BasicGenome();
 
     Pool *GetPool();
     QVector<int> GetInputs();
@@ -61,9 +60,9 @@ private:
     QVector<int> inputs;
     int playerPosX;
     int rightmost = 0;
-    int timeout;
+    float timeout;
 
-    bool frameUpdate, gameRunning;
+    bool frameUpdate, gameRunning, reset;
 
     QString filepath;
 
@@ -75,7 +74,7 @@ private:
 signals:
     void keyStateUpdate(uint8_t keyState);
     void GenomeUpdate(int num);
-    void SpeciesUpdate(int num);
+    void SpeciesUpdate(int num, int size);
     void GenerationUpdate(int num);
     void FitnessUpdate(int num);
     void MaxFitnessUpdate(int num);

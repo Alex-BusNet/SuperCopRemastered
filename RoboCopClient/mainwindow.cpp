@@ -13,13 +13,16 @@ MainWindow::MainWindow(QWidget *parent) :
     socket = new QTcpSocket(this);
 
     qRegisterMetaType<uint8_t>("uint8_t");
-    connect(&rch, &RoboCopHandler::keyStateUpdate, this, &MainWindow::KeyStateUpdate);
-    connect(&rch, &RoboCopHandler::FitnessUpdate, this, &MainWindow::fitnessUpdate);
-    connect(&rch, &RoboCopHandler::GenerationUpdate, this, &MainWindow::generationStatus);
-    connect(&rch, &RoboCopHandler::GenomeUpdate, this, &MainWindow::genomeStatus);
-    connect(&rch, &RoboCopHandler::MaxFitnessUpdate, this, &MainWindow::maxFitnessUpdate);
-    connect(&rch, &RoboCopHandler::SpeciesUpdate, this, &MainWindow::speciesStatus);
-    connect(&rch, &RoboCopHandler::NewSpecies, this, &MainWindow::ResetLevel);
+
+    rch = RoboCopHandler::instance();
+
+    connect(rch, &RoboCopHandler::keyStateUpdate, this, &MainWindow::KeyStateUpdate);
+    connect(rch, &RoboCopHandler::FitnessUpdate, this, &MainWindow::fitnessUpdate);
+    connect(rch, &RoboCopHandler::GenerationUpdate, this, &MainWindow::generationStatus);
+    connect(rch, &RoboCopHandler::GenomeUpdate, this, &MainWindow::genomeStatus);
+    connect(rch, &RoboCopHandler::MaxFitnessUpdate, this, &MainWindow::maxFitnessUpdate);
+    connect(rch, &RoboCopHandler::SpeciesUpdate, this, &MainWindow::speciesStatus);
+    connect(rch, &RoboCopHandler::NewSpecies, this, &MainWindow::ResetLevel);
 
     parsedView = new int *[10];
     for(int y = 0; y < 10; y++)
@@ -35,8 +38,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    if(rch.isRunning())
-        rch.quit();
+    if(rch->isRunning())
+        rch->quit();
 
     delete ui;
 }
@@ -69,16 +72,28 @@ void MainWindow::on_Connect_clicked()
             connect(socket, SIGNAL(readyRead()),this, SLOT(readyRead()));
             connect(socket, SIGNAL(disconnected()),this, SLOT(Disconnected()));
 
-            rch.start();
+            rch->start();
+
             ui->Connect->setText("Disconnect");
+
+            ui->Jump->setEnabled(false);
+            ui->Left->setEnabled(false);
+            ui->Right->setEnabled(false);
+            ui->Stop->setEnabled(false);
         }
     }
     else
     {
         Disconnected();
         ui->Connect->setText("Connect");
-        if(rch.isRunning())
-            rch.exit();
+
+        ui->Jump->setEnabled(true);
+        ui->Left->setEnabled(true);
+        ui->Right->setEnabled(true);
+        ui->Stop->setEnabled(true);
+
+        if(rch->isRunning())
+            rch->exit();
 
 //        qDebug() <<"Already Connected";
     }
@@ -167,16 +182,17 @@ void MainWindow::readyRead()
 
     //        qDebug() << "\tDone";
 
-            rch.SetInputs(parsedView);
+            rch->SetInputs(parsedView);
         }
         else if(command=="LevelReset")
         {
-            rch.InitializeRun();
+            rch->LevelReset();
+            rch->InitializeRun(true);
         }
         else if(command == "NextFrame")
         {
-            rch.FrameUpdated();
-            rch.SetPosition(subSet.last().toInt());
+            rch->FrameUpdated();
+            rch->SetPosition(subSet.last().toInt());
         }
     }
 }
@@ -254,6 +270,26 @@ void MainWindow::KeyStateUpdate(uint8_t ksu)
     bArr.append(QString::number(ksu, 2));
     bArr.append(";");
     socket->write(bArr);
+
+    if((ksu & 0b0001) == 0b0001)
+        ui->leftLabel->setStyleSheet("QLabel { background-color: lightblue; }");
+    else
+        ui->leftLabel->setStyleSheet("QLabel { background-color: transparent; }");
+
+    if((ksu & 0b0010) == 0b0010)
+        ui->rightLabel->setStyleSheet("QLabel { background-color: lightblue; }");
+    else
+        ui->rightLabel->setStyleSheet("QLabel { background-color: transparent; }");
+
+    if((ksu & 0b0100) == 0b0100)
+        ui->jumpLabel->setStyleSheet("QLabel { background-color: lightblue; }");
+    else
+        ui->jumpLabel->setStyleSheet("QLabel { background-color: transparent; }");
+
+    if((ksu & 0b1000) == 0b1000)
+        ui->sprintLabel->setStyleSheet("QLabel { background-color: lightblue; }");
+    else
+        ui->sprintLabel->setStyleSheet("QLabel { background-color: transparent; }");
 }
 
 void MainWindow::ResetLevel()
@@ -270,9 +306,9 @@ void MainWindow::genomeStatus(int num)
     ui->genomeNumLabel->setText(QString::number(num));
 }
 
-void MainWindow::speciesStatus(int num)
+void MainWindow::speciesStatus(int num, int size)
 {
-    ui->speciesNumLabel->setText(QString::number(num));
+    ui->speciesNumLabel->setText(QString::number(num) + " / " + QString::number(size));
 }
 
 void MainWindow::generationStatus(int num)
@@ -298,8 +334,8 @@ void MainWindow::on_closePB_clicked()
         Disconnected();
     }
 
-    if(rch.isRunning())
-        rch.end();
+    if(rch->isRunning())
+        rch->end();
 
     this->close();
 }

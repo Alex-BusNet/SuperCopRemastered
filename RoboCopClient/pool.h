@@ -5,13 +5,16 @@
 #include "nnglobals.h"
 #include <QVector>
 
+class Genome;
+class Species;
+
 class Pool
 {
 public:
     Pool();
 
     int NewInnovation();
-    int TotalAverageFitness();
+    float TotalAverageFitness();
 
     void RankGlobally();
     void NextGenome();

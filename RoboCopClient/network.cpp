@@ -23,7 +23,7 @@ QMap<QString, bool> Network::EvaluateNetwork(QVector<int> inputs)
         return out;
     }
 
-    qDebug() << "Loading inputs...";
+//    qDebug() << "Loading inputs...";
     for(i = 0; i < RoboCop::Inputs; i++)
     {
         if(!neurons.contains(i))
@@ -32,8 +32,7 @@ QMap<QString, bool> Network::EvaluateNetwork(QVector<int> inputs)
         this->neurons[i]->value = inputs[i];
     }
 
-    qDebug() << "Evaluating neurons...";
-//    foreach(Neuron *n, this->neurons)
+//    qDebug() << "Evaluating neurons...";
     foreach(int k, neurons.keys())
     {
         Neuron* n = neurons[k];
@@ -65,7 +64,6 @@ QMap<QString, bool> Network::EvaluateNetwork(QVector<int> inputs)
     qDebug() << "Analyzing outputs...";
     for(i = 0; i < RoboCop::Outputs; i++)
     {
-//        if(this->neurons[RoboCop::MaxNodes + i] != NULL)
         if(neurons.contains(RoboCop::MaxNodes + i))
         {
             if(this->neurons[RoboCop::MaxNodes + i]->value > 0)
