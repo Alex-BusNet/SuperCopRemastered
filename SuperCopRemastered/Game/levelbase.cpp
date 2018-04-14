@@ -13,6 +13,17 @@ LevelBase::LevelBase(int width, int height)
     windowWidth = width;
     updateStatus = false;
     nullHolder = NULL;
+
+    int x, y;
+
+    // Clear the parsedView array
+    for(y = 0; y < 10; y++)
+    {
+        for(x = 0; x < 18; x++)
+        {
+            parsedView[y][x] = 0;
+        }
+    }
     qDebug() << "Ground: " << floorHeight;
 }
 

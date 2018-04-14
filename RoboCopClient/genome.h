@@ -52,7 +52,7 @@ public:
 
     bool ContainsLink(Gene link);
     bool SameSpecies(const Genome &other, int innovationSize);
-    int Disjoint(const QVector<Gene*> &other, int innovationSize);
+    float Disjoint(const QVector<Gene*> &other, int innovationSize);
     float Weights(const QVector<Gene*> &other, int innovationSize);
 
 

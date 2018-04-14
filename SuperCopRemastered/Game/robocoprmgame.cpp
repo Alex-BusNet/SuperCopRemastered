@@ -4,6 +4,8 @@ robocoprmgame::robocoprmgame(QWidget *parent, bool industrialGraphics) :
     QWidget(parent)
 {
     showDevOpts = false;
+    this->setWindowTitle("RoboCop");
+    this->setWindowIcon(QIcon("Assets/UI/SCRM_Icon.png"));
 
 //    QWidget::setWindowState(Qt::WindowFullScreen);
     QWidget::setFixedSize(1280, 720);
@@ -103,7 +105,7 @@ robocoprmgame::robocoprmgame(QWidget *parent, bool industrialGraphics) :
     connect(resume, &QPushButton::clicked, this, &robocoprmgame::resumeGame);
 
     exit = new QPushButton("EXIT");
-    exit->hide();
+//    exit->hide();
     connect(exit, &QPushButton::clicked, this, &robocoprmgame::exitGame);
 
     paused = new QLabel("PAUSED");
@@ -136,6 +138,8 @@ robocoprmgame::robocoprmgame(QWidget *parent, bool industrialGraphics) :
     sTimer->setInterval(100);
     connect(sTimer, SIGNAL(timeout()), this, SLOT(sendVisibleTerrain()));
     sTimer->start();
+
+    gamePaused = true;
 }
 
 robocoprmgame::~robocoprmgame()
@@ -267,7 +271,13 @@ void robocoprmgame::updateField()
     if(!gamePaused)
     {
         if(socket != NULL && socket->state() == QAbstractSocket::ConnectedState)
-            socket->write("NextFrame;");
+        {
+            QByteArray arr;
+            arr.append("NextFrame_");
+            arr.append(QString::number(player->GetPosX()));
+            arr.append("__");
+            socket->write(arr);
+        }
 
         player->playerAction(keyPressState, isSprintPressed);
         player->UpdateFrame();
@@ -496,7 +506,7 @@ void robocoprmgame::sendVisibleTerrain()
     if(connected){
         QVector<QVector<int>> temp = lb->GetParsedView();
         QByteArray outData;
-        outData.append("VisibleTerrain;");
+        outData.append("VisibleTerrain_");
         QString str ="";
         for(int i = 0; i<10;i++){
             for(int j=0;j<18;j++){
@@ -507,6 +517,7 @@ void robocoprmgame::sendVisibleTerrain()
                 }
             }
         }
+        outData.append("__");
         socket->write(outData);
     }
 }
@@ -561,6 +572,8 @@ void robocoprmgame::newConnect()
         connect(socket, SIGNAL(readyRead()),this, SLOT(readyRead()));
         connect(socket, SIGNAL(disconnected()),this, SLOT(Disconnected()));
         connected=true;
+        gamePaused = false;
+        exit->hide();
     }
 }
 
@@ -569,6 +582,8 @@ void robocoprmgame::Disconnected()
     connected=false;
     socket->disconnectFromHost();
     qDebug() <<" Disconnected";
+    gamePaused = true;
+    exit->show();
 }
 
 void robocoprmgame::readyRead()
@@ -577,14 +592,12 @@ void robocoprmgame::readyRead()
     data = socket->readLine();
 //    qDebug() << "Data: " << data;
     QStringList buttonStates = data.split(";");
-//    qDebug() << "buttonStates: " << buttonStates;
 
     if(buttonStates.contains("Controls"))
     {
         // NN Controls.
         QString b = buttonStates.at(buttonStates.indexOf("Controls") + 1);
         keyPressState = b.toUInt(NULL, 2);
-//        qDebug() << "keyPressState: " << keyPressState;
     }
 
     if(buttonStates.contains("Reset"))

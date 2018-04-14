@@ -44,13 +44,10 @@ void Genome::GenerateNetwork()
     int i = 0;
     for(; i < RoboCop::Inputs; i++)
     {
-        this->network.neurons.push_back(new Neuron());
-    }
-
-    // Fill in the neuron vector with blank nodes up to MaxNodes.
-    for(; i < RoboCop::MaxNodes; i++)
-    {
-        this->network.neurons.push_back(NULL);
+        if((i < network.neurons.size()) && (network.neurons.contains(i)))
+            network.neurons[i] = new Neuron();
+        else
+            this->network.neurons.insert(i, new Neuron());
     }
 
     // Sort genes from lowest out to highest out
@@ -201,7 +198,7 @@ bool Genome::SameSpecies(const Genome &other, int innovationSize)
     return (dd + dw) < RoboCop::DeltaThreshold;
 }
 
-int Genome::Disjoint(const QVector<Gene*> &other, int innovationSize)
+float Genome::Disjoint(const QVector<Gene*> &other, int innovationSize)
 {
 //    qDebug() << "Disjoint()";
     bool i1[innovationSize];
@@ -239,7 +236,7 @@ int Genome::Disjoint(const QVector<Gene*> &other, int innovationSize)
 
     int n = std::max(genes.size(), other.size());
 
-    return disjointGenes / n;
+    return (float)disjointGenes / (float)n;
 }
 
 float Genome::Weights(const QVector<Gene*> &other, int innovationSize)
@@ -270,11 +267,13 @@ float Genome::Weights(const QVector<Gene*> &other, int innovationSize)
         }
     }
 
-    return sum / coincident;
+    return sum / (float)coincident;
 }
 
 Genome* Genome::Crossover(Genome &other, int innovationSize)
 {
+    srand(time(0));
+
     qDebug() << "Crossover()";
     if(other.GetFitness() > this->fitness)
     {
@@ -358,44 +357,52 @@ void Genome::LoadGenome(const QJsonObject &obj)
 int Genome::RandomNeuron(bool nonInput)
 {
 //    qDebug() << "RandomNeuron()";
-    QVector<bool> neurons;
+    srand(time(0));
+
+    QMap<int, bool> neurons;
     int i = 0;
     if(!nonInput)
     {
         for(i = 0; i < RoboCop::Inputs; i++)
         {
-            neurons.push_back(true);
+            if(!neurons.contains(i))
+                neurons.insert(i, true);
+            else
+                neurons[i] = true;
         }
-    }
-
-    for(; i < RoboCop::MaxNodes; i++)
-    {
-        neurons.push_back(false);
     }
 
     for(i = 0; i < RoboCop::Outputs; i++)
     {
-        neurons.push_back(true);
+        if(!neurons.contains(RoboCop::MaxNodes + i))
+            neurons.insert(RoboCop::MaxNodes + i, true);
+        else
+            neurons[RoboCop::MaxNodes + i] = true;
     }
 
     for(i = 0; i < this->genes.size(); i++)
     {
-        if(!nonInput || genes[i]->into > RoboCop::Inputs)
+        if(!nonInput || (genes[i]->into > RoboCop::Inputs))
         {
             neurons[genes[i]->into] = true;
         }
 
-        if(!nonInput || genes[i]->out > RoboCop::Inputs)
+        if(!nonInput || (genes[i]->out > RoboCop::Inputs))
         {
             neurons[genes[i]->out] = true;
         }
     }
 
     int n = rand() % neurons.size();
-    for(i = 0; i < neurons.size(); i++)
+    qDebug() << "N: " << n;
+    foreach(int k, neurons.keys())
     {
         n -= 1;
-        if( n == 0 ) { return i; }
+        if( n == 0 )
+        {
+            qDebug() << "K: " << k;
+            return k;
+        }
     }
 
     return 0;

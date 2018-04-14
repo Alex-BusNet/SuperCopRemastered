@@ -99,73 +99,85 @@ void MainWindow::readyRead()
     data = socket->readAll();
     //qDebug()<<data;
 
-    //Splits the data based on ';'
+    //Splits the data based on '__'
 //    qDebug() << "Data: " << data;
-    QString command = data.split(";").first();
-    //ui->Log->setText(ui->Log->toPlainText()+data);
-//    qDebug() << "Command: " << command;
-    if(command=="END"){
-        //If the server is indicating the game has ended
-        //Displays who won to the player and disconnects from the server
-        //qDebug()<<"End";
-        socket->disconnectFromHost();
-    }
-    else if(command=="VisibleTerrain"){
-        QString b = data.split("VisibleTerrain").last();
-//        qDebug() << "b: " << b;
-//        qDebug() << "\tClearing parsedView";
-        for(int y = 0; y < 10; y++)
-        {
-            for(int x = 0; x < 18; x++)
-            {
-                parsedView[y][x] = 0;
-            }
-        }
 
-//        qDebug() << "\tSplitting data";
-        QStringList  pieces = b.split(";");
-//        qDebug() << "Pieces: " << pieces;
-        //If the server is indicating the game has ended
-        for(int i=1; i<pieces.length()-1; i++){
-            QString p = pieces.at(i);
-            if(!p.isEmpty() && !p.isNull() && (p != "NextFrame"))
-            {
-                QStringList arraySet = pieces.at(i).split(":");
-//                qDebug()<<"test "<<arraySet.length()<<" "<<pieces.at(i);
-//                qDebug() << arraySet.at(1) << " " << arraySet.at(2) << " " << arraySet.at(0);
-                parsedView[arraySet.at(1).toInt()][arraySet.at(2).toInt()] = arraySet.at(0).toInt();
-            }
-        }
+    // String format: <Command>_<Data>;<Data>;...;__<Command>_<Data>;<Data>;...;
+    // Splits the string into each command passed from RoboCop
+    QStringList cmdSet = data.split("__");
 
-//        qDebug() << "\tFormatting display string";
-        QString disp = "";
-        for(int y = 0; y < 10; y++)
-        {
-            for(int x = 0; x < 18; x++)
+    foreach(QString s, cmdSet)
+    {
+        // Splits each command set into the command and associated data
+        QStringList subSet = s.split("_");
+        QString command = subSet.first();
+
+        //ui->Log->setText(ui->Log->toPlainText()+data);
+    //    qDebug() << "Command: " << command;
+        if(command=="END"){
+            //If the server is indicating the game has ended
+            //Displays who won to the player and disconnects from the server
+            //qDebug()<<"End";
+            socket->disconnectFromHost();
+        }
+        else if(command=="VisibleTerrain"){
+//            QString b = data.split("VisibleTerrain").last();
+    //        qDebug() << "b: " << b;
+    //        qDebug() << "\tClearing parsedView";
+            for(int y = 0; y < 10; y++)
             {
-                if(parsedView[y][x] != 0){
-                    disp=disp+" "+QString::number(parsedView[y][x]);
-                }
-                else{
-                    disp=disp+"  ";
+                for(int x = 0; x < 18; x++)
+                {
+                    parsedView[y][x] = 0;
                 }
             }
-            disp=disp+"\n";
+
+    //        qDebug() << "\tSplitting data";
+            QStringList  pieces = subSet.last().split(";");
+//            qDebug() << "Pieces: " << pieces;
+            //If the server is indicating the game has ended
+            for(int i=0; i<pieces.length()-1; i++){
+                QString p = pieces.at(i);
+                if(!p.isEmpty() && !p.isNull())
+                {
+                    QStringList arraySet = pieces.at(i).split(":");
+//                    qDebug()<<"test "<<arraySet.length()<<" "<<pieces.at(i);
+    //                qDebug() << arraySet.at(1) << " " << arraySet.at(2) << " " << arraySet.at(0);
+                    parsedView[arraySet.at(1).toInt()][arraySet.at(2).toInt()] = arraySet.at(0).toInt();
+                }
+            }
+
+    //        qDebug() << "\tFormatting display string";
+            QString disp = "";
+            for(int y = 0; y < 10; y++)
+            {
+                for(int x = 0; x < 18; x++)
+                {
+                    if(parsedView[y][x] != 0){
+                        disp=disp+" "+QString::number(parsedView[y][x]);
+                    }
+                    else{
+                        disp=disp+"  ";
+                    }
+                }
+                disp=disp+"\n";
+            }
+    //        qDebug() << "\tSetting display string";
+            ui->Log->setText(disp);
+
+    //        qDebug() << "\tDone";
+
+            rch.SetInputs(parsedView);
         }
-//        qDebug() << "\tSetting display string";
-        ui->Log->setText(disp);
-
-//        qDebug() << "\tDone";
-
-        rch.SetInputs(parsedView);
-    }
-    else if(command=="LevelReset")
-    {
-        rch.InitializeRun();
-    }
-    else if(command == "NextFrame")
-    {
-        rch.FrameUpdated();
+        else if(command=="LevelReset")
+        {
+            rch.InitializeRun();
+        }
+        else if(command == "NextFrame")
+        {
+            rch.FrameUpdated();
+            rch.SetPosition(subSet.last().toInt());
+        }
     }
 }
 

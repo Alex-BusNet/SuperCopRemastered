@@ -84,7 +84,8 @@ void Pool::NextGenome()
 
 void Pool::NewGeneration()
 {
-//    qDebug() << "NewGeneration()";
+    qDebug() << "\tNewGeneration()";
+    srand(time(0));
     CullSpecies(false);
     RankGlobally();
     RemoveStaleSpecies();
@@ -123,7 +124,7 @@ void Pool::NewGeneration()
 
     generation++;
     SaveFile(QString("States/backup.%1.RC_1.json").arg(generation));
-//    qDebug() << "--Finished NewGeneration()";
+    qDebug() << "\t--Finished NewGeneration()";
 }
 
 QMap<QString, bool> Pool::EvaluateNetwork(QVector<int> inputs)
@@ -194,7 +195,7 @@ void Pool::RemoveStaleSpecies()
                 }
             }
 
-            qDebug() << s->genomes[0]->GetFitness() << s->GetTopFitness() << maxFitness << s->GetStaleness() << RoboCop::StaleSpecies;
+//            qDebug() << s->genomes[0]->GetFitness() << s->GetTopFitness() << maxFitness << s->GetStaleness() << RoboCop::StaleSpecies;
 
             if(s->genomes[0]->GetFitness() > s->GetTopFitness())
             {
@@ -210,6 +211,8 @@ void Pool::RemoveStaleSpecies()
             }
         }
     }
+
+    qDebug() << "Survived size: " << survived.size();
     this->species = survived;
 
 //    qDebug() << "--Finished RemoveStaleSpecies()";
@@ -271,7 +274,7 @@ void Pool::AddToSpecies(Genome *child)
     bool foundSpecies = false;
     foreach(Species *s, species)
     {
-        if(!foundSpecies && s->genomes[0]->SameSpecies(*child, innovation))
+        if(!foundSpecies && s->genomes[0]->SameSpecies(*child, innovation-1))
         {
             s->genomes.push_back(child);
             foundSpecies = true;
