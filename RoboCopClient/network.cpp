@@ -5,9 +5,18 @@ Network::Network()
 
 }
 
+Network::~Network()
+{
+    foreach(int k, neurons.keys())
+    {
+        if(neurons[k] != NULL)
+            delete neurons[k];
+    }
+}
+
 QMap<QString, bool> Network::EvaluateNetwork(QVector<int> inputs)
 {
-    qDebug() << "EvaluateNetwork()";
+//    qDebug() << "EvaluateNetwork()";
     QMap<QString, bool> out;
     int i;
     for(i = 0; i < RoboCop::Outputs; i++)
@@ -29,6 +38,11 @@ QMap<QString, bool> Network::EvaluateNetwork(QVector<int> inputs)
         if(!neurons.contains(i))
             neurons.insert(i, new Neuron());
 
+        // This should always evaluate false,
+        // but there have been some errant crashes with NULL
+        // pointers, so this is here just as a precaution.
+        if(neurons[i] == NULL) { neurons[i] = new Neuron(); }
+
         this->neurons[i]->value = inputs[i];
     }
 
@@ -42,7 +56,7 @@ QMap<QString, bool> Network::EvaluateNetwork(QVector<int> inputs)
             float sum = 0;
 
             if(n->incoming.size() > 0)
-                qDebug() << "\t(" << k << ") Incoming size: " << n->incoming.size();
+//                qDebug() << "\t(" << k << ") Incoming size: " << n->incoming.size();
 
             for(int j = 0; j < n->incoming.size(); j++)
             {
@@ -61,21 +75,21 @@ QMap<QString, bool> Network::EvaluateNetwork(QVector<int> inputs)
         }
     }
 
-    qDebug() << "Analyzing outputs...";
+//    qDebug() << "Analyzing outputs...";
     for(i = 0; i < RoboCop::Outputs; i++)
     {
         if(neurons.contains(RoboCop::MaxNodes + i))
         {
             if(this->neurons[RoboCop::MaxNodes + i]->value > 0)
             {
-                qDebug() << "Setting" << RoboCop::ButtonNames[i];
+//                qDebug() << "Setting" << RoboCop::ButtonNames[i];
                 out[RoboCop::ButtonNames[i]] = true;
             }
             else
                 out[RoboCop::ButtonNames[i]] = false;
         }
     }
-    qDebug() << "--Finished EvaluateNetwork()";
+//    qDebug() << "--Finished EvaluateNetwork()";
     return out;
 }
 

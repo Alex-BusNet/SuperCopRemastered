@@ -15,6 +15,7 @@ class ItemBase
 public:
     ItemBase();
     ItemBase(ItemType iType);
+    ~ItemBase();
 
     void SetPostion(int x, int y);
 

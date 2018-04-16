@@ -12,6 +12,7 @@ class Network
 {
 public:
     Network();
+    ~Network();
 
     QMap<QString, bool> EvaluateNetwork(QVector<int> inputs);
 

@@ -106,7 +106,6 @@ void LevelBase::LoadLevel(int levelNum, GameView *view, bool devMode)
                                 floorItems.push_back(view->addPixmap(*levelFloor.last()->GetTexture()));
                                 floorItems.last()->setPos(xPos * 70, floorHeight + ((k + 1) * 70));
                             }
-
                         }
                     }
 
@@ -936,27 +935,6 @@ void LevelBase::SetLevelType(LevelType lt)
 
 void LevelBase::ClearView(GameView *view)
 {
-    foreach(EnemyBase *eb, enemies)
-    {
-        if(eb != NULL)
-            delete eb;
-    }
-    enemies.clear();
-
-    foreach(BlockBase *bb, obstacles)
-    {
-        if(bb != NULL)
-            delete bb;
-    }
-    obstacles.clear();
-
-    foreach(BlockBase *bb, levelFloor)
-    {
-        if(bb != NULL)
-            delete bb;
-    }
-    levelFloor.clear();
-
     foreach(QGraphicsPixmapItem *i, floorItems)
     {
         if(i != NULL)
@@ -1025,19 +1003,37 @@ void LevelBase::ClearView(GameView *view)
             delete p;
         }
     }
-
     donutItems.clear();
 
-    foreach(ItemBase *i, donuts)
-    {
-        if(i != NULL)
-            delete i;
-    }
+//    foreach(EnemyBase *eb, enemies)
+//    {
+//        if(eb != NULL)
+//            delete eb;
+//    }
+    enemies.clear();
 
+//    foreach(BlockBase *bb, obstacles)
+//    {
+//        if(bb != NULL)
+//            delete bb;
+//    }
+    obstacles.clear();
+
+//    foreach(BlockBase *bb, levelFloor)
+//    {
+//        if(bb != NULL)
+//            delete bb;
+//    }
+    levelFloor.clear();
+
+//    foreach(ItemBase *i, donuts)
+//    {
+//        if(i != NULL)
+//            delete i;
+//    }
     donuts.clear();
 
     view->ClearScene();
-
 }
 
 QVector<QVector<int> > LevelBase::GetParsedView()

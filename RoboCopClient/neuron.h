@@ -2,7 +2,7 @@
 #define NEURON_H
 
 #include "gene.h"
-#include <QVector>
+#include <QMap>
 
 class Neuron
 {
@@ -10,7 +10,7 @@ public:
     Neuron();
 
 //private:
-    QVector<Gene*> incoming;
+    QMap<int, Gene*> incoming;
     float value;
 };
 

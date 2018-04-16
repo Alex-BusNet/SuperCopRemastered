@@ -5,7 +5,14 @@ BlockBase::BlockBase()
 {
     this->lt = GRASS;
     this->bt = BLOCK;
+
     boundingBox = NULL;
+    texture = NULL;
+    bottomBB = NULL;
+    topBB = NULL;
+    leftBB = NULL;
+    rightBB = NULL;
+
     SetBlockInfo();
 }
 
@@ -13,8 +20,48 @@ BlockBase::BlockBase(LevelType lType, BlockType bType)
 {
     this->lt = lType;
     this->bt = bType;
+
     boundingBox = NULL;
+    texture = NULL;
+    bottomBB = NULL;
+    topBB = NULL;
+    leftBB = NULL;
+    rightBB = NULL;
+
     SetBlockInfo();
+}
+
+BlockBase::~BlockBase()
+{
+    if(texture != NULL)
+    {
+        delete texture;
+    }
+
+    if(boundingBox != NULL)
+    {
+        delete boundingBox;
+    }
+
+    if(bottomBB != NULL)
+    {
+        delete bottomBB;
+    }
+
+    if(topBB != NULL)
+    {
+        delete topBB;
+    }
+
+    if(leftBB != NULL)
+    {
+        delete leftBB;
+    }
+
+    if(rightBB != NULL)
+    {
+        delete rightBB;
+    }
 }
 
 void BlockBase::DrawBlock(QPainter &paint)
@@ -41,7 +88,11 @@ void BlockBase::UpdateBlock(int playerDirection)
 void BlockBase::SetPosition(int x, int y)
 {
     this->posX = x;
-    this->posY = y;    
+    this->posY = y;
+
+    if(boundingBox != NULL)
+        delete boundingBox;
+
     boundingBox = new QRect(posX - 10, posY - 10, (blockSize.x * xDim) + 20, (blockSize.y * yDim) + 20);
 }
 
@@ -248,6 +299,9 @@ void BlockBase::SetBlockInfo()
         texturePath += "/empty_block.png";
         break;
     }
+
+    if(texture != NULL)
+        delete texture;
 
     texture = new QPixmap(texturePath);
 

@@ -12,6 +12,15 @@ Pool::Pool()
     maxFitness = 0;
 }
 
+Pool::~Pool()
+{
+    foreach(Species *s, species)
+    {
+        if(s != NULL)
+            delete s;
+    }
+}
+
 int Pool::NewInnovation()
 {
 //    qDebug() << "NewInnovation()";
@@ -30,8 +39,9 @@ float Pool::TotalAverageFitness()
     return total;
 }
 
-bool lowGenome(Genome *a, Genome *b) { return a->GetFitness() < b->GetFitness(); }
-bool highGenome(Genome *a, Genome *b) { return a->GetFitness() > b->GetFitness(); }
+// highToLowGenome() and lowToHighGenome() are passed as condition parameters to RoboCop::Quicksort()
+bool highToLowGenome(Genome *a, Genome *b) { return a->GetFitness() < b->GetFitness(); }
+bool lowToHighGenome(Genome *a, Genome *b) { return a->GetFitness() > b->GetFitness(); }
 
 void Pool::RankGlobally()
 {
@@ -46,8 +56,7 @@ void Pool::RankGlobally()
     }
 
     // Sort genomes from lowest fitness to highest fitness
-    RoboCop::Quicksort(globals, 0, globals.size() - 1,
-                       lowGenome); //[](Genome *a, Genome *b) { return (a->GetFitness() < b->GetFitness()); });
+    RoboCop::Quicksort(globals, 0, globals.size() - 1, lowToHighGenome);
 
 //    for(int i = 0; i < globals.size(); i++)
 //    {
@@ -91,8 +100,8 @@ void Pool::NextGenome()
 
 void Pool::NewGeneration()
 {
-    qDebug() << "\tNewGeneration()";
-    CullSpecies(false);
+//    qDebug() << "\tNewGeneration()";
+    CullSpecies(false); // Removes the bottom half of each species
     RankGlobally();
     RemoveStaleSpecies();
     RankGlobally();
@@ -116,13 +125,13 @@ void Pool::NewGeneration()
         }
     }
 
-    CullSpecies(true);
+    CullSpecies(true); // Leave only the top member of each species.
     while((children.size() + species.size()) < RoboCop::Population)
     {
-        qDebug() << "\t\t" << children.size() << species.size() << RoboCop::Population;
 
-        Species *s = species[rand() % species.size()];
+        Species *s = species[RoboCop::randomi() % species.size()];
         children.push_back(s->BreedChild(innovation));
+//        qDebug() << "\t\t" << children.size() << species.size() << RoboCop::Population;
     }
 
     for(int c = 0; c < children.size(); c++)
@@ -132,7 +141,7 @@ void Pool::NewGeneration()
 
     generation++;
     SaveFile(QString("States/backup.%1.RC_1.json").arg(generation));
-    qDebug() << "\t--Finished NewGeneration()";
+//    qDebug() << "\t--Finished NewGeneration()";
 }
 
 QMap<QString, bool> Pool::EvaluateNetwork(QVector<int> inputs)
@@ -161,8 +170,7 @@ void Pool::CullSpecies(bool cutToOne)
         if(s->genomes.size() > 0)
         {
             // Sort the genomes within Species, s, from most fit to least fit
-            RoboCop::Quicksort(s->genomes, 0, s->genomes.size() - 1,
-                               lowGenome); //[](Genome *a, Genome *b) { return (a->GetFitness() < b->GetFitness()); });
+            RoboCop::Quicksort(s->genomes, 0, s->genomes.size() - 1, highToLowGenome);
 //            for(int i = 0; i < s->genomes.size(); i++)
 //            {
 //                for(int j = i+1; j < s->genomes.size(); j++)
@@ -200,8 +208,8 @@ void Pool::RemoveStaleSpecies()
         if(s->genomes.size() > 0)
         {
             // Sort species from most fit to least fit
-            RoboCop::Quicksort(s->genomes, 0, s->genomes.size() - 1,
-                               lowGenome); //[](Genome *a, Genome *b) { return (a->GetFitness() < b->GetFitness()); });
+            RoboCop::Quicksort(s->genomes, 0, s->genomes.size() - 1, highToLowGenome);
+
 //            for(int i = 0; i < s->genomes.size(); i++)
 //            {
 //                for(int j = i+1; j < s->genomes.size(); j++)
@@ -301,6 +309,7 @@ void Pool::AddToSpecies(Genome *child)
         {
             s->genomes.push_back(child);
             foundSpecies = true;
+            break;
         }
     }
 
@@ -310,6 +319,9 @@ void Pool::AddToSpecies(Genome *child)
         s->genomes.push_back(child);
         this->species.push_back(s);
     }
+
+//    qDebug() << "Species size: " << species.size();
+//    qDebug() << "--Finished AddToSpecies()";
 }
 
 int Pool::GetCurrentGenome()

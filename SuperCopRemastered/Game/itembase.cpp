@@ -3,13 +3,40 @@
 ItemBase::ItemBase()
 {
     this->it = DONUT;
+
+    boundingBox = NULL;
+    texture = NULL;
+    viewPixmap = NULL;
+    viewBB = NULL;
+
     SetItemInfo();
 }
 
 ItemBase::ItemBase(ItemType iType)
 {
     this->it = iType;
+
+    boundingBox = NULL;
+    texture = NULL;
+    viewPixmap = NULL;
+    viewBB = NULL;
+
     SetItemInfo();
+}
+
+ItemBase::~ItemBase()
+{
+    if(boundingBox != NULL)
+        delete boundingBox;
+
+    if(texture != NULL)
+        delete texture;
+
+    if(viewPixmap != NULL)
+        delete viewPixmap;
+
+    if(viewBB != NULL)
+        delete viewBB;
 }
 
 void ItemBase::SetPostion(int x, int y)
@@ -40,12 +67,18 @@ QGraphicsRectItem *ItemBase::GetViewBB()
 
 void ItemBase::SetViewPixmap(QGraphicsPixmapItem *item)
 {
+    if(viewPixmap != NULL)
+        delete viewPixmap;
+
     viewPixmap = item;
     viewPixmap->setScale(0.25);
 }
 
 void ItemBase::SetViewBB(QGraphicsRectItem *item)
 {
+    if(viewBB != NULL)
+        delete viewBB;
+
     viewBB = item;
 }
 
@@ -61,8 +94,15 @@ int ItemBase::GetPosY()
 
 void ItemBase::SetItemInfo()
 {
+    if(texture != NULL)
+        delete texture;
+
+    if(boundingBox != NULL)
+        delete boundingBox;
+
     if(it == DONUT)
     {
+
         texture = new QPixmap("Assets/Item/Donut.png");
         itemSize = Size{64, 64};
     }

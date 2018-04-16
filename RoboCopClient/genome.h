@@ -18,6 +18,7 @@ class Genome
 public:
     Genome();
     Genome(Genome &g);
+    ~Genome();
 
     static Genome* BasicGenome();
 
@@ -54,7 +55,7 @@ public:
     float Weights(const QVector<Gene*> &other, int innovationSize);
 
 
-    Genome* Crossover(Genome &other, int innovationSize);
+    Genome* Crossover(Genome *other, int innovationSize);
 
     void SaveGenome(QJsonObject &obj);
     void LoadGenome(const QJsonObject &obj);

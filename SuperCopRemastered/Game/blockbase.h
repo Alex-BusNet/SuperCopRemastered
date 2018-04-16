@@ -15,6 +15,7 @@ class BlockBase
 public:
     BlockBase();
     BlockBase(LevelType lType, BlockType bType);
+    ~BlockBase();
 
     void DrawBlock(QPainter &paint);
     void UpdateBlock(int playerDirection);

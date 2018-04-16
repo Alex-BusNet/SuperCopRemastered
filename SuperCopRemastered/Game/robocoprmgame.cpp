@@ -75,10 +75,6 @@ robocoprmgame::robocoprmgame(QWidget *parent, bool industrialGraphics) :
     timer->setInterval(1000/60);
     connect(timer, &QTimer::timeout, this, &robocoprmgame::updateField);
 
-//    renderTimer = new QTimer();
-//    renderTimer->setInterval(17);
-//    connect(renderTimer, &QTimer::timeout, this, &robocoprmgame::updateRender);
-
     keyTimer = new QTimer();
     keyTimer->setInterval(5);
     connect(keyTimer, &QTimer::timeout, this, &robocoprmgame::pollKey);
@@ -116,7 +112,6 @@ robocoprmgame::robocoprmgame(QWidget *parent, bool industrialGraphics) :
     hLayout2 = new QHBoxLayout();
     vLayout = new QVBoxLayout();
 
-
     hLayout->addWidget(resume);
     hLayout->addWidget(exit);
     vLayout->addWidget(view);
@@ -140,6 +135,7 @@ robocoprmgame::robocoprmgame(QWidget *parent, bool industrialGraphics) :
     sTimer->start();
 
     gamePaused = true;
+    this->update();
 }
 
 robocoprmgame::~robocoprmgame()
@@ -568,9 +564,11 @@ void robocoprmgame::newConnect()
         //Creates a socket object
         socket = new QTcpSocket(this);
         socket=server->nextPendingConnection();
+
         //Connects the socket to read and disconnect functions
         connect(socket, SIGNAL(readyRead()),this, SLOT(readyRead()));
         connect(socket, SIGNAL(disconnected()),this, SLOT(Disconnected()));
+
         connected=true;
         gamePaused = false;
         exit->hide();

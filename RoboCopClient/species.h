@@ -12,6 +12,7 @@ class Species
 {
 public:
     Species();
+    ~Species();
 
     void CalculateAverageFitness();
 

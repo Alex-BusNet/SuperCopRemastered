@@ -19,12 +19,24 @@ EnemyBase::EnemyBase(int x, int y, EnemyType eType)
 
     viewPixmap = NULL;
     viewBB = NULL;
+    texture = NULL;
+
     SetEnemyInfo();
 }
 
 EnemyBase::~EnemyBase()
 {
+//    if(boundingBox != NULL)
+//        delete boundingBox;
 
+    if(texture != NULL)
+        delete texture;
+
+    if(viewBB != NULL)
+        delete viewBB;
+
+    if(viewPixmap != NULL)
+        delete viewPixmap;
 }
 
 void EnemyBase::DrawEnemy(QPainter &paint)
@@ -62,14 +74,22 @@ void EnemyBase::UpdateEnemy()
 
     frame++;
 
-    delete texture;
+    if(texture != NULL)
+        delete texture;
+
     texture = new QPixmap(texturePath.arg(direction == WEST ? "Left" : "Right" ).arg(color).arg(frame));
 
-    viewPixmap->setPixmap(*texture);
-    viewPixmap->setPos(posX, posY);
+    if(viewPixmap != NULL)
+    {
+        viewPixmap->setPixmap(*texture);
+        viewPixmap->setPos(posX, posY);
+    }
 
     if(frame >= ANIM_FRAME_COUNT)
         frame = 0;
+
+    if(boundingBox != NULL)
+        delete boundingBox;
 
     boundingBox = new QRect(posX, posY, enemySize.x, enemySize.y);
 
@@ -133,11 +153,17 @@ QRect *EnemyBase::GetBoundingBox()
 
 void EnemyBase::SetGPixmapPtr(QGraphicsPixmapItem *ptr)
 {
+    if(viewPixmap != NULL)
+        delete viewPixmap;
+
     viewPixmap = ptr;
 }
 
 void EnemyBase::SetGRectPtr(QGraphicsRectItem *ptr)
 {
+    if(viewBB != NULL)
+        delete viewBB;
+
     viewBB = ptr;
 }
 
@@ -155,6 +181,9 @@ void EnemyBase::SetEnemyInfo()
 {
     direction = WEST;
     frame = 1;
+
+    if(texture != NULL)
+        delete texture;
 
     switch(et)
     {

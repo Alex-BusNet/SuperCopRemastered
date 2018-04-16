@@ -36,12 +36,14 @@ QGraphicsLineItem *GameView::addLine(qreal x1, qreal y1, qreal x2, qreal y2, con
 
 void GameView::removePixmap(QGraphicsPixmapItem *pixmap)
 {
-    this->scene->removeItem(pixmap);
+    if(pixmap != NULL)
+        this->scene->removeItem(pixmap);
 }
 
 void GameView::removeRect(QGraphicsRectItem *rect)
 {
-    this->scene->removeItem(rect);
+    if(rect != NULL)
+        this->scene->removeItem(rect);
 }
 
 void GameView::ClearScene()

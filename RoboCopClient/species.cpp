@@ -7,6 +7,15 @@ Species::Species()
     averageFitness = 0.0f;
 }
 
+Species::~Species()
+{
+    foreach(Genome *gm, genomes)
+    {
+        if(gm != NULL)
+            delete gm;
+    }
+}
+
 void Species::CalculateAverageFitness()
 {
 //    qDebug() << "CalculateAverageFitness()";
@@ -52,15 +61,14 @@ void Species::SetStaleness(int stale)
 Genome *Species::BreedChild(int innovationSize)
 {
 //    qDebug() << "BreedChild()";
-
-    Genome *child;
-    float p = RoboCop::random();
+    Genome *child = NULL;
+    float p = RoboCop::randomf();
     if(p < RoboCop::CrossoverChance)
     {
         Genome *g1 = genomes[rand() % genomes.size()];
         Genome *g2 = genomes[rand() % genomes.size()];
 
-        child = g1->Crossover(*g2, innovationSize);
+        child = g1->Crossover(g2, innovationSize);
     }
     else
     {

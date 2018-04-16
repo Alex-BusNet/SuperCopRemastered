@@ -12,6 +12,7 @@ class Pool
 {
 public:
     Pool();
+    ~Pool();
 
     int NewInnovation();
     float TotalAverageFitness();
