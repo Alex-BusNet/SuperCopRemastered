@@ -23,6 +23,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(rch, &RoboCopHandler::MaxFitnessUpdate, this, &MainWindow::maxFitnessUpdate);
     connect(rch, &RoboCopHandler::SpeciesUpdate, this, &MainWindow::speciesStatus);
     connect(rch, &RoboCopHandler::NewSpecies, this, &MainWindow::ResetLevel);
+    connect(rch, &RoboCopHandler::resetStat, this, &MainWindow::ResetUpdate);
+    connect(rch, &RoboCopHandler::timeoutval, this, &MainWindow::timeoutValue);
 
     parsedView = new int *[10];
     for(int y = 0; y < 10; y++)
@@ -188,6 +190,7 @@ void MainWindow::readyRead()
         {
             rch->LevelReset();
             rch->InitializeRun(true);
+//            ResetUpdate(true);
         }
         else if(command == "NextFrame")
         {
@@ -324,6 +327,19 @@ void MainWindow::fitnessUpdate(int num)
 void MainWindow::maxFitnessUpdate(int num)
 {
     ui->maxFitNumLabel->setText(QString::number(num));
+}
+
+void MainWindow::ResetUpdate(bool stat)
+{
+    if(stat)
+        ui->resetLabel->setStyleSheet("QLabel { background-color: red; }");
+    else
+        ui->resetLabel->setStyleSheet("QLabel { background-color: transparent; }");
+}
+
+void MainWindow::timeoutValue(float num)
+{
+    ui->timeoutValueLabel->setText(QString::number(num));
 }
 
 void MainWindow::on_closePB_clicked()

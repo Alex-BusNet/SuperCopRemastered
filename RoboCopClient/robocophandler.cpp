@@ -75,12 +75,15 @@ void RoboCopHandler::GameLoop()
             if (playerPosX > rightmost)
             {
                 rightmost = playerPosX;
+                qDebug() << "Player greater than rightmost";
                 timeout = RoboCop::TimeoutConstant;
             }
 
             timeout--;
 
-            float timeoutBonus = (float)pool->GetCurrentFrame() / 4.0f;
+            float timeoutBonus = 0;// (float)pool->GetCurrentFrame() / 4.0f;
+
+            emit resetStat(reset);
 
             if((timeout + timeoutBonus <= 0) || reset)
             {
@@ -99,7 +102,7 @@ void RoboCopHandler::GameLoop()
                 if(fitness > pool->GetMaxFitness())
                 {
                     pool->SetMaxFitness(fitness);
-                    SaveFile(filepath + "/backup." + pool->GetGeneration() + ".RC_1.json");
+//                    SaveFile(filepath + "/backup." + pool->GetGeneration() + ".RC_1.json");
                 }
 
                 pool->SetCurrentSpecies(0);
@@ -119,6 +122,7 @@ void RoboCopHandler::GameLoop()
             emit GenerationUpdate(pool->GetGeneration());
             emit FitnessUpdate(std::floor((float)rightmost - (float)pool->GetCurrentFrame() / 2.0f - (timeout + timeoutBonus) * 2.0f / 3.0f));
             emit MaxFitnessUpdate(std::floor(pool->GetMaxFitness()));
+            emit timeoutval(timeout + timeoutBonus);
 
             //--------------------------
 
@@ -150,11 +154,13 @@ void RoboCopHandler::ClearControls()
     {
         controls[RoboCop::ButtonNames[i]] = false;
     }
+
+    SetControls(controls);
 }
 
 void RoboCopHandler::InitializeRun(bool playerDied)
 {
-//    qDebug() << "InitializeRun()";
+    qDebug() << "InitializeRun()";
     pool->SetCurrentFrame(0);
     rightmost = 0;
     timeout = RoboCop::TimeoutConstant;
@@ -164,10 +170,9 @@ void RoboCopHandler::InitializeRun(bool playerDied)
 
     ClearControls();
 
-    Genome *g = pool->species[pool->GetCurrentSpecies()]->genomes[pool->GetCurrentGenome()];
-    g->GenerateNetwork();
+    pool->species[pool->GetCurrentSpecies()]->genomes[pool->GetCurrentGenome()]->GenerateNetwork();
     EvaluateCurrent();
-//    qDebug() << "--Finished InitializeRun()";
+    qDebug() << "--Finished InitializeRun()";
 }
 
 void RoboCopHandler::InitializePool()

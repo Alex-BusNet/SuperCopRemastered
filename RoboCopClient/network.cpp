@@ -24,16 +24,16 @@ QMap<QString, bool> Network::EvaluateNetwork(QVector<int> inputs)
         out.insert(RoboCop::ButtonNames[i], false);
     }
 
-    inputs.push_back(1);
+//    inputs.push_back(1);
 
-    if(inputs.size() != RoboCop::Inputs)
+    if(inputs.size() != RoboCop::Inputs - 1)
     {
         qDebug() << "Invalid Input size";
         return out;
     }
 
 //    qDebug() << "Loading inputs...";
-    for(i = 0; i < RoboCop::Inputs; i++)
+    for(i = 0; i < RoboCop::Inputs - 1; i++)
     {
         if(!neurons.contains(i))
             neurons.insert(i, new Neuron());

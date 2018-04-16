@@ -40,7 +40,8 @@ private slots:
     void generationStatus(int num);
     void fitnessUpdate(int num);
     void maxFitnessUpdate(int num);
-
+    void ResetUpdate(bool stat);
+    void timeoutValue(float num);
     void on_closePB_clicked();
 
 private:

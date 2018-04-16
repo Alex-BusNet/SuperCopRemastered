@@ -79,6 +79,8 @@ signals:
     void FitnessUpdate(int num);
     void MaxFitnessUpdate(int num);
     void NewSpecies();
+    void timeoutval(float num);
+    void resetStat(bool stat);
 
 public slots:
     void FrameUpdated();
