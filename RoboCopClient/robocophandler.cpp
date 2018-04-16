@@ -75,7 +75,7 @@ void RoboCopHandler::GameLoop()
             if (playerPosX > rightmost)
             {
                 rightmost = playerPosX;
-                qDebug() << "Player greater than rightmost";
+//                qDebug() << "Player greater than rightmost";
                 timeout = RoboCop::TimeoutConstant;
             }
 
@@ -160,7 +160,7 @@ void RoboCopHandler::ClearControls()
 
 void RoboCopHandler::InitializeRun(bool playerDied)
 {
-    qDebug() << "InitializeRun()";
+//    qDebug() << "InitializeRun()";
     pool->SetCurrentFrame(0);
     rightmost = 0;
     timeout = RoboCop::TimeoutConstant;
@@ -172,7 +172,7 @@ void RoboCopHandler::InitializeRun(bool playerDied)
 
     pool->species[pool->GetCurrentSpecies()]->genomes[pool->GetCurrentGenome()]->GenerateNetwork();
     EvaluateCurrent();
-    qDebug() << "--Finished InitializeRun()";
+//    qDebug() << "--Finished InitializeRun()";
 }
 
 void RoboCopHandler::InitializePool()
@@ -195,6 +195,7 @@ void RoboCopHandler::InitializePool()
 
 void RoboCopHandler::LevelReset()
 {
+    qDebug() << "\tLevel Reset";
     reset = true;
 }
 
@@ -230,7 +231,7 @@ void RoboCopHandler::EvaluateCurrent()
         controls["LEFT"] = controls["RIGHT"] = false;
     }
 
-    SetControls(controls);
+//    SetControls(controls);
 }
 
 void RoboCopHandler::SetControls(QMap<QString, bool> cState)

@@ -160,7 +160,9 @@ void MainWindow::readyRead()
                     QStringList arraySet = pieces.at(i).split(":");
 //                    qDebug()<<"test "<<arraySet.length()<<" "<<pieces.at(i);
     //                qDebug() << arraySet.at(1) << " " << arraySet.at(2) << " " << arraySet.at(0);
-                    parsedView[arraySet.at(1).toInt()][arraySet.at(2).toInt()] = arraySet.at(0).toInt();
+                    int x = arraySet.at(2).toInt();
+                    int y = arraySet.at(1).toInt();
+                    parsedView[y][x] = arraySet.at(0).toInt();
                 }
             }
 

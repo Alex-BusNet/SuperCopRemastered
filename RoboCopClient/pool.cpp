@@ -56,23 +56,23 @@ void Pool::RankGlobally()
     }
 
     // Sort genomes from lowest fitness to highest fitness
-    RoboCop::Quicksort(globals, 0, globals.size() - 1, lowToHighGenome);
+//    RoboCop::Quicksort(globals, 0, globals.size() - 1, lowToHighGenome);
 
-//    for(int i = 0; i < globals.size(); i++)
-//    {
-//        for(int j = i+1; j < globals.size(); j++)
-//        {
-//            Genome* a = globals[i];
-//            Genome* b = globals[j];
+    for(int i = 0; i < globals.size(); i++)
+    {
+        for(int j = i+1; j < globals.size(); j++)
+        {
+            Genome* a = globals[i];
+            Genome* b = globals[j];
 
-//            if(a->GetFitness() > b->GetFitness())
-//            {
-//                Genome* temp = a;
-//                a = b;
-//                b = temp;
-//            }
-//        }
-//    }
+            if(a->GetFitness() > b->GetFitness())
+            {
+                Genome* temp = a;
+                a = b;
+                b = temp;
+            }
+        }
+    }
 
     for(int i = 0; i < globals.size(); i++)
     {
@@ -170,22 +170,22 @@ void Pool::CullSpecies(bool cutToOne)
         if(s->genomes.size() > 0)
         {
             // Sort the genomes within Species, s, from most fit to least fit
-            RoboCop::Quicksort(s->genomes, 0, s->genomes.size() - 1, highToLowGenome);
-//            for(int i = 0; i < s->genomes.size(); i++)
-//            {
-//                for(int j = i+1; j < s->genomes.size(); j++)
-//                {
-//                    Genome* a = s->genomes[i];
-//                    Genome* b = s->genomes[j];
+//            RoboCop::Quicksort(s->genomes, 0, s->genomes.size() - 1, highToLowGenome);
+            for(int i = 0; i < s->genomes.size(); i++)
+            {
+                for(int j = i+1; j < s->genomes.size(); j++)
+                {
+                    Genome* a = s->genomes[i];
+                    Genome* b = s->genomes[j];
 
-//                    if(a->GetFitness() < b->GetFitness())
-//                    {
-//                        Genome *temp = a;
-//                        a = b;
-//                        b = temp;
-//                    }
-//                }
-//            }
+                    if(a->GetFitness() < b->GetFitness())
+                    {
+                        Genome *temp = a;
+                        a = b;
+                        b = temp;
+                    }
+                }
+            }
 
             int remaining = std::ceil((s->genomes.size()+1) / 2);
             if(cutToOne) { remaining = 1; }
@@ -208,23 +208,23 @@ void Pool::RemoveStaleSpecies()
         if(s->genomes.size() > 0)
         {
             // Sort species from most fit to least fit
-            RoboCop::Quicksort(s->genomes, 0, s->genomes.size() - 1, highToLowGenome);
+//            RoboCop::Quicksort(s->genomes, 0, s->genomes.size() - 1, highToLowGenome);
 
-//            for(int i = 0; i < s->genomes.size(); i++)
-//            {
-//                for(int j = i+1; j < s->genomes.size(); j++)
-//                {
-//                    Genome *a = s->genomes[i];
-//                    Genome *b = s->genomes[j];
+            for(int i = 0; i < s->genomes.size(); i++)
+            {
+                for(int j = i+1; j < s->genomes.size(); j++)
+                {
+                    Genome *a = s->genomes[i];
+                    Genome *b = s->genomes[j];
 
-//                    if(a->GetFitness() < b->GetFitness())
-//                    {
-//                        Genome *temp = a;
-//                        a = b;
-//                        b = temp;
-//                    }
-//                }
-//            }
+                    if(a->GetFitness() < b->GetFitness())
+                    {
+                        Genome *temp = a;
+                        a = b;
+                        b = temp;
+                    }
+                }
+            }
 
 //            qDebug() << s->genomes[0]->GetFitness() << s->GetTopFitness() << maxFitness << s->GetStaleness() << RoboCop::StaleSpecies;
 

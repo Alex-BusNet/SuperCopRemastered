@@ -14,6 +14,7 @@
 #include <QThread>
 #include <ctime>
 #include <cmath>
+#include <mutex>
 
 class Pool;
 

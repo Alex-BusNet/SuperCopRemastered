@@ -25,7 +25,7 @@ namespace RoboCop
     static const float StepSize = 0.1f;
     static const float DisableMutationChance = 0.4f;
     static const float EnableMutationChance = 0.2f;
-    static const long MaxNodes = 1000000L;
+    static const long MaxNodes = 100000L;
     static const float TimeoutConstant = 30.0f; // frames
 
 
@@ -40,7 +40,7 @@ namespace RoboCop
     // Returns the average of two random values
     // chosen between 0 and RAND_MAX
     // using the mersenne twister.
-    static int randomi() { return (disi(gen) + disi(gen)) / 2;}
+    static int randomi() { return disi(gen)/* + disi(gen)) / 2*/;}
 }
 
 #endif // NNGLOBALS_H
