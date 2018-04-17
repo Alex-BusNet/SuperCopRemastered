@@ -2,5 +2,5 @@
 
 Neuron::Neuron()
 {
-    value = 0.0;
+    value = 0.0f;
 }

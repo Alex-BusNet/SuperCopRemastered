@@ -26,7 +26,7 @@ namespace RoboCop
     static const float DisableMutationChance = 0.4f;
     static const float EnableMutationChance = 0.2f;
     static const long MaxNodes = 100000L;
-    static const float TimeoutConstant = 30.0f; // frames
+    static const float TimeoutConstant = 60.0f; // frames
 
 
     static std::random_device rd;

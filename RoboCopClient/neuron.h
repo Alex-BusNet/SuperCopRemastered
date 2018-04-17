@@ -3,6 +3,7 @@
 
 #include "gene.h"
 #include <QMap>
+#include <QDebug>
 
 class Neuron
 {

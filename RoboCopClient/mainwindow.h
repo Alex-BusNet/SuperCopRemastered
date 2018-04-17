@@ -44,6 +44,8 @@ private slots:
     void timeoutValue(float num);
     void on_closePB_clicked();
 
+    void on_resetNNPB_clicked();
+
 private:
     Ui::MainWindow *ui;
     QTcpSocket *socket;

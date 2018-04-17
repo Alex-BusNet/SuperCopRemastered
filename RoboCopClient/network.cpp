@@ -24,24 +24,19 @@ QMap<QString, bool> Network::EvaluateNetwork(QVector<int> inputs)
         out.insert(RoboCop::ButtonNames[i], false);
     }
 
-//    inputs.push_back(1);
+    inputs.push_back(1);
 
-    if(inputs.size() != RoboCop::Inputs - 1)
+    if(inputs.size() != RoboCop::Inputs)
     {
         qDebug() << "Invalid Input size";
         return out;
     }
 
 //    qDebug() << "Loading inputs...";
-    for(i = 0; i < RoboCop::Inputs - 1; i++)
+    for(i = 0; i < RoboCop::Inputs; i++)
     {
         if(!neurons.contains(i))
             neurons.insert(i, new Neuron());
-
-        // This should always evaluate false,
-        // but there have been some errant crashes with NULL
-        // pointers, so this is here just as a precaution.
-        if(neurons[i] == NULL) { neurons[i] = new Neuron(); }
 
         this->neurons[i]->value = inputs[i];
     }
@@ -55,18 +50,26 @@ QMap<QString, bool> Network::EvaluateNetwork(QVector<int> inputs)
         {
             float sum = 0;
 
-            if(n->incoming.size() > 0)
+//            if(n->incoming.size() > 1)
 //                qDebug() << "\t(" << k << ") Incoming size: " << n->incoming.size();
 
             for(int j = 0; j < n->incoming.size(); j++)
             {
-                Gene *inc = n->incoming[j];
-                if(inc != NULL)
+                if(n->incoming.contains(j))
                 {
-                    Neuron *oth = this->neurons[inc->into];
+                    Gene *inc = n->incoming[j];
+                    if(inc != NULL)
+                    {
+                        if(neurons.contains(inc->into))
+                        {
+                            Neuron *oth = this->neurons[inc->into];
 
-                    if(oth != NULL)
-                        sum += inc->weight * oth->value;
+                            if(oth != NULL)
+                            {
+                                sum += inc->weight * oth->value;
+                            }
+                        }
+                    }
                 }
             }
 

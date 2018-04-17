@@ -15,6 +15,7 @@ MainWindow::MainWindow(QWidget *parent) :
     qRegisterMetaType<uint8_t>("uint8_t");
 
     rch = RoboCopHandler::instance();
+    ui->resetNNPB->setEnabled(false);
 
     connect(rch, &RoboCopHandler::keyStateUpdate, this, &MainWindow::KeyStateUpdate);
     connect(rch, &RoboCopHandler::FitnessUpdate, this, &MainWindow::fitnessUpdate);
@@ -82,6 +83,7 @@ void MainWindow::on_Connect_clicked()
             ui->Left->setEnabled(false);
             ui->Right->setEnabled(false);
             ui->Stop->setEnabled(false);
+            ui->resetNNPB->setEnabled(true);
         }
     }
     else
@@ -93,6 +95,8 @@ void MainWindow::on_Connect_clicked()
         ui->Left->setEnabled(true);
         ui->Right->setEnabled(true);
         ui->Stop->setEnabled(true);
+
+        ui->resetNNPB->setEnabled(false);
 
         if(rch->isRunning())
             rch->exit();
@@ -192,7 +196,6 @@ void MainWindow::readyRead()
         {
             rch->LevelReset();
             rch->InitializeRun(true);
-//            ResetUpdate(true);
         }
         else if(command == "NextFrame")
         {
@@ -356,4 +359,18 @@ void MainWindow::on_closePB_clicked()
         rch->end();
 
     this->close();
+}
+
+void MainWindow::on_resetNNPB_clicked()
+{
+    if(rch->isRunning())
+    {
+        rch->end(0);
+        rch->start();
+        rch->LevelReset();
+        rch->InitializeRun(true);
+    }
+
+    if(socket->state() == QAbstractSocket::ConnectedState)
+        ResetLevel();
 }

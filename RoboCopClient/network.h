@@ -17,7 +17,6 @@ public:
     QMap<QString, bool> EvaluateNetwork(QVector<int> inputs);
 
     QMap<int, Neuron*> neurons;
-//    QVector<Neuron*> neurons;
 
 private:
     float sigmoid(float val);

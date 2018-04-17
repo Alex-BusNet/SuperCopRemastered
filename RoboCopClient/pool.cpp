@@ -36,6 +36,8 @@ float Pool::TotalAverageFitness()
         total += s->GetAverageFitness();
     }
 
+//    qDebug() << "--Finished TotalAverageFitness()";
+
     return total;
 }
 
@@ -56,28 +58,29 @@ void Pool::RankGlobally()
     }
 
     // Sort genomes from lowest fitness to highest fitness
-//    RoboCop::Quicksort(globals, 0, globals.size() - 1, lowToHighGenome);
+    RoboCop::Quicksort(globals, 0, globals.size() - 1, lowToHighGenome);
 
-    for(int i = 0; i < globals.size(); i++)
-    {
-        for(int j = i+1; j < globals.size(); j++)
-        {
-            Genome* a = globals[i];
-            Genome* b = globals[j];
+//    for(int i = 0; i < globals.size(); i++)
+//    {
+//        for(int j = i+1; j < globals.size(); j++)
+//        {
+//            Genome* a = globals[i];
+//            Genome* b = globals[j];
 
-            if(a->GetFitness() > b->GetFitness())
-            {
-                Genome* temp = a;
-                a = b;
-                b = temp;
-            }
-        }
-    }
+//            if(a->GetFitness() > b->GetFitness())
+//            {
+//                Genome* temp = a;
+//                a = b;
+//                b = temp;
+//            }
+//        }
+//    }
 
     for(int i = 0; i < globals.size(); i++)
     {
         globals[i]->SetGlobalRank(i+1);
     }
+//    qDebug() << "--Finished RankGlobally()";
 }
 
 void Pool::NextGenome()
@@ -95,12 +98,12 @@ void Pool::NextGenome()
         }
     }
 
-//    qDebug() << "\tGenome: " << currentGenome << " Species: " << currentSpecies;
+//    qDebug() << "--Finished NextGenome()";
 }
 
 void Pool::NewGeneration()
 {
-//    qDebug() << "\tNewGeneration()";
+//    qDebug() << "NewGeneration()";
     CullSpecies(false); // Removes the bottom half of each species
     RankGlobally();
     RemoveStaleSpecies();
@@ -147,19 +150,8 @@ void Pool::NewGeneration()
 QMap<QString, bool> Pool::EvaluateNetwork(QVector<int> inputs)
 {
 //    qDebug() << "Pool::EvaluateNetwork()";
-//    qDebug() << "Species: " << species.size() << " CurrentSpecies: " << currentSpecies << " Current Genome: " << currentGenome;
-    Species *s = species[currentSpecies];
-    if(s != NULL)
-    {
-        Genome *g = s->genomes[currentGenome];
-        if(g != NULL)
-        {
-            if(g->network != NULL)
-               return g->network->EvaluateNetwork(inputs);
-        }
-    }
-
-    return QMap<QString, bool>();
+    return species[currentSpecies]->genomes[currentGenome]->network->EvaluateNetwork(inputs);
+//    qDebug() << "--Finished Pool::EvaluateNetwork()";
 }
 
 void Pool::CullSpecies(bool cutToOne)
@@ -170,22 +162,22 @@ void Pool::CullSpecies(bool cutToOne)
         if(s->genomes.size() > 0)
         {
             // Sort the genomes within Species, s, from most fit to least fit
-//            RoboCop::Quicksort(s->genomes, 0, s->genomes.size() - 1, highToLowGenome);
-            for(int i = 0; i < s->genomes.size(); i++)
-            {
-                for(int j = i+1; j < s->genomes.size(); j++)
-                {
-                    Genome* a = s->genomes[i];
-                    Genome* b = s->genomes[j];
+            RoboCop::Quicksort(s->genomes, 0, s->genomes.size() - 1, highToLowGenome);
+//            for(int i = 0; i < s->genomes.size(); i++)
+//            {
+//                for(int j = i+1; j < s->genomes.size(); j++)
+//                {
+//                    Genome* a = s->genomes[i];
+//                    Genome* b = s->genomes[j];
 
-                    if(a->GetFitness() < b->GetFitness())
-                    {
-                        Genome *temp = a;
-                        a = b;
-                        b = temp;
-                    }
-                }
-            }
+//                    if(a->GetFitness() < b->GetFitness())
+//                    {
+//                        Genome *temp = a;
+//                        a = b;
+//                        b = temp;
+//                    }
+//                }
+//            }
 
             int remaining = std::ceil((s->genomes.size()+1) / 2);
             if(cutToOne) { remaining = 1; }
@@ -208,23 +200,23 @@ void Pool::RemoveStaleSpecies()
         if(s->genomes.size() > 0)
         {
             // Sort species from most fit to least fit
-//            RoboCop::Quicksort(s->genomes, 0, s->genomes.size() - 1, highToLowGenome);
+            RoboCop::Quicksort(s->genomes, 0, s->genomes.size() - 1, highToLowGenome);
 
-            for(int i = 0; i < s->genomes.size(); i++)
-            {
-                for(int j = i+1; j < s->genomes.size(); j++)
-                {
-                    Genome *a = s->genomes[i];
-                    Genome *b = s->genomes[j];
+//            for(int i = 0; i < s->genomes.size(); i++)
+//            {
+//                for(int j = i+1; j < s->genomes.size(); j++)
+//                {
+//                    Genome *a = s->genomes[i];
+//                    Genome *b = s->genomes[j];
 
-                    if(a->GetFitness() < b->GetFitness())
-                    {
-                        Genome *temp = a;
-                        a = b;
-                        b = temp;
-                    }
-                }
-            }
+//                    if(a->GetFitness() < b->GetFitness())
+//                    {
+//                        Genome *temp = a;
+//                        a = b;
+//                        b = temp;
+//                    }
+//                }
+//            }
 
 //            qDebug() << s->genomes[0]->GetFitness() << s->GetTopFitness() << maxFitness << s->GetStaleness() << RoboCop::StaleSpecies;
 
@@ -243,7 +235,6 @@ void Pool::RemoveStaleSpecies()
         }
     }
 
-    qDebug() << "Survived size: " << survived.size();
     this->species = survived;
 
 //    qDebug() << "--Finished RemoveStaleSpecies()";
@@ -296,6 +287,7 @@ bool Pool::FitnessAlreadyMeasured()
 //    qDebug() << "FitnessAlreadyMeasured()";
     Species *s = species[currentSpecies];
     Genome *g = s->genomes[currentGenome];
+//    qDebug() << "--Finished FitnessAlreadyMeasured()";
     return g->GetFitness() != 0;
 }
 
@@ -320,7 +312,6 @@ void Pool::AddToSpecies(Genome *child)
         this->species.push_back(s);
     }
 
-//    qDebug() << "Species size: " << species.size();
 //    qDebug() << "--Finished AddToSpecies()";
 }
 

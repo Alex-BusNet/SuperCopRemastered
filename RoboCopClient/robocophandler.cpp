@@ -81,7 +81,7 @@ void RoboCopHandler::GameLoop()
 
             timeout--;
 
-            float timeoutBonus = 0;// (float)pool->GetCurrentFrame() / 4.0f;
+            float timeoutBonus = (float)pool->GetCurrentFrame() / 4.0f;
 
             emit resetStat(reset);
 
@@ -102,7 +102,7 @@ void RoboCopHandler::GameLoop()
                 if(fitness > pool->GetMaxFitness())
                 {
                     pool->SetMaxFitness(fitness);
-//                    SaveFile(filepath + "/backup." + pool->GetGeneration() + ".RC_1.json");
+                    SaveFile(filepath + "/backup." + pool->GetGeneration() + ".RC_1.json");
                 }
 
                 pool->SetCurrentSpecies(0);
@@ -170,7 +170,10 @@ void RoboCopHandler::InitializeRun(bool playerDied)
 
     ClearControls();
 
-    pool->species[pool->GetCurrentSpecies()]->genomes[pool->GetCurrentGenome()]->GenerateNetwork();
+    Species *s = pool->species[pool->GetCurrentSpecies()];
+    Genome *g = s->genomes[pool->GetCurrentGenome()];
+    g->GenerateNetwork();
+//    pool->species[pool->GetCurrentSpecies()]->genomes[pool->GetCurrentGenome()]->GenerateNetwork();
     EvaluateCurrent();
 //    qDebug() << "--Finished InitializeRun()";
 }
@@ -195,8 +198,9 @@ void RoboCopHandler::InitializePool()
 
 void RoboCopHandler::LevelReset()
 {
-    qDebug() << "\tLevel Reset";
+//    qDebug() << "\tLevel Reset";
     reset = true;
+    emit resetStat(reset);
 }
 
 void RoboCopHandler::SetInputs(int **in)
@@ -231,7 +235,7 @@ void RoboCopHandler::EvaluateCurrent()
         controls["LEFT"] = controls["RIGHT"] = false;
     }
 
-//    SetControls(controls);
+    SetControls(controls);
 }
 
 void RoboCopHandler::SetControls(QMap<QString, bool> cState)
@@ -313,6 +317,7 @@ void RoboCopHandler::SaveFile(QString filename)
 
 void RoboCopHandler::LoadFile(QString filename)
 {
+    qDebug() << "Loading file: " << filename;
     QFile saveState(filename);
 
     if(saveState.exists())

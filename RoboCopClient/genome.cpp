@@ -6,6 +6,7 @@
  */
 Genome::Genome()
 {
+//    qDebug() << "Genome default c'tor";
     fitness = 0.0f;
     adjustedFitness = 0.0f;
     maxNeuron = 0;
@@ -17,6 +18,8 @@ Genome::Genome()
     mutationRates.insert("connections", RoboCop::MutationConnectionChance);
     mutationRates.insert("node", RoboCop::NodeMutationChance);
     mutationRates.insert("step", RoboCop::StepSize);
+
+//    qDebug() << "--Finished Genome default c'tor";
 }
 
 /**
@@ -25,6 +28,7 @@ Genome::Genome()
  */
 Genome::Genome(Genome &g) : Genome()
 {
+//    qDebug() << "Genome Copy c'tor";
     this->genes = g.genes;
     this->maxNeuron = g.maxNeuron;
 
@@ -44,6 +48,7 @@ Genome::Genome(Genome &g) : Genome()
     this->adjustedFitness = 0.0f;
     this->maxNeuron = 0;
     this->globalRank = 0;
+//    qDebug() << "--Finished Genome Copy c'tor";
 }
 
 Genome::~Genome()
@@ -60,9 +65,11 @@ Genome::~Genome()
 
 Genome *Genome::BasicGenome()
 {
+//    qDebug() << "BasicGenome()";
     Genome *g = new Genome();
     g->SetMaxNeuron(RoboCop::Inputs);
     Mutate(g);
+//    qDebug() << "--Finished BasicGenome()";
     return g;
 }
 
@@ -72,61 +79,55 @@ bool highToLowGene(Gene* a, Gene* b) { return a->out > b->out; }
 void Genome::GenerateNetwork()
 {
 //    qDebug() << "GenerateNetwork()";
-    network = new Network();
+    Network *net = new Network();
 
     int i = 0;
     for(; i < RoboCop::Inputs; i++)
     {
-        if(network->neurons.contains(i))
-            network->neurons[i] = new Neuron();
-        else
-            this->network->neurons.insert(i, new Neuron());
+        net->neurons[i] = new Neuron();
     }
 
     for(i = 0; i < RoboCop::Outputs; i++)
     {
-        if(network->neurons.contains(RoboCop::MaxNodes + i))
-            network->neurons[RoboCop::MaxNodes + i] = new Neuron();
-        else
-            network->neurons.insert(RoboCop::MaxNodes + i, new Neuron());
+        net->neurons[RoboCop::MaxNodes + i] = new Neuron();
     }
-
     // Sort genes from lowest out to highest out
-//    RoboCop::Quicksort(genes, 0, genes.size() - 1, lowToHighGene);
+    RoboCop::Quicksort(genes, 0, genes.size() - 1, lowToHighGene);
 
-    for(i = 0; i < genes.size(); i++)
-    {
-        for(int j = i+1; j < genes.size(); j++)
-        {
-            if(genes[i]->out > genes[j]->out)
-            {
-                Gene* g = genes[i];
-                genes[i] = genes[j];
-                genes[j] = g;
-            }
-        }
-    }
+//    for(i = 0; i < genes.size(); i++)
+//    {
+//        for(int j = i+1; j < genes.size(); j++)
+//        {
+//            if(genes[i]->out > genes[j]->out)
+//            {
+//                Gene* g = genes[i];
+//                genes[i] = genes[j];
+//                genes[j] = g;
+//            }
+//        }
+//    }
 
     foreach(Gene *g, genes)
     {
         if(g->enabled)
         {
-            if(!network->neurons.contains(g->out))
+            if(!net->neurons.contains(g->out))
             {
-                network->neurons.insert(g->out, new Neuron());
+                net->neurons.insert(g->out, new Neuron());
             }
 
-            Neuron *neuron = network->neurons[g->out];
+            Neuron *neuron = net->neurons[g->out];
+            neuron->incoming[g->out] = g;
 
-            if(!neuron->incoming.contains(g->out))
-                neuron->incoming.insert(g->out, g);
-            else
-                neuron->incoming[g->out] = g;
-
-            if(!network->neurons.contains(g->into))
-                network->neurons.insert(g->into, new Neuron());
+            if(!net->neurons.contains(g->into))
+            {
+                net->neurons.insert(g->into, new Neuron());
+            }
         }
     }
+
+    this->network = net;
+//    qDebug() << "--Finished GenerateNetwork()";
 }
 
 void Genome::Mutate(Genome *g)
@@ -189,11 +190,13 @@ void Genome::Mutate(Genome *g)
 
         p -= 1;
     }
+
+//    qDebug() << "--Finished Mutate()";
 }
 
 void Genome::PointMutate(Genome *g)
 {
-    //    qDebug() << "PointMutate()";
+//        qDebug() << "PointMutate()";
     float step = g->GetStep();
 
     for(int i = 0; i < g->genes.size(); i++)
@@ -205,18 +208,21 @@ void Genome::PointMutate(Genome *g)
         else
             gene->weight = RoboCop::randomf() * 4 - 2;
     }
+
+//    qDebug() << "--Finished PointMutate()";
 }
 
 void Genome::LinkMutate(Genome *g, bool bias)
 {
-    //    qDebug() << "LinkMutate()";
+//    qDebug() << "LinkMutate()";
     int neuron1 = g->RandomNeuron(false);
     int neuron2 = g->RandomNeuron(true);
 
-    Gene *l = new Gene();
     // Check if both selected neurons are inputs.
     if(neuron1 <= RoboCop::Inputs && neuron2 <= RoboCop::Inputs)
         return;
+
+    Gene *l = new Gene();
 
     if(neuron2 <= RoboCop::Inputs)
     {
@@ -227,17 +233,18 @@ void Genome::LinkMutate(Genome *g, bool bias)
         neuron2 = temp;
     }
 
-    l->into = neuron1;
     l->out = neuron2;
 
     if(bias) { l->into = RoboCop::Inputs; }
+    else { l->into = neuron1; }
 
-    if(g->ContainsLink(*l)) { return; }
+    if(g->ContainsLink(*l)) { delete l; return; }
 
     l->innovation = RoboCopHandler::instance()->GetPool()->NewInnovation() - 1;
     l->weight = RoboCop::randomf() * 4.0f - 2.0f;
 
     g->genes.push_back(l);
+//    qDebug() << "--Finished LinkMutate()";
 }
 
 void Genome::NodeMutate(Genome *gm)
@@ -255,7 +262,7 @@ void Genome::NodeMutate(Genome *gm)
 
     Gene *g1 = new Gene(*gene);
     g1->out = gm->GetMaxNeuron();
-    g1->weight = 1.0;
+    g1->weight = 1.0f;
 
     // The innovation is treated as an index,
     // therefore we want to subtract 1 from the
@@ -270,6 +277,8 @@ void Genome::NodeMutate(Genome *gm)
     g2->innovation = RoboCopHandler::instance()->GetPool()->NewInnovation() - 1;
     g2->enabled = true;
     gm->genes.push_back(g2);
+
+//    qDebug() << "--Finished NodeMutate()";
 }
 
 void Genome::EnableDisableMutate(Genome *gm, bool enable)
@@ -288,6 +297,7 @@ void Genome::EnableDisableMutate(Genome *gm, bool enable)
 
     Gene *g1 = candidates[rand() % candidates.size()];
     g1->enabled = !g1->enabled;
+//    qDebug() << "--Finished EnableDisableMutate()";
 }
 
 
@@ -388,6 +398,7 @@ void Genome::CopyMutationRates(QMap<QString, float> mr)
     {
         this->mutationRates[s] = mr[s];
     }
+//    qDebug() << "--Finished CopyMutationRates()";
 }
 
 bool Genome::ContainsLink(Gene link)
@@ -396,9 +407,12 @@ bool Genome::ContainsLink(Gene link)
     foreach(Gene *g, genes)
     {
         if(g->into == link.into && g->out == link.out)
+        {
+//            qDebug() << "--Finished ContainsLink()";
             return true;
+        }
     }
-
+//    qDebug() << "--Finished ContainsLink()";
     return false;
 }
 
@@ -407,7 +421,7 @@ bool Genome::SameSpecies(const Genome &other, int innovationSize)
 //    qDebug() << "SameSpecies()";
     float dd = RoboCop::DeltaDisjoint * Disjoint(other.genes, innovationSize);
     float dw = RoboCop::DeltaWeights * Weights(other.genes, innovationSize);
-//    qDebug() << "dd: " << dd << " dw: " << dw << (dd + dw);
+//    qDebug() << "--Finished SameSpecies()";
     return (dd + dw) < RoboCop::DeltaThreshold;
 }
 
@@ -442,7 +456,7 @@ float Genome::Disjoint(const QVector<Gene*> &other, int innovationSize)
     }
 
     int n = std::max(genes.size(), other.size());
-//    qDebug() << "\tDisjoint genes: " << disjointGenes << " N: " << n;
+//    qDebug() << "--Finished Disjoint()";
     return (float)disjointGenes / (float)n;
 }
 
@@ -463,18 +477,21 @@ float Genome::Weights(const QVector<Gene*> &other, int innovationSize)
     {
         if(i2.contains(g->innovation))
         {
-            Gene *gene2 = i2[g->innovation];
-            sum += std::abs(g->weight - gene2->weight);
+//            Gene *gene2 = i2[g->innovation];
+            sum += std::abs(g->weight - i2[g->innovation]->weight);
             coincident++;
         }
     }
-//    qDebug() << "\tSum: " << sum << " Coincident: " << coincident;
+
+    i2.clear();
+
+//    qDebug() << "--Finished Weights()";
     return sum / coincident;
 }
 
 Genome* Genome::Crossover(Genome *other, int innovationSize)
 {
-//    qDebug() << "Crossover()\n\tGlobal rank 1: " << this->globalRank << " Global rank 2: " << other.globalRank;
+//    qDebug() << "Crossover()";
     if(other->GetFitness() > this->fitness)
     {
         return other->Crossover(this, innovationSize);
@@ -486,10 +503,7 @@ Genome* Genome::Crossover(Genome *other, int innovationSize)
 
     foreach(Gene *g, other->genes)
     {
-        if(!innovations2.contains(g->innovation))
             innovations2.insert(g->innovation, g);
-        else
-            innovations2[g->innovation] = g;
     }
 
     for(int i = 0; i < this->genes.size(); i++)
@@ -600,12 +614,14 @@ int Genome::RandomNeuron(bool nonInput)
     int n = RoboCop::randomi() % neurons.size();
     foreach(int k, neurons.keys())
     {
-        n -= 1;
+        n--;
         if( n == 0 )
         {
+//            qDebug() << "--Finished RandomNeuron()";
             return k;
         }
     }
 
+//    qDebug() << "--Finished RandomNeuron()";
     return 0;
 }

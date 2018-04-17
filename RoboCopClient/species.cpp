@@ -2,9 +2,11 @@
 
 Species::Species()
 {
+//    qDebug() << "Species default c'tor";
     topFitness = 0.0f;
     staleness = 0;
     averageFitness = 0.0f;
+//    qDebug() << "--Finished Species default c'tor";
 }
 
 Species::~Species()
@@ -26,6 +28,7 @@ void Species::CalculateAverageFitness()
     }
 
     averageFitness = total / (float)genomes.size();
+//    qDebug() << "--Finished CalculateAverageFitness()";
 }
 
 float Species::GetTopFitness()
@@ -77,6 +80,7 @@ Genome *Species::BreedChild(int innovationSize)
     }
 
     Genome::Mutate(child);
+//    qDebug() << "--Finished BreedChild()";
     return child;
 }
 
