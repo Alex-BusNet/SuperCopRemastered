@@ -46,6 +46,10 @@ private slots:
 
     void on_resetNNPB_clicked();
 
+    void on_saveNNPb_clicked();
+
+    void on_loadNNPb_clicked();
+
 private:
     Ui::MainWindow *ui;
     QTcpSocket *socket;

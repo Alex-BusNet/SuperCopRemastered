@@ -16,6 +16,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     rch = RoboCopHandler::instance();
     ui->resetNNPB->setEnabled(false);
+    ui->saveNNPb->setEnabled(false);
+    ui->loadNNPb->setEnabled(false);
 
     connect(rch, &RoboCopHandler::keyStateUpdate, this, &MainWindow::KeyStateUpdate);
     connect(rch, &RoboCopHandler::FitnessUpdate, this, &MainWindow::fitnessUpdate);
@@ -84,6 +86,8 @@ void MainWindow::on_Connect_clicked()
             ui->Right->setEnabled(false);
             ui->Stop->setEnabled(false);
             ui->resetNNPB->setEnabled(true);
+            ui->saveNNPb->setEnabled(true);
+            ui->loadNNPb->setEnabled(true);
         }
     }
     else
@@ -97,6 +101,8 @@ void MainWindow::on_Connect_clicked()
         ui->Stop->setEnabled(true);
 
         ui->resetNNPB->setEnabled(false);
+        ui->saveNNPb->setEnabled(false);
+        ui->loadNNPb->setEnabled(false);
 
         if(rch->isRunning())
             rch->exit();
@@ -191,6 +197,7 @@ void MainWindow::readyRead()
     //        qDebug() << "\tDone";
 
             rch->SetInputs(parsedView);
+            this->update();
         }
         else if(command=="LevelReset")
         {
@@ -373,4 +380,24 @@ void MainWindow::on_resetNNPB_clicked()
 
     if(socket->state() == QAbstractSocket::ConnectedState)
         ResetLevel();
+}
+
+void MainWindow::on_saveNNPb_clicked()
+{
+    QString filepath = "States/usersave_" + ui->filenamePb->text();
+    qDebug() << filepath;
+    if(filepath.contains("#"))
+        filepath.replace("#", QString::number(rch->GetPool()->GetGeneration()));
+    qDebug() << filepath;
+    rch->SaveFile(filepath);
+}
+
+void MainWindow::on_loadNNPb_clicked()
+{
+    QString filename = QFileDialog::getOpenFileName(this, tr("Open Save"), "States", tr("Save State files (*.json)"));
+    qDebug() << filename;
+    rch->LoadFile(filename);
+    rch->LevelReset();
+    ResetLevel();
+    rch->InitializeRun(false);
 }

@@ -14,7 +14,7 @@
 #include <QThread>
 #include <ctime>
 #include <cmath>
-#include <mutex>
+#include <QFileDialog>
 
 class Pool;
 
@@ -53,6 +53,9 @@ public:
 
     int end(int retcode = 0);
 
+    void SaveFile(QString filename);
+    void LoadFile(QString filename);
+
 protected:
     void run();
 
@@ -69,8 +72,6 @@ private:
 
     QMap<QString, bool>controls;
 
-    void SaveFile(QString filename);
-    void LoadFile(QString filename);
 
 signals:
     void keyStateUpdate(uint8_t keyState);

@@ -53,32 +53,21 @@ QMap<QString, bool> Network::EvaluateNetwork(QVector<int> inputs)
 //            if(n->incoming.size() > 1)
 //                qDebug() << "\t(" << k << ") Incoming size: " << n->incoming.size();
 
-            for(int j = 0; j < n->incoming.size(); j++)
+            foreach(int j, n->incoming.keys())
             {
                 Gene *inc = n->incoming[j];
                 if(inc != NULL)
                 {
-                    Neuron *oth = this->neurons[inc->into];
-                    if(oth != NULL)
-                        sum += inc->weight * oth->value;
+                    if(neurons.contains(inc->into))
+                    {
+                        Neuron *oth = this->neurons[inc->into];
+
+                        if(oth != NULL)
+                        {
+                            sum += inc->weight * oth->value;
+                        }
+                    }
                 }
-
-//                if(n->incoming.contains(j))
-//                {
-//                    Gene *inc = n->incoming[j];
-//                    if(inc != NULL)
-//                    {
-//                        if(neurons.contains(inc->into))
-//                        {
-//                            Neuron *oth = this->neurons[inc->into];
-
-//                            if(oth != NULL)
-//                            {
-//                                sum += inc->weight * oth->value;
-//                            }
-//                        }
-//                    }
-//                }
             }
 
             if(n->incoming.size() > 0)

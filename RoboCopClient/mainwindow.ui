@@ -7,13 +7,19 @@
     <x>0</x>
     <y>0</y>
     <width>620</width>
-    <height>300</height>
+    <height>287</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="maximumSize">
    <size>
     <width>620</width>
-    <height>300</height>
+    <height>287</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -24,274 +30,141 @@
     <normaloff>Assets/UI/RC_NEAT_Icon.png</normaloff>Assets/UI/RC_NEAT_Icon.png</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QPushButton" name="Jump">
-    <property name="geometry">
-     <rect>
-      <x>200</x>
-      <y>220</y>
-      <width>75</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Jump</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="Stop">
-    <property name="geometry">
-     <rect>
-      <x>200</x>
-      <y>260</y>
-      <width>75</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Stop</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="Left">
-    <property name="geometry">
-     <rect>
-      <x>110</x>
-      <y>260</y>
-      <width>75</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Left</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="Right">
-    <property name="geometry">
-     <rect>
-      <x>290</x>
-      <y>260</y>
-      <width>75</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Right</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="Connect">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>220</y>
-      <width>75</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Connect</string>
-    </property>
-   </widget>
-   <widget class="QTextEdit" name="Log">
+   <widget class="QWidget" name="horizontalLayoutWidget_5">
     <property name="geometry">
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>371</width>
-      <height>201</height>
+      <width>601</width>
+      <height>271</height>
      </rect>
     </property>
-    <property name="font">
-     <font>
-      <family>Courier</family>
-     </font>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="closePB">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>260</y>
-      <width>75</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Close</string>
-    </property>
-   </widget>
-   <widget class="QWidget" name="horizontalLayoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>390</x>
-      <y>10</y>
-      <width>221</width>
-      <height>281</height>
-     </rect>
-    </property>
-    <layout class="QHBoxLayout" name="horizontalLayout_7" stretch="3,1">
+    <layout class="QHBoxLayout" name="horizontalLayout_12" stretch="2,1">
      <item>
-      <layout class="QVBoxLayout" name="verticalLayout">
+      <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,0,0,0">
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout">
+        <widget class="QTextEdit" name="Log">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Courier</family>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="verticalScrollBarPolicy">
+          <enum>Qt::ScrollBarAlwaysOff</enum>
+         </property>
+         <property name="horizontalScrollBarPolicy">
+          <enum>Qt::ScrollBarAlwaysOff</enum>
+         </property>
+         <property name="undoRedoEnabled">
+          <bool>false</bool>
+         </property>
+         <property name="lineWrapMode">
+          <enum>QTextEdit::NoWrap</enum>
+         </property>
+         <property name="lineWrapColumnOrWidth">
+          <number>0</number>
+         </property>
+         <property name="textInteractionFlags">
+          <set>Qt::NoTextInteraction</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_9">
          <item>
-          <widget class="QLabel" name="genLabel">
+          <widget class="QPushButton" name="Connect">
            <property name="text">
-            <string>Generation:</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
+            <string>Connect</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="genNumberLabel">
+          <widget class="QPushButton" name="resetNNPB">
            <property name="text">
-            <string>0</string>
+            <string>Reset NN</string>
            </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="saveNNPb">
+           <property name="text">
+            <string>Save</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="loadNNPb">
+           <property name="text">
+            <string>Load</string>
            </property>
           </widget>
          </item>
         </layout>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <layout class="QHBoxLayout" name="horizontalLayout_10">
          <item>
-          <widget class="QLabel" name="speciesLabel">
+          <widget class="QPushButton" name="closePB">
            <property name="text">
-            <string>Species:</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
+            <string>Close</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="speciesNumLabel">
+          <widget class="QLineEdit" name="filenamePb">
            <property name="text">
-            <string>0</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
+            <string>RC_#.json</string>
            </property>
           </widget>
          </item>
         </layout>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_4">
+        <layout class="QHBoxLayout" name="horizontalLayout_11">
          <item>
-          <widget class="QLabel" name="genomeLabel">
+          <widget class="QPushButton" name="Left">
            <property name="text">
-            <string>Genome:</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
+            <string>Left</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="genomeNumLabel">
+          <widget class="QPushButton" name="Jump">
            <property name="text">
-            <string>0</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_3">
-         <item>
-          <widget class="QLabel" name="fitnessLabel">
-           <property name="text">
-            <string>Fitness:</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
+            <string>Jump</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="fitnessNumLabel">
+          <widget class="QPushButton" name="Stop">
            <property name="text">
-            <string>0</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_5">
-         <item>
-          <widget class="QLabel" name="maxFitLabel">
-           <property name="text">
-            <string>Max Fitness:</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
+            <string>Stop</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="maxFitNumLabel">
+          <widget class="QPushButton" name="Right">
            <property name="text">
-            <string>0</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_6">
-         <item>
-          <widget class="QLabel" name="keyStateLabel">
-           <property name="text">
-            <string>Key State:</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="keyStateNumLabel">
-           <property name="text">
-            <string>0</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_8">
-         <item>
-          <widget class="QLabel" name="timeoutLabel">
-           <property name="text">
-            <string>Timeout</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="timeoutValueLabel">
-           <property name="text">
-            <string>0</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
+            <string>Right</string>
            </property>
           </widget>
          </item>
@@ -300,73 +173,236 @@
       </layout>
      </item>
      <item>
-      <layout class="QVBoxLayout" name="verticalLayout_2">
+      <layout class="QHBoxLayout" name="horizontalLayout_7" stretch="3,1">
        <item>
-        <widget class="QLabel" name="jumpLabel">
-         <property name="text">
-          <string>Jump</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout">
+           <item>
+            <widget class="QLabel" name="genLabel">
+             <property name="text">
+              <string>Generation:</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="genNumberLabel">
+             <property name="text">
+              <string>0</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <item>
+            <widget class="QLabel" name="speciesLabel">
+             <property name="text">
+              <string>Species:</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="speciesNumLabel">
+             <property name="text">
+              <string>0</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_4">
+           <item>
+            <widget class="QLabel" name="genomeLabel">
+             <property name="text">
+              <string>Genome:</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="genomeNumLabel">
+             <property name="text">
+              <string>0</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <item>
+            <widget class="QLabel" name="fitnessLabel">
+             <property name="text">
+              <string>Fitness:</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="fitnessNumLabel">
+             <property name="text">
+              <string>0</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_5">
+           <item>
+            <widget class="QLabel" name="maxFitLabel">
+             <property name="text">
+              <string>Max Fitness:</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="maxFitNumLabel">
+             <property name="text">
+              <string>0</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_6">
+           <item>
+            <widget class="QLabel" name="keyStateLabel">
+             <property name="text">
+              <string>Key State:</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="keyStateNumLabel">
+             <property name="text">
+              <string>0</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_8">
+           <item>
+            <widget class="QLabel" name="timeoutLabel">
+             <property name="text">
+              <string>Timeout</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="timeoutValueLabel">
+             <property name="text">
+              <string>0</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
        </item>
        <item>
-        <widget class="QLabel" name="sprintLabel">
-         <property name="text">
-          <string>Sprint</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="leftLabel">
-         <property name="text">
-          <string>Left</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="rightLabel">
-         <property name="text">
-          <string>Right</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="resetLabel">
-         <property name="text">
-          <string>Reset</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <widget class="QLabel" name="jumpLabel">
+           <property name="text">
+            <string>Jump</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="sprintLabel">
+           <property name="text">
+            <string>Sprint</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="leftLabel">
+           <property name="text">
+            <string>Left</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="rightLabel">
+           <property name="text">
+            <string>Right</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="resetLabel">
+           <property name="text">
+            <string>Reset</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
       </layout>
      </item>
     </layout>
-   </widget>
-   <widget class="QPushButton" name="resetNNPB">
-    <property name="geometry">
-     <rect>
-      <x>110</x>
-      <y>220</y>
-      <width>75</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Reset NN</string>
-    </property>
    </widget>
   </widget>
  </widget>

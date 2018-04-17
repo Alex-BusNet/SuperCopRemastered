@@ -32,7 +32,7 @@ SOURCES += \
     species.cpp \
     pool.cpp \
     neuron.cpp \
-    network.cpp \
+    network.cpp
 
 HEADERS += \
         mainwindow.h \
