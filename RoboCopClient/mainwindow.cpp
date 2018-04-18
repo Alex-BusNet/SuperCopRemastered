@@ -191,6 +191,7 @@ void MainWindow::readyRead()
                 }
                 disp=disp+"\n";
             }
+            disp=disp+"\n\n\n";
     //        qDebug() << "\tSetting display string";
             ui->Log->setText(disp);
 

@@ -218,6 +218,8 @@ void RoboCopHandler::SetInputs(int **in)
                     inputs.push_back(0);
                 else if (in[y][x] == 3)
                     inputs.push_back(-1);
+                else if(in[y][x] > 1)
+                    inputs.push_back(1);
                 else
                     inputs.push_back(in[y][x]);
             }
@@ -228,6 +230,8 @@ void RoboCopHandler::SetInputs(int **in)
                     inputs.replace((y*18)+x, 0);
                 else if (in[y][x] == 3)
                     inputs.replace((y*18)+x, -1);
+                else if(in[y][x] > 1)
+                    inputs.replace((y * 18)+x, 1);
                 else
                     inputs.replace((y * 18) + x, in[y][x]);
             }

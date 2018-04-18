@@ -504,7 +504,7 @@ Genome* Genome::Crossover(Genome *other, int innovationSize)
 
     foreach(Gene *g, other->genes)
     {
-            innovations2.insert(g->innovation, g);
+        innovations2.insert(g->innovation, g);
     }
 
     for(int i = 0; i < this->genes.size(); i++)
@@ -616,7 +616,7 @@ int Genome::RandomNeuron(bool nonInput)
     foreach(int k, neurons.keys())
     {
         n--;
-        if( n == 0 )
+        if( n <= 0 )
         {
 //            qDebug() << "--Finished RandomNeuron()";
             return k;

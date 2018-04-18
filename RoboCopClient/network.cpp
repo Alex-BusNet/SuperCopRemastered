@@ -1,4 +1,5 @@
 #include "network.h"
+#include <math.h>
 
 Network::Network()
 {
@@ -64,7 +65,7 @@ QMap<QString, bool> Network::EvaluateNetwork(QVector<int> inputs)
 
                         if(oth != NULL)
                         {
-                            sum += inc->weight * oth->value;
+                            sum = sum + inc->weight * oth->value;
                         }
                     }
                 }
@@ -75,14 +76,14 @@ QMap<QString, bool> Network::EvaluateNetwork(QVector<int> inputs)
         }
     }
 
-//    qDebug() << "Analyzing outputs...";
+    qDebug() << "Analyzing outputs...";
     for(i = 0; i < RoboCop::Outputs; i++)
     {
         if(neurons.contains(RoboCop::MaxNodes + i))
         {
             if(this->neurons[RoboCop::MaxNodes + i]->value > 0)
             {
-//                qDebug() << "Setting" << RoboCop::ButtonNames[i];
+                qDebug() << "Setting" << RoboCop::ButtonNames[i];
                 out[RoboCop::ButtonNames[i]] = true;
             }
             else
@@ -96,5 +97,5 @@ QMap<QString, bool> Network::EvaluateNetwork(QVector<int> inputs)
 float Network::sigmoid(float val)
 {
 //    qDebug() << "Sigmoid()";
-    return (2.0f / (1.0f + std::exp2f(-4.9 * val))) - 1;
+    return (2.0f / (1.0f + std::exp(-4.9 * val))) - 1;
 }
