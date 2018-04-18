@@ -818,7 +818,7 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
                 if(pos.x() >= 0 && pos.x() <= view->width() && pos.y() >= 0 && pos.y() <= view->height())
                 {
                     x = (pos.x() / 70) % 18;
-                    y = ((pos.y() / 70) % 10) + 1;
+                    y = ((pos.y() / 70) % 10);
 
                     if(y >= 0 && y < 10)
                         parsedView[y][x] = 3;

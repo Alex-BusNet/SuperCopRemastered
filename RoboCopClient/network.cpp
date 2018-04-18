@@ -50,7 +50,7 @@ QMap<QString, bool> Network::EvaluateNetwork(QVector<int> inputs)
         {
             float sum = 0;
 
-//            if(n->incoming.size() > 1)
+//            if(n->incoming.size() > 0)
 //                qDebug() << "\t(" << k << ") Incoming size: " << n->incoming.size();
 
             foreach(int j, n->incoming.keys())

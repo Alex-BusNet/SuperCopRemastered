@@ -92,7 +92,7 @@ void Genome::GenerateNetwork()
         net->neurons[RoboCop::MaxNodes + i] = new Neuron();
     }
     // Sort genes from lowest out to highest out
-    RoboCop::Quicksort(genes, 0, genes.size() - 1, lowToHighGene);
+    RoboCop::Quicksort(genes, 0, genes.size() - 1, highToLowGene);
 
 //    for(i = 0; i < genes.size(); i++)
 //    {
@@ -203,6 +203,7 @@ void Genome::PointMutate(Genome *g)
     {
         Gene *gene = g->genes[i];
         float p = RoboCop::randomf();
+
         if(p < RoboCop::PerturbChance)
             gene->weight += (RoboCop::randomf() * step * 2) - step;
         else

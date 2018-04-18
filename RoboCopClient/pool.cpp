@@ -58,7 +58,7 @@ void Pool::RankGlobally()
     }
 
     // Sort genomes from lowest fitness to highest fitness
-    RoboCop::Quicksort(globals, 0, globals.size() - 1, lowToHighGenome);
+    RoboCop::Quicksort(globals, 0, globals.size() - 1, highToLowGenome);
 
 //    for(int i = 0; i < globals.size(); i++)
 //    {
