@@ -85,7 +85,7 @@ void Pool::RankGlobally()
 
 void Pool::NextGenome()
 {
-//    qDebug() << "NextGenome()";
+    qDebug() << "NextGenome()";
     currentGenome++;
     if(currentGenome > (species[currentSpecies]->genomes.size() - 1))
     {
@@ -98,12 +98,12 @@ void Pool::NextGenome()
         }
     }
 
-//    qDebug() << "--Finished NextGenome()";
+    qDebug() << "--Finished NextGenome()";
 }
 
 void Pool::NewGeneration()
 {
-//    qDebug() << "NewGeneration()";
+    qDebug() << "NewGeneration()";
     CullSpecies(false); // Removes the bottom half of each species
     RankGlobally();
     RemoveStaleSpecies();
@@ -144,12 +144,12 @@ void Pool::NewGeneration()
 
     generation++;
     SaveFile(QString("States/backup.%1.RC_1.json").arg(generation));
-//    qDebug() << "\t--Finished NewGeneration()";
+    qDebug() << "\t--Finished NewGeneration()";
 }
 
 QMap<QString, bool> Pool::EvaluateNetwork(QVector<int> inputs)
 {
-//    qDebug() << "Pool::EvaluateNetwork()";
+    qDebug() << "Pool::EvaluateNetwork()";
     return species[currentSpecies]->genomes[currentGenome]->network->EvaluateNetwork(inputs);
 //    qDebug() << "--Finished Pool::EvaluateNetwork()";
 }
@@ -193,7 +193,7 @@ void Pool::CullSpecies(bool cutToOne)
 
 void Pool::RemoveStaleSpecies()
 {
-//    qDebug() << "RemoveStaleSpecies()";
+    qDebug() << "RemoveStaleSpecies()";
     QVector<Species*> survived;
     foreach(Species *s, species)
     {
@@ -237,13 +237,13 @@ void Pool::RemoveStaleSpecies()
 
     this->species = survived;
 
-//    qDebug() << "--Finished RemoveStaleSpecies()";
+    qDebug() << "--Finished RemoveStaleSpecies()";
 
 }
 
 void Pool::RemoveWeakSpecies()
 {
-//    qDebug() << "RemoveWeakSpecies()";
+    qDebug() << "RemoveWeakSpecies()";
 
     QVector<Species*> survived;
     float sum = TotalAverageFitness();
@@ -255,7 +255,7 @@ void Pool::RemoveWeakSpecies()
     }
 
     this->species = survived;
-//    qDebug() << "--Finished RemoveWeakSpecies()";
+    qDebug() << "--Finished RemoveWeakSpecies()";
 }
 
 void Pool::SetCurrentFrame(int frame)

@@ -89,7 +89,7 @@ QMap<QString, bool> Network::EvaluateNetwork(QVector<int> inputs)
                 out[RoboCop::ButtonNames[i]] = false;
         }
     }
-//    qDebug() << "--Finished EvaluateNetwork()";
+    qDebug() << "--Finished EvaluateNetwork()";
     return out;
 }
 
