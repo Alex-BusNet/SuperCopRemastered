@@ -76,21 +76,21 @@ QMap<QString, bool> Network::EvaluateNetwork(QVector<int> inputs)
         }
     }
 
-    qDebug() << "Analyzing outputs...";
+//    qDebug() << "Analyzing outputs...";
     for(i = 0; i < RoboCop::Outputs; i++)
     {
         if(neurons.contains(RoboCop::MaxNodes + i))
         {
             if(this->neurons[RoboCop::MaxNodes + i]->value > 0)
             {
-                qDebug() << "Setting" << RoboCop::ButtonNames[i];
+//                qDebug() << "Setting" << RoboCop::ButtonNames[i];
                 out[RoboCop::ButtonNames[i]] = true;
             }
             else
                 out[RoboCop::ButtonNames[i]] = false;
         }
     }
-    qDebug() << "--Finished EvaluateNetwork()";
+//    qDebug() << "--Finished EvaluateNetwork()";
     return out;
 }
 

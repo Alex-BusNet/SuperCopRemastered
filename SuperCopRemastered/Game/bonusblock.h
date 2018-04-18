@@ -12,6 +12,7 @@ public:
     BonusBlock(int maxHits);
 
     int GetHitsRemaining();
+    void SetHits(int maxHits);
 
 private:
     int hitsLeft;

@@ -16,6 +16,11 @@ int BonusBlock::GetHitsRemaining()
     return this->hitsLeft;
 }
 
+void BonusBlock::SetHits(int maxHits)
+{
+    this->hitsLeft = maxHits;
+}
+
 void BonusBlock::BlockHit()
 {
 //    double res = ((double) rand() / RAND_MAX);

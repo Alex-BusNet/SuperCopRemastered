@@ -14,7 +14,6 @@ namespace RoboCop
         for(int j = p; j < r; j++)
         {
             if((*condition)(arr[j], pivot))
-    //            if(arr[j] <= pivot)
             {
                 i++;
                 T* temp;

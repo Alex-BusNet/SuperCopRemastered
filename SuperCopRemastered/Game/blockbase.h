@@ -30,6 +30,8 @@ public:
     int GetRightEdge();
     Size GetSize();
 
+    bool isBonus();
+
     BlockType GetType();
     LevelType GetLevelType();
 
@@ -59,6 +61,7 @@ private:
     int posX, posY;
     QRect *boundingBox;
     QPixmap *texture;
+    bool bonusType;
 
     QGraphicsRectItem *bottomBB, *topBB, *leftBB, *rightBB;
 

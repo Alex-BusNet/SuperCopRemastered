@@ -46,6 +46,11 @@ void GameView::removeRect(QGraphicsRectItem *rect)
         this->scene->removeItem(rect);
 }
 
+GameScene *GameView::GetScene()
+{
+    return scene;
+}
+
 void GameView::ClearScene()
 {
     if(scene != NULL)

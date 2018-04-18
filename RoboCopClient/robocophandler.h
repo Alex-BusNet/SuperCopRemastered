@@ -34,6 +34,7 @@ public:
     void InitializePool();
 
     void LevelReset();
+    void ResetNN();
 
     void SetInputs(int **in);
     void SetPosition(int x);

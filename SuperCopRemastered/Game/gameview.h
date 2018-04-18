@@ -20,6 +20,8 @@ public:
     void removePixmap(QGraphicsPixmapItem *pixmap);
     void removeRect(QGraphicsRectItem *rect);
 
+    GameScene* GetScene();
+
     void ClearScene();
 
     void keyPressEvent(QKeyEvent *e);

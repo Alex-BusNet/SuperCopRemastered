@@ -28,6 +28,8 @@ BlockBase::BlockBase(LevelType lType, BlockType bType)
     leftBB = NULL;
     rightBB = NULL;
 
+    bonusType = false;
+
     SetBlockInfo();
 }
 
@@ -133,6 +135,11 @@ int BlockBase::GetRightEdge()
 Size BlockBase::GetSize()
 {
     return blockSize;
+}
+
+bool BlockBase::isBonus()
+{
+    return bonusType;
 }
 
 BlockType BlockBase::GetType()
@@ -282,6 +289,7 @@ void BlockBase::SetBlockInfo()
         break;
     case BONUS:
         texturePath += "/bonus_block.png";
+        bonusType = true;
         break;
     case FLOOR_COVERED_CORNER_LEFT:
         texturePath += "/floor_covered_corner_left.png";

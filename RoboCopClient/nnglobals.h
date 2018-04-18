@@ -6,11 +6,14 @@
 namespace RoboCop
 {
     static const QString ButtonNames[] = {"RIGHT", "LEFT", "JUMP", "SPRINT", "NONE"};
-    static const int BoxRadius = 6; //px, used for NN rendering
+    static const int BoxRadius = 6;                         //px, used for NN rendering
     static int InputSize = (18*10);
     static int Inputs = InputSize + 1;
-    static int Outputs = 5;                                 // Use only RIGHT, LEFT, SPRINT, and JUMP
     static int Population = 300;
+    static int Outputs = 5;                                 // Use only RIGHT, LEFT, SPRINT, and JUMP. For some reason
+                                                            // if Outputs = 4, only the first 3 controls (index 0, 1, & 2) are
+                                                            // are used. If Outputs = 5, then the first 4 controls (index 0, 1, 2, & 3)
+                                                            // are used.
 
     static const float DeltaDisjoint = 2.0f;                // Disjoint modifier value
     static const float DeltaWeights = 0.4f;                 // Weight modifier value
@@ -40,7 +43,7 @@ namespace RoboCop
     // Returns the average of two random values
     // chosen between 0 and RAND_MAX
     // using the mersenne twister.
-    static int randomi() { return disi(gen)/* + disi(gen)) / 2*/;}
+    static int randomi() { return (disi(gen) + disi(gen)) / 2; }
 }
 
 #endif // NNGLOBALS_H

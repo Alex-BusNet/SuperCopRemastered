@@ -44,7 +44,7 @@ public:
     void setShowDevOpts(bool devOpts);
 
 private:
-    void InitLevel();
+    void InitLevel(bool reload);
 
     Player *player;
     QGraphicsPixmapItem *playerPixmap;

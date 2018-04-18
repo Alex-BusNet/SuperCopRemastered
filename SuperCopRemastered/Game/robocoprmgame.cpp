@@ -34,7 +34,7 @@ robocoprmgame::robocoprmgame(QWidget *parent, bool industrialGraphics) :
     view = new GameView(this);
     view->setGeometry(0, 0 , 1280, 720);
 
-    InitLevel();
+    InitLevel(false);
 
     msg = new QMessageBox();
     pbox = new QMessageBox();
@@ -140,6 +140,11 @@ robocoprmgame::robocoprmgame(QWidget *parent, bool industrialGraphics) :
 
 robocoprmgame::~robocoprmgame()
 {
+    if(socket->state() == QAbstractSocket::ConnectedState)
+        socket->disconnectFromHost();
+
+    connected = false;
+
     delete lb;
 
     delete player;
@@ -340,8 +345,9 @@ void robocoprmgame::GameOver(bool endOfLevel)
 //        gameOverBox->exec();
 //        delete gameOverBox;
         qDebug() << "Player died..";
-        lb->ClearView(view);
-        InitLevel();
+//        lb->ClearView(view);
+        lb->ResetLevel(view);
+        InitLevel(true);
         player->Reset();
         view->ensureVisible(player->GetViewPixmap(), 200, 70);
         QByteArray outData;
@@ -518,12 +524,28 @@ void robocoprmgame::sendVisibleTerrain()
     }
 }
 
-void robocoprmgame::InitLevel()
+void robocoprmgame::InitLevel(bool reload)
 {
-    lb->LoadLevel(1, view, showDevOpts);
+    if(!reload)
+        lb->LoadLevel(1, view, showDevOpts);
 
     if(showDevOpts)
         qDebug() << "Loading player to Scene...";
+
+    if(reload)
+    {
+        if(player->GetViewPixmap() != NULL)
+            view->removePixmap(player->GetViewPixmap());
+
+        if(player->GetViewBB() != NULL)
+            view->removeRect(player->GetViewBB());
+
+        if(player->GetJumpViewBB() != NULL)
+            view->removeRect(player->GetJumpViewBB());
+
+        if(player->GetFallViewBB() != NULL)
+            view->removeRect(player->GetFallViewBB());
+    }
 
     player->SetViewPixmap(view->addPixmap(*(player->GetImage())));
 
@@ -603,8 +625,9 @@ void robocoprmgame::readyRead()
 
     if(buttonStates.contains("Reset"))
     {
-        lb->ClearView(view);
-        InitLevel();
+        lb->ResetLevel(view);
+//        lb->ClearView(view);
+        InitLevel(true);
         player->Reset();
         view->ensureVisible(player->GetViewPixmap(), 200, 70);
     }

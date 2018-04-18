@@ -20,6 +20,8 @@ RoboCopHandler::RoboCopHandler()
 
     for(int i = 0; i < RoboCop::Outputs; i++)
     {
+        qDebug() << "[ " << i << " ] " << RoboCop::ButtonNames[i];
+
         if(!controls.contains(RoboCop::ButtonNames[i]))
             controls.insert(RoboCop::ButtonNames[i], false);
         else
@@ -181,6 +183,9 @@ void RoboCopHandler::InitializeRun(bool playerDied)
 void RoboCopHandler::InitializePool()
 {
 //    qDebug() << "InitializePool()";
+    if(pool != NULL)
+        delete pool;
+
     pool = new Pool();
     timeout = 0;
     playerPosX = 0;
@@ -201,6 +206,11 @@ void RoboCopHandler::LevelReset()
 //    qDebug() << "\tLevel Reset";
     reset = true;
     emit resetStat(reset);
+}
+
+void RoboCopHandler::ResetNN()
+{
+    this->InitializePool();
 }
 
 void RoboCopHandler::SetInputs(int **in)

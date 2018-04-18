@@ -284,7 +284,7 @@ void Genome::NodeMutate(Genome *gm)
 
 void Genome::EnableDisableMutate(Genome *gm, bool enable)
 {
-    qDebug() << "EnableDisableMutate()";
+//    qDebug() << "EnableDisableMutate()";
     QVector<Gene*> candidates;
 
     foreach(Gene *gene, gm->genes)
@@ -298,7 +298,7 @@ void Genome::EnableDisableMutate(Genome *gm, bool enable)
 
     Gene *g1 = candidates[rand() % candidates.size()];
     g1->enabled = !g1->enabled;
-    qDebug() << "--Finished EnableDisableMutate()";
+//    qDebug() << "--Finished EnableDisableMutate()";
 }
 
 

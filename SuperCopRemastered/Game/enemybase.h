@@ -24,12 +24,16 @@ public:
     void UpdateEnemy();
 
     void SetBounds(int left, int right);
+    void SetStartParams(int x, int y, Direction dir);
     void SetDirection(Direction dir);
     void FlipDirection();
+    void Toggle();
 
     int GetPosX();
     int GetPosY();
     int GetRightEdge();
+
+    bool isEnabled();
 
     int GetValue();
 
@@ -54,12 +58,18 @@ private:
     QGraphicsRectItem *viewBB;
 
     int posX, posY;
+    int startX, startY;
+
     int boundLeft, boundRight;
     Size enemySize;
 
     int speed, frame;
     int pointValue;
+
     Direction direction;
+    Direction startDir;
+
+    bool enabled;
 
     EnemyType et;
 

@@ -38,6 +38,8 @@ public:
 
     void UpdateLevel(Player *p, GameView *view, bool devMode);
 
+    void ResetLevel(GameView *view);
+
     int GetLevelRightBound();
 
     void SetLevelType(LevelType lt);

@@ -229,6 +229,7 @@ void LevelBase::LoadLevel(int levelNum, GameView *view, bool devMode)
                         enemies.push_back(new EnemyBase(xPos * 70, floorHeight - (yPos * 60), et));
                         enemies.last()->SetDirection(dir);
                         enemies.last()->SetBounds(lbound * 70, (rbound+1) * 70);
+                        enemies.last()->SetStartParams(xPos * 70, floorHeight - (yPos * 60), dir);
                     }
 
                     foreach(EnemyBase *eb, enemies)
@@ -430,8 +431,8 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
                     emit EnemyDefeated(nearestEnemy->GetValue());
                     view->removeRect(nearestEnemy->GetGRectPtr());
                     view->removePixmap(nearestEnemy->GetGPixmapPtr());
-                    delete nearestEnemy;
-                    enemies.replace(idx, NULL);
+                    enemies.at(idx)->Toggle();
+
                     // Player gets a little 'bounce' when they kill enemies
                     p->setPosY(p->GetPosY() - 40);
                 }
@@ -889,6 +890,57 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
     }
 }
 
+void LevelBase::ResetLevel(GameView *view)
+{
+    qDebug() << "Resetting obstacles";
+    foreach(BlockBase *bb, obstacles)
+    {
+        if(bb != NULL)
+        {
+            // Only reset the block if is a BonusBlock, and its type has changed
+            if(bb->isBonus() && bb->GetType() != BONUS)
+            {
+                ((BonusBlock*)bb)->SetHits(1);
+
+                int idx = obstacles.indexOf(bb);
+                obstacles.at(idx)->SetType(levelFloor.at(0)->GetLevelType(), BONUS);
+                obstacleItems.at(idx)->setPixmap(*obstacles.at(idx)->GetTexture());
+            }
+        }
+    }
+
+    qDebug() << "Resetting Enemies";
+    foreach(EnemyBase *eb, enemies)
+    {
+        if(!eb->isEnabled())
+        {
+            // Re-enable the enemy
+            eb->Toggle();
+
+            // Re-add the pixmap and bounding box the scene.
+            int idx = enemyItems.indexOf(eb->GetGPixmapPtr());
+            eb->SetGRectPtr(view->addRect(*eb->GetBoundingBox(), QPen(Qt::transparent)));
+            eb->SetGPixmapPtr(view->addPixmap(*eb->GetTexture()));
+
+            enemyItems.replace(idx, eb->GetGPixmapPtr());
+            enemyItems.at(idx)->setPos(eb->GetPosX(), eb->GetPosY());
+            enemyItems.at(idx)->setScale(0.5);
+
+            enemyBBs.replace(idx, eb->GetGRectPtr());
+            enemyBBs.at(idx)->setPos(0,0);
+            enemyBBs.at(idx)->setScale(0.5);
+        }
+        else
+        {
+            // Toggle the enemy on and off to reset their position.
+            eb->Toggle();
+            eb->Toggle();
+        }
+    }
+
+    qDebug() << "--Done";
+}
+
 int LevelBase::GetLevelRightBound()
 {
     return levelFloor.last()->GetRightEdge();
@@ -935,71 +987,92 @@ void LevelBase::SetLevelType(LevelType lt)
 
 void LevelBase::ClearView(GameView *view)
 {
+    qDebug() << "\tRemoving Floor items";
     foreach(QGraphicsPixmapItem *i, floorItems)
     {
         if(i != NULL)
         {
-            view->removePixmap(i);
+            if(i->scene() == view->GetScene())
+                view->removePixmap(i);
+
             delete i;
         }
     }
     floorItems.clear();
 
+    qDebug() << "\tRemoving Obstacle items";
     foreach(QGraphicsPixmapItem *i, obstacleItems)
     {
         if(i != NULL)
         {
-            view->removePixmap(i);
+            if(i->scene() == view->GetScene())
+                view->removePixmap(i);
+
             delete i;
         }
     }
     obstacleItems.clear();
 
+    qDebug() << "\tRemoving enemy items";
     foreach(QGraphicsPixmapItem *i, enemyItems)
     {
         if(i != NULL)
         {
-            view->removePixmap(i);
+            if(i->scene() == view->GetScene())
+                view->removePixmap(i);
+
             delete i;
         }
     }
     enemyItems.clear();
 
+    qDebug() <<"\tRemoving floor bounding boxes";
     foreach(QGraphicsRectItem *r, floorBBs)
     {
         if(r != NULL)
         {
-            view->removeRect(r);
+            if(r->scene() == view->GetScene())
+                view->removeRect(r);
+
             delete r;
         }
     }
     floorBBs.clear();
 
+    qDebug() << "\tRemoving obstacle bounding boxes";
     foreach(QGraphicsRectItem *r, obstacleBBs)
     {
         if(r != NULL)
         {
-            view->removeRect(r);
+            if(r->scene() == view->GetScene())
+                view->removeRect(r);
+
             delete r;
         }
     }
     obstacleBBs.clear();
 
+    qDebug() << "\tRemoving enemy bounding boxes";
     foreach(QGraphicsRectItem *r, enemyBBs)
     {
         if(r != NULL)
         {
-            view->removeRect(r);
+            if(r->scene() == view->GetScene())
+                view->removeRect(r);
+
             delete r;
         }
     }
     enemyBBs.clear();
 
+    qDebug() << "\tRemoving donut bounding boxes";
     foreach(QGraphicsPixmapItem *p, donutItems)
     {
         if(p != NULL)
         {
-            view->removePixmap(p);
+            if(p->scene() == view->GetScene())
+                view->removePixmap(p);
+
             delete p;
         }
     }
@@ -1024,7 +1097,7 @@ void LevelBase::ClearView(GameView *view)
 //        if(bb != NULL)
 //            delete bb;
 //    }
-    levelFloor.clear();
+//    levelFloor.clear();
 
 //    foreach(ItemBase *i, donuts)
 //    {

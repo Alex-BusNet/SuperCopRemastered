@@ -47,7 +47,7 @@ bool lowToHighGenome(Genome *a, Genome *b) { return a->GetFitness() > b->GetFitn
 
 void Pool::RankGlobally()
 {
-//    qDebug() << "RankGlobally()";
+    qDebug() << "RankGlobally()";
     QVector<Genome*> globals;
     foreach(Species *s, species)
     {
@@ -58,7 +58,7 @@ void Pool::RankGlobally()
     }
 
     // Sort genomes from lowest fitness to highest fitness
-    RoboCop::Quicksort(globals, 0, globals.size() - 1, highToLowGenome);
+    RoboCop::Quicksort(globals, 0, globals.size() - 1, lowToHighGenome);
 
 //    for(int i = 0; i < globals.size(); i++)
 //    {
@@ -80,12 +80,12 @@ void Pool::RankGlobally()
     {
         globals[i]->SetGlobalRank(i+1);
     }
-//    qDebug() << "--Finished RankGlobally()";
+    qDebug() << "--Finished RankGlobally()";
 }
 
 void Pool::NextGenome()
 {
-    qDebug() << "NextGenome()";
+//    qDebug() << "NextGenome()";
     currentGenome++;
     if(currentGenome > (species[currentSpecies]->genomes.size() - 1))
     {
@@ -98,7 +98,7 @@ void Pool::NextGenome()
         }
     }
 
-    qDebug() << "--Finished NextGenome()";
+//    qDebug() << "--Finished NextGenome()";
 }
 
 void Pool::NewGeneration()
@@ -149,7 +149,7 @@ void Pool::NewGeneration()
 
 QMap<QString, bool> Pool::EvaluateNetwork(QVector<int> inputs)
 {
-    qDebug() << "Pool::EvaluateNetwork()";
+//    qDebug() << "Pool::EvaluateNetwork()";
     return species[currentSpecies]->genomes[currentGenome]->network->EvaluateNetwork(inputs);
 //    qDebug() << "--Finished Pool::EvaluateNetwork()";
 }
@@ -188,7 +188,7 @@ void Pool::CullSpecies(bool cutToOne)
             }
         }
     }
-//    qDebug() << "--Finished CullSpecies()";
+    qDebug() << "--Finished CullSpecies()";
 }
 
 void Pool::RemoveStaleSpecies()

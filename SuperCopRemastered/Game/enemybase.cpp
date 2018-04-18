@@ -21,6 +21,8 @@ EnemyBase::EnemyBase(int x, int y, EnemyType eType)
     viewBB = NULL;
     texture = NULL;
 
+    this->enabled = true;
+
     SetEnemyInfo();
 }
 
@@ -106,6 +108,13 @@ void EnemyBase::SetBounds(int left, int right)
     boundRight = right;
 }
 
+void EnemyBase::SetStartParams(int x, int y, Direction dir)
+{
+    this->startDir = dir;
+    this->startX = x;
+    this->startY = y;
+}
+
 void EnemyBase::SetDirection(Direction dir)
 {
     direction = dir;
@@ -121,6 +130,44 @@ void EnemyBase::FlipDirection()
     UpdateEnemy();
 }
 
+void EnemyBase::Toggle()
+{
+    this->enabled = !this->enabled;
+
+    if(enabled)
+    {
+        posX = startX;
+        posY = startY;
+        direction = startDir;
+        frame = 0;
+
+        if(texture != NULL)
+            delete texture;
+
+        texture = new QPixmap(texturePath.arg(direction == WEST ? "Left" : "Right" ).arg(color).arg(frame));
+
+        if(viewPixmap != NULL)
+        {
+            viewPixmap->setPixmap(*texture);
+            viewPixmap->setPos(posX, posY);
+        }
+
+        if(frame >= ANIM_FRAME_COUNT)
+            frame = 0;
+
+        if(boundingBox != NULL)
+            delete boundingBox;
+
+        boundingBox = new QRect(posX, posY, enemySize.x, enemySize.y);
+
+        if(viewBB != NULL)
+        {
+            viewBB->setRect(posX, posY, enemySize.x, enemySize.y);
+            viewBB->setPos(posX / 2, posY / 2);
+        }
+    }
+}
+
 int EnemyBase::GetPosX()
 {
     return posX;
@@ -134,6 +181,11 @@ int EnemyBase::GetPosY()
 int EnemyBase::GetRightEdge()
 {
     return posX + enemySize.x;
+}
+
+bool EnemyBase::isEnabled()
+{
+    return this->enabled;
 }
 
 int EnemyBase::GetValue()

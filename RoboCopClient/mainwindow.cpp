@@ -19,6 +19,11 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->saveNNPb->setEnabled(false);
     ui->loadNNPb->setEnabled(false);
 
+    ui->Right->hide();
+    ui->Left->hide();
+    ui->Jump->hide();
+    ui->Stop->hide();
+
     connect(rch, &RoboCopHandler::keyStateUpdate, this, &MainWindow::KeyStateUpdate);
     connect(rch, &RoboCopHandler::FitnessUpdate, this, &MainWindow::fitnessUpdate);
     connect(rch, &RoboCopHandler::GenerationUpdate, this, &MainWindow::generationStatus);
@@ -81,10 +86,11 @@ void MainWindow::on_Connect_clicked()
 
             ui->Connect->setText("Disconnect");
 
-            ui->Jump->setEnabled(false);
-            ui->Left->setEnabled(false);
-            ui->Right->setEnabled(false);
-            ui->Stop->setEnabled(false);
+//            ui->Jump->setEnabled(false);
+//            ui->Left->setEnabled(false);
+//            ui->Right->setEnabled(false);
+//            ui->Stop->setEnabled(false);
+
             ui->resetNNPB->setEnabled(true);
             ui->saveNNPb->setEnabled(true);
             ui->loadNNPb->setEnabled(true);
@@ -95,10 +101,10 @@ void MainWindow::on_Connect_clicked()
         Disconnected();
         ui->Connect->setText("Connect");
 
-        ui->Jump->setEnabled(true);
-        ui->Left->setEnabled(true);
-        ui->Right->setEnabled(true);
-        ui->Stop->setEnabled(true);
+//        ui->Jump->setEnabled(true);
+//        ui->Left->setEnabled(true);
+//        ui->Right->setEnabled(true);
+//        ui->Stop->setEnabled(true);
 
         ui->resetNNPB->setEnabled(false);
         ui->saveNNPb->setEnabled(false);
@@ -116,6 +122,20 @@ void MainWindow::Disconnected()
 {//Resets the UI on disconnect
     qDebug() << "\tDisconnected";
     socket->close();
+
+    ui->Connect->setText("Connect");
+
+//    ui->Jump->setEnabled(true);
+//    ui->Left->setEnabled(true);
+//    ui->Right->setEnabled(true);
+//    ui->Stop->setEnabled(true);
+
+    ui->resetNNPB->setEnabled(false);
+    ui->saveNNPb->setEnabled(false);
+    ui->loadNNPb->setEnabled(false);
+
+    if(rch->isRunning())
+        rch->exit();
 }
 
 void MainWindow::readyRead()
@@ -373,10 +393,7 @@ void MainWindow::on_resetNNPB_clicked()
 {
     if(rch->isRunning())
     {
-        rch->end(0);
-        rch->start();
-        rch->LevelReset();
-        rch->InitializeRun(true);
+        rch->ResetNN();
     }
 
     if(socket->state() == QAbstractSocket::ConnectedState)
