@@ -71,6 +71,10 @@ QMap<QString, bool> Network::EvaluateNetwork(QVector<int> inputs)
                 }
             }
 
+            // Apparently this line is useless if you
+            // fix the input values between -1 and 1.
+            // May be useful if we go back to using
+            // 4, 5, and 6 in the inputs.
             if(n->incoming.size() > 0)
                 n->value = sigmoid(sum);
         }

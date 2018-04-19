@@ -170,7 +170,7 @@ void MainWindow::readyRead()
         else if(command=="VisibleTerrain"){
 //            QString b = data.split("VisibleTerrain").last();
     //        qDebug() << "b: " << b;
-    //        qDebug() << "\tClearing parsedView";
+            qDebug() << "\tClearing parsedView";
             for(int y = 0; y < 10; y++)
             {
                 for(int x = 0; x < 18; x++)
@@ -179,7 +179,7 @@ void MainWindow::readyRead()
                 }
             }
 
-    //        qDebug() << "\tSplitting data";
+            qDebug() << "\tSplitting data";
             QStringList  pieces = subSet.last().split(";");
 //            qDebug() << "Pieces: " << pieces;
             //If the server is indicating the game has ended
@@ -196,7 +196,7 @@ void MainWindow::readyRead()
                 }
             }
 
-    //        qDebug() << "\tFormatting display string";
+            qDebug() << "\tFormatting display string";
             QString disp = "";
             for(int y = 0; y < 10; y++)
             {

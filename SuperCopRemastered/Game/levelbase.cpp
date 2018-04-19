@@ -909,6 +909,23 @@ void LevelBase::ResetLevel(GameView *view)
         }
     }
 
+    qDebug() << "\tRemoving donut bounding boxes";
+    foreach(QGraphicsPixmapItem *p, donutItems)
+    {
+        if(p != NULL)
+        {
+            if(p->scene() == view->GetScene())
+                view->removePixmap(p);
+
+            delete p;
+        }
+    }
+    if(donutItems.size() > 0)
+        donutItems.clear();
+
+    if(donuts.size() > 0)
+        donuts.clear();
+
     qDebug() << "Resetting Enemies";
     foreach(EnemyBase *eb, enemies)
     {

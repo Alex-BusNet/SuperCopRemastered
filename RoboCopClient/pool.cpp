@@ -179,7 +179,7 @@ void Pool::CullSpecies(bool cutToOne)
 //                }
 //            }
 
-            int remaining = std::ceil((s->genomes.size()+1) / 2);
+            int remaining = std::ceil((s->genomes.size() + 1) / 2.0f);
             if(cutToOne) { remaining = 1; }
 
             while((s->genomes.size()) > remaining)

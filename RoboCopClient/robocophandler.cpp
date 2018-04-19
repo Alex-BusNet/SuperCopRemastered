@@ -210,12 +210,13 @@ void RoboCopHandler::LevelReset()
 
 void RoboCopHandler::ResetNN()
 {
+    gameRunning = false;
     this->InitializePool();
 }
 
 void RoboCopHandler::SetInputs(int **in)
 {
-//    qDebug() << "SetInputs()";
+    qDebug() << "SetInputs()";
     for(int y = 0; y < 10; y++)
     {
         for(int x = 0; x < 18; x++)
@@ -247,7 +248,7 @@ void RoboCopHandler::SetInputs(int **in)
             }
         }
     }
-//    qDebug() << "--Finished SetInputs()";
+    qDebug() << "--Finished SetInputs()";
 }
 
 void RoboCopHandler::SetPosition(int x)
