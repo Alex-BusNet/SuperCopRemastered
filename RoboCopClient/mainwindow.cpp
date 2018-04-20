@@ -151,8 +151,9 @@ void MainWindow::paintEvent(QPaintEvent *e)
                                 }
                                 paint.setPen(Qt::black);
 
-                                for(int j = 0; j < 4; j++)
-                                {
+//                                for(int j = 0; j < 4; j++)
+//                                {
+                                    // Calculate the position of each cell on the screen (four times?)
                                     foreach(Gene *g, gm->genes)
                                     {
                                         if(g->enabled)
@@ -162,13 +163,17 @@ void MainWindow::paintEvent(QPaintEvent *e)
 
                                             if(cells.contains(g->into))
                                                 c1 = cells[g->into];
+                                            else
+                                                c1 = cells[RoboCop::Inputs];
 
                                             if(cells.contains(g->out))
                                                 c2 = cells[g->out];
+                                            else
+                                                c2 = cells[RoboCop::Inputs];
 
                                             if(g->into > RoboCop::Inputs && g->into <= RoboCop::MaxNodes)
                                             {
-                                                c1.x = (0.75*c1.x + 0.25*c2.x);
+                                                c1.x = 200 + (0.75*c1.x + 0.25*c2.x);
                                                 if(c1.x >= c2.x)
                                                 {
                                                     c1.x -= 40;
@@ -185,7 +190,7 @@ void MainWindow::paintEvent(QPaintEvent *e)
 
                                             if(g->out > RoboCop::Inputs && g->out <= RoboCop::MaxNodes)
                                             {
-                                                c2.x = (0.25*c1.x + 0.75*c2.x);
+                                                c2.x = 200 + (0.25*c1.x + 0.75*c2.x);
                                                 if(c1.x >= c2.x)
                                                 {
                                                     c2.x += 40;
@@ -201,12 +206,12 @@ void MainWindow::paintEvent(QPaintEvent *e)
                                             }
                                         }
                                     }
-                                }
+//                                }
 
                                 // Color and render the neurons.
                                 foreach(int k, cells.keys())
                                 {
-                                    Cell c = cells.value(k);
+                                    Cell c = cells[k];
                                     if(k > RoboCop::Inputs || c.value != 0)
                                     {
                                         // BizHawk color format is 0xAARRGGBB
@@ -219,12 +224,12 @@ void MainWindow::paintEvent(QPaintEvent *e)
                                         int colorVal = std::floor((c.value+1)/ 2.0f * 256);
                                         if(colorVal > 255) { colorVal = 255; }
                                         else if(colorVal < 0) { colorVal = 0; }
-                                        uint32_t colorOut = opacity + colorVal*0x1000 + colorVal*0x100 + colorVal;
+                                        uint32_t colorOut = opacity + colorVal*0x10000 + colorVal*0x100 + colorVal;
 
                                         QColor color(colorOut);
 
                                         // Convert the 0xAARRGGBB format to 0xRRGGBBAA format
-                                        color.setAlpha((colorVal << 32) >> 24);
+                                        color.setAlpha(opacity >> 24);
                                         color.setRed((colorOut << 8) >> 24);
                                         color.setGreen((colorOut << 16) >> 24);
                                         color.setBlue((colorOut << 24) >> 24);
@@ -245,9 +250,13 @@ void MainWindow::paintEvent(QPaintEvent *e)
                                         Cell c2;
                                         if(cells.contains(g->into))
                                             c1 = cells[g->into];
+                                        else
+                                            c1 = cells[RoboCop::Inputs];
 
                                         if(cells.contains(g->out))
                                             c2 = cells[g->out];
+                                        else
+                                            c2 = cells[RoboCop::Inputs];
 
                                         quint64 opacity = 0xA0000000;
                                         if(c1.value == 0)
@@ -262,7 +271,7 @@ void MainWindow::paintEvent(QPaintEvent *e)
                                         QColor color(colorVal);
 
                                         // Convert the 0xAARRGGBB format to 0xRRGGBBAA format
-                                        color.setAlpha((colorVal << 32) >> 24);
+                                        color.setAlpha(opacity >> 24);
                                         color.setRed((colorVal << 8) >> 24);
                                         color.setGreen((colorVal << 16) >> 24);
                                         color.setBlue((colorVal << 24) >> 24);

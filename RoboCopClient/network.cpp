@@ -25,6 +25,7 @@ QMap<QString, bool> Network::EvaluateNetwork(QVector<int> inputs)
         out.insert(RoboCop::ButtonNames[i], false);
     }
 
+    // Add a biasing node
     inputs.push_back(1);
 
     if(inputs.size() != RoboCop::Inputs)
