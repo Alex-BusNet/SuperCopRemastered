@@ -1,6 +1,7 @@
 #ifndef NNGLOBALS_H
 #define NNGLOBALS_H
 #include <QString>
+#include <QDebug>
 #include <random>
 
 namespace RoboCop
@@ -38,12 +39,12 @@ namespace RoboCop
     static std::uniform_int_distribution<> disi(0, RAND_MAX);
 
     // Returns a random value between 0 and 1
-    static float randomf() { return dis(gen); }
+    static float randomf() { float r = dis(gen); /*qDebug() << "randomf() : " << r;*/ return r; }
 
     // Returns the average of two random values
     // chosen between 0 and RAND_MAX
     // using the mersenne twister.
-    static int randomi() { return (disi(gen) + disi(gen)) / 2; }
+    static int randomi() { int i = (disi(gen) + disi(gen)) / 2; /*qDebug() << "randomi() : " << i;*/ return i; }
 }
 
 #endif // NNGLOBALS_H

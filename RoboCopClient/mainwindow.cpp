@@ -113,17 +113,22 @@ void MainWindow::paintEvent(QPaintEvent *e)
                                     if(i >= neuronKeys.size()) { break; }
                                 }
 
-                                // Generate the Bias neuron.
+                                // Generate  cell for the Bias neuron.
                                 Cell biasCell;
                                 biasCell.x = 180;
                                 biasCell.y = 400;
 
-                                if(net->neurons.contains(RoboCop::Inputs))
-                                    biasCell.value = net->neurons[RoboCop::Inputs]->value;
+                                // We are using InputSize instead of Inputs here
+                                // because the Bias node is at index 180, which
+                                // is the 181st item in the neuron vector. Inputs
+                                // has a value of 181, which would be the 182nd item
+                                // in the vector.
+                                if(net->neurons.contains(RoboCop::InputSize))
+                                    biasCell.value = net->neurons[RoboCop::InputSize]->value;
                                 else
                                     biasCell.value = 1;
 
-                                cells.insert(RoboCop::Inputs, biasCell);
+                                cells.insert(RoboCop::InputSize, biasCell);
 
                                 // Generate the output neurons.
                                 for(int j = 0; j < RoboCop::Outputs; j++)
@@ -164,16 +169,17 @@ void MainWindow::paintEvent(QPaintEvent *e)
                                             if(cells.contains(g->into))
                                                 c1 = cells[g->into];
                                             else
-                                                c1 = cells[RoboCop::Inputs];
+                                                c1 = cells[RoboCop::InputSize];
 
                                             if(cells.contains(g->out))
                                                 c2 = cells[g->out];
                                             else
-                                                c2 = cells[RoboCop::Inputs];
+                                                c1 = cells[RoboCop::InputSize];
 
-                                            if(g->into > RoboCop::Inputs && g->into <= RoboCop::MaxNodes)
+                                            // Calculate the position of cell 1
+                                            if(g->into > RoboCop::InputSize && g->into <= RoboCop::MaxNodes)
                                             {
-                                                c1.x = 200 + (0.75*c1.x + 0.25*c2.x);
+                                                c1.x = (0.75*c1.x + 0.25*c2.x);
                                                 if(c1.x >= c2.x)
                                                 {
                                                     c1.x -= 40;
@@ -188,9 +194,10 @@ void MainWindow::paintEvent(QPaintEvent *e)
                                                 c1.y = 290 + (0.75*c1.y + 0.25*c2.y);
                                             }
 
-                                            if(g->out > RoboCop::Inputs && g->out <= RoboCop::MaxNodes)
+                                            // Calculate the position of cell 2
+                                            if(g->out > RoboCop::InputSize && g->out <= RoboCop::MaxNodes)
                                             {
-                                                c2.x = 200 + (0.25*c1.x + 0.75*c2.x);
+                                                c2.x = (0.25*c1.x + 0.75*c2.x);
                                                 if(c1.x >= c2.x)
                                                 {
                                                     c2.x += 40;
@@ -212,7 +219,7 @@ void MainWindow::paintEvent(QPaintEvent *e)
                                 foreach(int k, cells.keys())
                                 {
                                     Cell c = cells[k];
-                                    if(k > RoboCop::Inputs || c.value != 0)
+                                    if(k > RoboCop::InputSize || c.value != 0)
                                     {
                                         // BizHawk color format is 0xAARRGGBB
                                         quint64 opacity = 0xFF000000;
@@ -251,12 +258,12 @@ void MainWindow::paintEvent(QPaintEvent *e)
                                         if(cells.contains(g->into))
                                             c1 = cells[g->into];
                                         else
-                                            c1 = cells[RoboCop::Inputs];
+                                            c1 = cells[RoboCop::InputSize];
 
                                         if(cells.contains(g->out))
                                             c2 = cells[g->out];
                                         else
-                                            c2 = cells[RoboCop::Inputs];
+                                            c2 = cells[RoboCop::InputSize];
 
                                         quint64 opacity = 0xA0000000;
                                         if(c1.value == 0)

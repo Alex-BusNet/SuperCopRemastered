@@ -73,8 +73,8 @@ Genome *Genome::BasicGenome()
     return g;
 }
 
-bool lowToHighGene(Gene* a, Gene* b) { return a->out < b->out; }
-bool highToLowGene(Gene* a, Gene* b) { return a->out > b->out; }
+bool lowToHighGene(Gene* a, Gene* b) { return a->out > b->out; }
+bool highToLowGene(Gene* a, Gene* b) { return a->out < b->out; }
 
 void Genome::GenerateNetwork()
 {
@@ -94,7 +94,7 @@ void Genome::GenerateNetwork()
         net->neurons.insert(RoboCop::MaxNodes + i, new Neuron());
     }
     // Sort genes from lowest out to highest out
-    RoboCop::Quicksort(genes, 0, genes.size() - 1, highToLowGene);
+    RoboCop::Quicksort(genes, 0, genes.size() - 1, lowToHighGene);
 
     foreach(Gene *g, genes)
     {
@@ -106,7 +106,8 @@ void Genome::GenerateNetwork()
             }
 
             Neuron *neuron = net->neurons[g->out];
-            neuron->incoming[g->out] = g;
+            // Key was previously marked as g->out
+            neuron->incoming.insert(genes.indexOf(g), g);
 
             if(!net->neurons.contains(g->into))
             {
