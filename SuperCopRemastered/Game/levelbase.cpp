@@ -821,6 +821,9 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
                     x = (pos.x() / 70) % 18;
                     y = ((pos.y() / 70) % 10);
 
+                    if((y+1) < 10 && parsedView[y+1][x] == 0)
+                        y++;
+
                     if(y >= 0 && y < 10)
                         parsedView[y][x] = 3;
                 }
@@ -881,11 +884,14 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
             x = ((int)pos.x() / 70) % 18;
             y = ((int)pos.y() / 70) % 10;
 
+            if(x < 0) { x = 0; }
+
             if(y >= 0 && y < 10)
                 parsedView[y][x] = 2;
 
             if((y + 1) >= 0 && (y + 1) < 10)
                 parsedView[y+1][x] = 2;
+
         }
     }
 }
@@ -901,10 +907,10 @@ void LevelBase::ResetLevel(GameView *view)
             if(bb->isBonus() && bb->GetType() != BONUS)
             {
                 ((BonusBlock*)bb)->SetHits(1);
-
+                bb->SetType(levelFloor.at(0)->GetLevelType(), BONUS);
                 int idx = obstacles.indexOf(bb);
-                obstacles.at(idx)->SetType(levelFloor.at(0)->GetLevelType(), BONUS);
                 obstacleItems.at(idx)->setPixmap(*obstacles.at(idx)->GetTexture());
+                obstacleItems.at(idx)->setPos(bb->GetPosX(), bb->GetPosY());
             }
         }
     }

@@ -84,28 +84,17 @@ void Genome::GenerateNetwork()
     int i = 0;
     for(; i < RoboCop::Inputs; i++)
     {
-        net->neurons[i] = new Neuron();
+//        net->neurons[i] = new Neuron();
+        net->neurons.insert(i, new Neuron());
     }
 
     for(i = 0; i < RoboCop::Outputs; i++)
     {
-        net->neurons[RoboCop::MaxNodes + i] = new Neuron();
+//        net->neurons[RoboCop::MaxNodes + i] = new Neuron();
+        net->neurons.insert(RoboCop::MaxNodes + i, new Neuron());
     }
     // Sort genes from lowest out to highest out
     RoboCop::Quicksort(genes, 0, genes.size() - 1, highToLowGene);
-
-//    for(i = 0; i < genes.size(); i++)
-//    {
-//        for(int j = i+1; j < genes.size(); j++)
-//        {
-//            if(genes[i]->out > genes[j]->out)
-//            {
-//                Gene* g = genes[i];
-//                genes[i] = genes[j];
-//                genes[j] = g;
-//            }
-//        }
-//    }
 
     foreach(Gene *g, genes)
     {

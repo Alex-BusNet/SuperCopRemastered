@@ -160,6 +160,11 @@ void RoboCopHandler::ClearControls()
     SetControls(controls);
 }
 
+bool RoboCopHandler::isGameRunning()
+{
+    return gameRunning;
+}
+
 void RoboCopHandler::InitializeRun(bool playerDied)
 {
 //    qDebug() << "InitializeRun()";
@@ -171,7 +176,6 @@ void RoboCopHandler::InitializeRun(bool playerDied)
         emit NewSpecies(); // Send reset command back to RoboCop
 
     ClearControls();
-
     Species *s = pool->species[pool->GetCurrentSpecies()];
     Genome *g = s->genomes[pool->GetCurrentGenome()];
     g->GenerateNetwork();
@@ -198,7 +202,7 @@ void RoboCopHandler::InitializePool()
 
     InitializeRun(false);
 
-    //    qDebug() << "--Finished InitializePool()";
+//        qDebug() << "--Finished InitializePool()";
 }
 
 void RoboCopHandler::LevelReset()
@@ -216,7 +220,7 @@ void RoboCopHandler::ResetNN()
 
 void RoboCopHandler::SetInputs(int **in)
 {
-    qDebug() << "SetInputs()";
+//    qDebug() << "SetInputs()";
     for(int y = 0; y < 10; y++)
     {
         for(int x = 0; x < 18; x++)
@@ -248,7 +252,7 @@ void RoboCopHandler::SetInputs(int **in)
             }
         }
     }
-    qDebug() << "--Finished SetInputs()";
+//    qDebug() << "--Finished SetInputs()";
 }
 
 void RoboCopHandler::SetPosition(int x)

@@ -5,8 +5,8 @@
 
 namespace RoboCop
 {
-    static const QString ButtonNames[] = {"RIGHT", "LEFT", "JUMP", "SPRINT", "NONE"};
-    static const int BoxRadius = 6;                         //px, used for NN rendering
+    static const QString ButtonNames[] = {"JUMP", "SPRINT", "RIGHT", "LEFT", "NONE"};
+    static const int BoxRadius = 10;                         //px, used for NN rendering
     static int InputSize = (18*10);
     static int Inputs = InputSize + 1;
     static int Population = 300;

@@ -18,8 +18,7 @@ public:
 
     QMap<int, Neuron*> neurons;
 
-private:
-    float sigmoid(float val);
+    static float sigmoid(float val);
 };
 
 #endif // NETWORK_H

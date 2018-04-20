@@ -57,6 +57,7 @@ void Pool::RankGlobally()
         }
     }
 
+    qDebug() << "\tSorting genomes";
     // Sort genomes from lowest fitness to highest fitness
     RoboCop::Quicksort(globals, 0, globals.size() - 1, lowToHighGenome);
 
@@ -75,10 +76,10 @@ void Pool::RankGlobally()
 //            }
 //        }
 //    }
-
+    qDebug() << "\tSetting global rank";
     for(int i = 0; i < globals.size(); i++)
     {
-        globals[i]->SetGlobalRank(i+1);
+        globals.at(i)->SetGlobalRank(i);
     }
     qDebug() << "--Finished RankGlobally()";
 }

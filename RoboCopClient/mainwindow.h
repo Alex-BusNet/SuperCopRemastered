@@ -20,6 +20,9 @@ public:
     ~MainWindow();
     QString hostIP;
 
+    void paintEvent(QPaintEvent *e);
+
+
 private slots:
     void on_Connect_clicked();
     void Disconnected();

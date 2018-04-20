@@ -1,6 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <QPainter>
 
+typedef struct { int x; int y; float value; } Cell;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -43,7 +45,6 @@ MainWindow::MainWindow(QWidget *parent) :
             parsedView[y][x] = 0;
         }
     }
-
 }
 
 MainWindow::~MainWindow()
@@ -52,6 +53,233 @@ MainWindow::~MainWindow()
         rch->quit();
 
     delete ui;
+}
+
+void MainWindow::paintEvent(QPaintEvent *e)
+{
+    /*
+     * Draw the NN here.
+     */
+    if(socket->state() == QAbstractSocket::ConnectedState)
+    {
+        if(!this->paintingActive())
+        {
+            QPainter paint;
+            paint.begin(this);
+
+            paint.setPen(Qt::black);
+            // window height: 287px
+            paint.drawRect(10, 290, 18*10, 10*10);
+
+            if(rch->isRunning() && rch->isGameRunning())
+            {
+                Pool *p = rch->GetPool();
+                if(p != NULL && p->species.size() > p->GetCurrentSpecies())
+                {
+                    Species *s = p->species[p->GetCurrentSpecies()];
+                    if(s != NULL && s->genomes.size() > p->GetCurrentGenome())
+                    {
+                        Genome *gm = s->genomes[p->GetCurrentGenome()];
+                        if(gm != NULL && gm->network != NULL)
+                        {
+                            Network *net = gm->network;
+
+                            QMap<int, Cell> cells;
+
+                            int i = 0;
+                            if((net != NULL) && (net->neurons.size() > 0))
+                            {
+                                QList<int> neuronKeys = net->neurons.keys();
+                                // Generate a cell for every neuron.
+                                for(int dy = 0; dy < 10; dy++)
+                                {
+                                    for(int dx = 0; dx < 18; dx++)
+                                    {
+                                        if(i >= neuronKeys.size()) { break; }
+
+                                        Cell c;
+
+                                        c.x = 10 + 10 * dx;
+                                        c.y = 290 + 10 * dy;
+
+                                        c.value = net->neurons[neuronKeys.at(i)]->value;
+
+                                        if(!cells.contains(neuronKeys.at(i)))
+                                            cells.insert(neuronKeys.at(i), c);
+
+                                        i++;
+                                    }
+
+                                    if(i >= neuronKeys.size()) { break; }
+                                }
+
+                                // Generate the Bias neuron.
+                                Cell biasCell;
+                                biasCell.x = 180;
+                                biasCell.y = 400;
+
+                                if(net->neurons.contains(RoboCop::Inputs))
+                                    biasCell.value = net->neurons[RoboCop::Inputs]->value;
+                                else
+                                    biasCell.value = 1;
+
+                                cells.insert(RoboCop::Inputs, biasCell);
+
+                                // Generate the output neurons.
+                                for(int j = 0; j < RoboCop::Outputs; j++)
+                                {
+                                    Cell c;
+                                    c.x = 560;
+                                    c.y = 310 + (RoboCop::BoxRadius * j) + (j * 3);
+                                    if(net->neurons.contains(RoboCop::MaxNodes + j))
+                                        c.value = net->neurons[RoboCop::MaxNodes + j]->value;
+                                    else
+                                        c.value = 0;
+
+                                    if(!cells.contains(RoboCop::MaxNodes+j))
+                                        cells.insert(RoboCop::MaxNodes+j, c);
+                                    else
+                                        cells[RoboCop::MaxNodes+j] = c;
+
+                                    if(c.value > 0)
+                                        paint.setPen(Qt::blue);
+                                    else
+                                        paint.setPen(Qt::black);
+
+                                    // Draw the text for each button on screen.
+                                    paint.drawText(575, c.y + 10, RoboCop::ButtonNames[j]);
+                                }
+                                paint.setPen(Qt::black);
+
+                                for(int j = 0; j < 4; j++)
+                                {
+                                    foreach(Gene *g, gm->genes)
+                                    {
+                                        if(g->enabled)
+                                        {
+                                            Cell c1;
+                                            Cell c2;
+
+                                            if(cells.contains(g->into))
+                                                c1 = cells[g->into];
+
+                                            if(cells.contains(g->out))
+                                                c2 = cells[g->out];
+
+                                            if(g->into > RoboCop::Inputs && g->into <= RoboCop::MaxNodes)
+                                            {
+                                                c1.x = (0.75*c1.x + 0.25*c2.x);
+                                                if(c1.x >= c2.x)
+                                                {
+                                                    c1.x -= 40;
+                                                }
+
+                                                if(c1.x < 200)
+                                                    c1.x = 200;
+
+                                                if(c1.x > 560)
+                                                    c1.x = 560;
+
+                                                c1.y = 290 + (0.75*c1.y + 0.25*c2.y);
+                                            }
+
+                                            if(g->out > RoboCop::Inputs && g->out <= RoboCop::MaxNodes)
+                                            {
+                                                c2.x = (0.25*c1.x + 0.75*c2.x);
+                                                if(c1.x >= c2.x)
+                                                {
+                                                    c2.x += 40;
+                                                }
+
+                                                if(c2.x < 200)
+                                                    c2.x = 200;
+
+                                                if(c2.x > 560)
+                                                    c2.x = 560;
+
+                                                c2.y = 290 + (0.25*c1.y + 0.75*c2.y);
+                                            }
+                                        }
+                                    }
+                                }
+
+                                // Color and render the neurons.
+                                foreach(int k, cells.keys())
+                                {
+                                    Cell c = cells.value(k);
+                                    if(k > RoboCop::Inputs || c.value != 0)
+                                    {
+                                        // BizHawk color format is 0xAARRGGBB
+                                        quint64 opacity = 0xFF000000;
+                                        if(c.value == 0)
+                                        {
+                                            opacity = 0x50000000;
+                                        }
+
+                                        int colorVal = std::floor((c.value+1)/ 2.0f * 256);
+                                        if(colorVal > 255) { colorVal = 255; }
+                                        else if(colorVal < 0) { colorVal = 0; }
+                                        uint32_t colorOut = opacity + colorVal*0x1000 + colorVal*0x100 + colorVal;
+
+                                        QColor color(colorOut);
+
+                                        // Convert the 0xAARRGGBB format to 0xRRGGBBAA format
+                                        color.setAlpha((colorVal << 32) >> 24);
+                                        color.setRed((colorOut << 8) >> 24);
+                                        color.setGreen((colorOut << 16) >> 24);
+                                        color.setBlue((colorOut << 24) >> 24);
+
+                                        // Draw each cell on screen
+                                        QRect cRect(c.x, c.y, RoboCop::BoxRadius, RoboCop::BoxRadius);
+                                        paint.drawRect(cRect);
+                                        paint.fillRect(cRect, color);
+                                    }
+                                }
+
+                                // Draw the lines connecting neurons
+                                foreach(Gene *g, gm->genes)
+                                {
+                                    if(g->enabled)
+                                    {
+                                        Cell c1;
+                                        Cell c2;
+                                        if(cells.contains(g->into))
+                                            c1 = cells[g->into];
+
+                                        if(cells.contains(g->out))
+                                            c2 = cells[g->out];
+
+                                        quint64 opacity = 0xA0000000;
+                                        if(c1.value == 0)
+                                            opacity = 0x20000000;
+
+                                        uint32_t colorVal = 0x80 - std::floor(std::abs(Network::sigmoid(g->weight)) * 0x80);
+                                        if(g->weight > 0)
+                                            colorVal = opacity + 0x8000 + 0x10000*colorVal;
+                                        else
+                                            colorVal = opacity + 0x800000 + 0x100*colorVal;
+
+                                        QColor color(colorVal);
+
+                                        // Convert the 0xAARRGGBB format to 0xRRGGBBAA format
+                                        color.setAlpha((colorVal << 32) >> 24);
+                                        color.setRed((colorVal << 8) >> 24);
+                                        color.setGreen((colorVal << 16) >> 24);
+                                        color.setBlue((colorVal << 24) >> 24);
+
+                                        paint.setPen(QPen(QColor(colorVal)));
+                                        paint.drawLine(c1.x+5, c1.y+5, c2.x+5, c2.y+5);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            paint.end();
+        }
+    }
 }
 
 void MainWindow::on_Connect_clicked()
@@ -152,7 +380,6 @@ void MainWindow::readyRead()
     // String format: <Command>_<Data>;<Data>;...;__<Command>_<Data>;<Data>;...;
     // Splits the string into each command passed from RoboCop
     QStringList cmdSet = data.split("__");
-
     foreach(QString s, cmdSet)
     {
         // Splits each command set into the command and associated data
@@ -170,7 +397,7 @@ void MainWindow::readyRead()
         else if(command=="VisibleTerrain"){
 //            QString b = data.split("VisibleTerrain").last();
     //        qDebug() << "b: " << b;
-            qDebug() << "\tClearing parsedView";
+//            qDebug() << "\tClearing parsedView";
             for(int y = 0; y < 10; y++)
             {
                 for(int x = 0; x < 18; x++)
@@ -179,7 +406,7 @@ void MainWindow::readyRead()
                 }
             }
 
-            qDebug() << "\tSplitting data";
+//            qDebug() << "\tSplitting data";
             QStringList  pieces = subSet.last().split(";");
 //            qDebug() << "Pieces: " << pieces;
             //If the server is indicating the game has ended
@@ -196,7 +423,7 @@ void MainWindow::readyRead()
                 }
             }
 
-            qDebug() << "\tFormatting display string";
+//            qDebug() << "\tFormatting display string";
             QString disp = "";
             for(int y = 0; y < 10; y++)
             {
@@ -212,10 +439,10 @@ void MainWindow::readyRead()
                 disp=disp+"\n";
             }
             disp=disp+"\n\n\n";
-    //        qDebug() << "\tSetting display string";
+//            qDebug() << "\tSetting display string";
             ui->Log->setText(disp);
 
-    //        qDebug() << "\tDone";
+//            qDebug() << "\tDone";
 
             rch->SetInputs(parsedView);
             this->update();

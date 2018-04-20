@@ -45,6 +45,8 @@ public:
     void SetControls(QMap<QString, bool> cState);
     void ClearControls();
 
+    bool isGameRunning();
+
     Pool *GetPool();
     QVector<int> GetInputs();
     int GetPlayerPosX();
