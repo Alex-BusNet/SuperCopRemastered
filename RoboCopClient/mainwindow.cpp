@@ -174,7 +174,7 @@ void MainWindow::paintEvent(QPaintEvent *e)
                                             if(cells.contains(g->out))
                                                 c2 = cells[g->out];
                                             else
-                                                c1 = cells[RoboCop::InputSize];
+                                                c2 = cells[RoboCop::MaxNodes];
 
                                             // Calculate the position of cell 1
                                             if(g->into > RoboCop::InputSize && g->into <= RoboCop::MaxNodes)
@@ -263,7 +263,7 @@ void MainWindow::paintEvent(QPaintEvent *e)
                                         if(cells.contains(g->out))
                                             c2 = cells[g->out];
                                         else
-                                            c2 = cells[RoboCop::InputSize];
+                                            c2 = cells[RoboCop::MaxNodes];
 
                                         quint64 opacity = 0xA0000000;
                                         if(c1.value == 0)
