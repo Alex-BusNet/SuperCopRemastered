@@ -30,7 +30,8 @@
     <normaloff>Assets/UI/RC_NEAT_Icon.png</normaloff>Assets/UI/RC_NEAT_Icon.png</iconset>
   </property>
   <property name="styleSheet">
-   <string notr="true">QMainWindow { background-color: rgb(130, 130, 130); }</string>
+   <string notr="true">QMainWindow {  }
+background-color: rgb(223, 223, 223);</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QWidget" name="horizontalLayoutWidget_5">

@@ -909,6 +909,7 @@ void LevelBase::ResetLevel(GameView *view)
                 ((BonusBlock*)bb)->SetHits(1);
                 bb->SetType(levelFloor.at(0)->GetLevelType(), BONUS);
                 int idx = obstacles.indexOf(bb);
+                qDebug() << "Bonus ids: " << idx;
                 obstacleItems.at(idx)->setPixmap(*obstacles.at(idx)->GetTexture());
                 obstacleItems.at(idx)->setPos(bb->GetPosX(), bb->GetPosY());
             }
