@@ -74,10 +74,10 @@ void MainWindow::paintEvent(QPaintEvent *e)
             if(rch->isRunning() && rch->isGameRunning())
             {
                 Pool *p = rch->GetPool();
-                if(p != NULL && p->species.size() > p->GetCurrentSpecies())
+                if(p != NULL && (p->species.size() > p->GetCurrentSpecies()))
                 {
                     Species *s = p->species[p->GetCurrentSpecies()];
-                    if(s != NULL && s->genomes.size() > p->GetCurrentGenome())
+                    if(s != NULL && (s->genomes.size() > p->GetCurrentGenome()))
                     {
                         Genome *gm = s->genomes[p->GetCurrentGenome()];
                         if(gm != NULL && gm->network != NULL)
@@ -90,7 +90,7 @@ void MainWindow::paintEvent(QPaintEvent *e)
                             if((net != NULL) && (net->neurons.size() > 0))
                             {
                                 QList<int> neuronKeys = net->neurons.keys();
-                                // Generate a cell for every neuron.
+                                // Generate a cell for every input.
                                 for(int dy = 0; dy < 10; dy++)
                                 {
                                     for(int dx = 0; dx < 18; dx++)
@@ -106,6 +106,8 @@ void MainWindow::paintEvent(QPaintEvent *e)
 
                                         if(!cells.contains(neuronKeys.at(i)))
                                             cells.insert(neuronKeys.at(i), c);
+                                        else
+                                            cells[neuronKeys.at(i)] = c;
 
                                         i++;
                                     }
@@ -156,8 +158,21 @@ void MainWindow::paintEvent(QPaintEvent *e)
                                 }
                                 paint.setPen(Qt::black);
 
-//                                for(int j = 0; j < 4; j++)
-//                                {
+                                // Add the network neurons.
+                                foreach(int k, net->neurons.keys())
+                                {
+                                    if(k > RoboCop::InputSize && k < RoboCop::MaxNodes)
+                                    {
+                                        Cell c;
+                                        c.x = 200;
+                                        c.y = 290;
+                                        c.value = net->neurons[k]->value;
+                                        cells.insert(k, c);
+                                    }
+                                }
+
+                                for(int j = 0; j < 4; j++)
+                                {
                                     // Calculate the position of each cell on the screen (four times?)
                                     foreach(Gene *g, gm->genes)
                                     {
@@ -169,7 +184,7 @@ void MainWindow::paintEvent(QPaintEvent *e)
                                             if(cells.contains(g->into))
                                                 c1 = cells[g->into];
                                             else
-                                                c1 = cells[RoboCop::InputSize];
+                                                c1 = cells[RoboCop::Inputs];
 
                                             if(cells.contains(g->out))
                                                 c2 = cells[g->out];
@@ -177,12 +192,12 @@ void MainWindow::paintEvent(QPaintEvent *e)
                                                 c2 = cells[RoboCop::MaxNodes];
 
                                             // Calculate the position of cell 1
-                                            if(g->into > RoboCop::InputSize && g->into <= RoboCop::MaxNodes)
+                                            if(g->into > RoboCop::Inputs && g->into < RoboCop::MaxNodes)
                                             {
                                                 c1.x = (0.75*c1.x + 0.25*c2.x);
                                                 if(c1.x >= c2.x)
                                                 {
-                                                    c1.x -= 40;
+                                                    c1.x -= 15;
                                                 }
 
                                                 if(c1.x < 200)
@@ -191,16 +206,21 @@ void MainWindow::paintEvent(QPaintEvent *e)
                                                 if(c1.x > 560)
                                                     c1.x = 560;
 
-                                                c1.y = 290 + (0.75*c1.y + 0.25*c2.y);
-                                            }
+                                                c1.y = (0.75*c1.y + 0.25*c2.y);
 
+                                                if(c1.y > 400)
+                                                    c1.y = 400;
+
+                                                if(cells.contains(g->into))
+                                                    cells[g->into] = c1;
+                                            }
                                             // Calculate the position of cell 2
-                                            if(g->out > RoboCop::InputSize && g->out <= RoboCop::MaxNodes)
+                                            if(g->out > RoboCop::Inputs && g->out < RoboCop::MaxNodes)
                                             {
                                                 c2.x = (0.25*c1.x + 0.75*c2.x);
                                                 if(c1.x >= c2.x)
                                                 {
-                                                    c2.x += 40;
+                                                    c2.x += 15;
                                                 }
 
                                                 if(c2.x < 200)
@@ -209,11 +229,17 @@ void MainWindow::paintEvent(QPaintEvent *e)
                                                 if(c2.x > 560)
                                                     c2.x = 560;
 
-                                                c2.y = 290 + (0.25*c1.y + 0.75*c2.y);
+                                                c2.y = (0.25*c1.y + 0.75*c2.y);
+
+                                                if(c2.y > 400)
+                                                    c2.y = 400;
+
+                                                if(cells.contains(g->out))
+                                                    cells[g->out] = c2;
                                             }
                                         }
                                     }
-//                                }
+                                }
 
                                 // Color and render the neurons.
                                 foreach(int k, cells.keys())
@@ -243,8 +269,8 @@ void MainWindow::paintEvent(QPaintEvent *e)
 
                                         // Draw each cell on screen
                                         QRect cRect(c.x, c.y, RoboCop::BoxRadius, RoboCop::BoxRadius);
-                                        paint.drawRect(cRect);
                                         paint.fillRect(cRect, color);
+                                        paint.drawRect(cRect);
                                     }
                                 }
 
@@ -258,7 +284,7 @@ void MainWindow::paintEvent(QPaintEvent *e)
                                         if(cells.contains(g->into))
                                             c1 = cells[g->into];
                                         else
-                                            c1 = cells[RoboCop::InputSize];
+                                            c1 = cells[RoboCop::Inputs];
 
                                         if(cells.contains(g->out))
                                             c2 = cells[g->out];
@@ -385,7 +411,6 @@ void MainWindow::Disconnected()
 void MainWindow::readyRead()
 {//Triggered anytime the server sends data
     //Reads Socket Data sent by the server
-//    qDebug() << "\tReadyRead()";
     QString data;
     data = socket->readAll();
     //qDebug()<<data;
@@ -432,7 +457,7 @@ void MainWindow::readyRead()
                 {
                     QStringList arraySet = pieces.at(i).split(":");
 //                    qDebug()<<"test "<<arraySet.length()<<" "<<pieces.at(i);
-    //                qDebug() << arraySet.at(1) << " " << arraySet.at(2) << " " << arraySet.at(0);
+//                    qDebug() << arraySet.at(1) << " " << arraySet.at(2) << " " << arraySet.at(0);
                     int x = arraySet.at(2).toInt();
                     int y = arraySet.at(1).toInt();
                     parsedView[y][x] = arraySet.at(0).toInt();

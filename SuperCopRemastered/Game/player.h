@@ -99,6 +99,8 @@ public:
     void SetVictory();
     void SetOnObstactle(bool onObs, int obsY);
 
+    QPointF GetMiddle();
+
     void SetLevelType(LevelType lt);
 
     int GetPosX();

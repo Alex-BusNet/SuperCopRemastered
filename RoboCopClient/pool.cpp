@@ -42,8 +42,8 @@ float Pool::TotalAverageFitness()
 }
 
 // highToLowGenome() and lowToHighGenome() are passed as condition parameters to RoboCop::Quicksort()
-bool highToLowGenome(Genome *a, Genome *b) { return a->GetFitness() < b->GetFitness(); }
-bool lowToHighGenome(Genome *a, Genome *b) { return a->GetFitness() > b->GetFitness(); }
+bool highToLowGenome(Genome *a, Genome *b) { if(a == NULL || b == NULL) { return false; } return a->GetFitness() < b->GetFitness(); }
+bool lowToHighGenome(Genome *a, Genome *b) { if(a == NULL || b == NULL) { return false; } return a->GetFitness() > b->GetFitness(); }
 
 void Pool::RankGlobally()
 {
@@ -57,30 +57,18 @@ void Pool::RankGlobally()
         }
     }
 
-    qDebug() << "\tSorting genomes";
+    qDebug() << "\tSorting genomes" << globals.size();
+
     // Sort genomes from lowest fitness to highest fitness
-    RoboCop::Quicksort(globals, 0, globals.size() - 1, lowToHighGenome);
+    if(globals.size() > 1)
+        RoboCop::Quicksort(globals, 0, globals.size() - 1, lowToHighGenome);
 
-//    for(int i = 0; i < globals.size(); i++)
-//    {
-//        for(int j = i+1; j < globals.size(); j++)
-//        {
-//            Genome* a = globals[i];
-//            Genome* b = globals[j];
-
-//            if(a->GetFitness() > b->GetFitness())
-//            {
-//                Genome* temp = a;
-//                a = b;
-//                b = temp;
-//            }
-//        }
-//    }
     qDebug() << "\tSetting global rank";
     for(int i = 0; i < globals.size(); i++)
     {
         globals.at(i)->SetGlobalRank(i);
     }
+
     qDebug() << "--Finished RankGlobally()";
 }
 
@@ -164,21 +152,6 @@ void Pool::CullSpecies(bool cutToOne)
         {
             // Sort the genomes within Species, s, from most fit to least fit
             RoboCop::Quicksort(s->genomes, 0, s->genomes.size() - 1, highToLowGenome);
-//            for(int i = 0; i < s->genomes.size(); i++)
-//            {
-//                for(int j = i+1; j < s->genomes.size(); j++)
-//                {
-//                    Genome* a = s->genomes[i];
-//                    Genome* b = s->genomes[j];
-
-//                    if(a->GetFitness() < b->GetFitness())
-//                    {
-//                        Genome *temp = a;
-//                        a = b;
-//                        b = temp;
-//                    }
-//                }
-//            }
 
             int remaining = std::ceil((s->genomes.size() + 1) / 2.0f);
             if(cutToOne) { remaining = 1; }
@@ -202,24 +175,6 @@ void Pool::RemoveStaleSpecies()
         {
             // Sort species from most fit to least fit
             RoboCop::Quicksort(s->genomes, 0, s->genomes.size() - 1, highToLowGenome);
-
-//            for(int i = 0; i < s->genomes.size(); i++)
-//            {
-//                for(int j = i+1; j < s->genomes.size(); j++)
-//                {
-//                    Genome *a = s->genomes[i];
-//                    Genome *b = s->genomes[j];
-
-//                    if(a->GetFitness() < b->GetFitness())
-//                    {
-//                        Genome *temp = a;
-//                        a = b;
-//                        b = temp;
-//                    }
-//                }
-//            }
-
-//            qDebug() << s->genomes[0]->GetFitness() << s->GetTopFitness() << maxFitness << s->GetStaleness() << RoboCop::StaleSpecies;
 
             if(s->genomes[0]->GetFitness() > s->GetTopFitness())
             {
@@ -298,12 +253,17 @@ void Pool::AddToSpecies(Genome *child)
     bool foundSpecies = false;
     foreach(Species *s, species)
     {
-        if(!foundSpecies && s->genomes[0]->SameSpecies(*child, innovation-1))
+        if(s->genomes.size() > 0)
         {
-            s->genomes.push_back(child);
-            foundSpecies = true;
-            break;
+            if(!foundSpecies && s->genomes[0]->SameSpecies(*child, innovation-1))
+            {
+                s->genomes.push_back(child);
+                foundSpecies = true;
+                break;
+            }
         }
+        else
+            break;
     }
 
     if(!foundSpecies)

@@ -340,12 +340,9 @@ void robocoprmgame::GameOver(bool endOfLevel)
 {
     if(!endOfLevel)
     {
-//        QMessageBox *gameOverBox = new QMessageBox();
-//        gameOverBox->setText("YOU LOSE!");
-//        gameOverBox->exec();
-//        delete gameOverBox;
-        qDebug() << "Player died..";
-//        lb->ClearView(view);
+        if(showDevOpts)
+            qDebug() << "Player died..";
+
         lb->ResetLevel(view);
         InitLevel(true);
         player->Reset();
@@ -626,39 +623,10 @@ void robocoprmgame::readyRead()
     if(buttonStates.contains("Reset"))
     {
         lb->ResetLevel(view);
-//        lb->ClearView(view);
         InitLevel(true);
         player->Reset();
         view->ensureVisible(player->GetViewPixmap(), 200, 70);
     }
-//    else
-//    {
-//        // Manual controls from NN controller
-//        qDebug() << "Player has sent" << data ;
-//        if(data=="JUMP"){
-//            //actionInput(Qt::Key_Up);
-//            keyPressEvent(Qt::Key_Up);
-//        }
-//        else if(data=="LEFT"){
-//            //actionInput(Qt::Key_Left);
-//            keyPressEvent(Qt::Key_Left);
-//        }
-//        else if(data=="RIGHT"){
-//            //actionInput(Qt::Key_Right);
-//            keyPressEvent(Qt::Key_Right);
-//        }
-//        else if(data=="SPRINT")
-//        {
-//            isSprintPressed = !isSprintPressed;
-//        }
-//        else if(data=="NONE"){
-//            //actionInput(Qt::Key_Down);
-//            //keyPressEvent(Qt::Key_Down);
-//            keyReleaseEvent(Qt::Key_Down);
-//            //keyReleaseEvent(Qt::Key_Left);
-//            //keyReleaseEvent(Qt::Key_Right);
-//        }
-//    }
 
     //ui->Log->setText(ui->Log->toPlainText()+data+'\n');
     //qDebug() << "log it" ;

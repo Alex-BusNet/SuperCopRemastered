@@ -29,6 +29,7 @@ public:
     int GetYDim();
     int GetRightEdge();
     Size GetSize();
+    QPointF GetMiddle();
 
     bool isBonus();
 

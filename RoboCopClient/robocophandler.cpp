@@ -176,11 +176,24 @@ void RoboCopHandler::InitializeRun(bool playerDied)
         emit NewSpecies(); // Send reset command back to RoboCop
 
     ClearControls();
-    Species *s = pool->species[pool->GetCurrentSpecies()];
-    Genome *g = s->genomes[pool->GetCurrentGenome()];
-    g->GenerateNetwork();
-//    pool->species[pool->GetCurrentSpecies()]->genomes[pool->GetCurrentGenome()]->GenerateNetwork();
-    EvaluateCurrent();
+    if(pool->GetCurrentSpecies() < pool->species.size())
+    {
+        Species *s = pool->species[pool->GetCurrentSpecies()];
+        if(pool->GetCurrentGenome() < s->genomes.size())
+        {
+            Genome *g = s->genomes[pool->GetCurrentGenome()];
+            g->GenerateNetwork();
+            EvaluateCurrent();
+        }
+        else
+        {
+            qDebug() << "\tGenome not valid";
+        }
+    }
+    else
+    {
+        qDebug() << "\tSpecies Not valid";
+    }
 //    qDebug() << "--Finished InitializeRun()";
 }
 
@@ -225,7 +238,7 @@ void RoboCopHandler::SetInputs(int **in)
     {
         for(int x = 0; x < 18; x++)
         {
-//            qDebug() << ((y*18) + x);
+            qDebug() << ((y*18) + x);
             // Don't add the player location to the inputs vector
             if(inputs.size() <= ((y * 18) + x))
             {
@@ -242,11 +255,11 @@ void RoboCopHandler::SetInputs(int **in)
             {
                 // Don't add the player location to the inputs vector
                 if(in[y][x] == 2)
-                    inputs.replace((y*18)+x, 0);
+                    inputs.replace((y * 18) + x, 0);
                 else if (in[y][x] == 3)
-                    inputs.replace((y*18)+x, -1);
+                    inputs.replace((y * 18) + x, -1);
                 else if(in[y][x] > 1)
-                    inputs.replace((y * 18)+x, 1);
+                    inputs.replace((y * 18) + x, 1);
                 else
                     inputs.replace((y * 18) + x, in[y][x]);
             }
@@ -362,17 +375,24 @@ void RoboCopHandler::LoadFile(QString filename)
         {
             QJsonDocument doc = QJsonDocument::fromJson(saveState.readAll());
             QJsonObject obj = doc.object();
+            if(pool == NULL)
+                pool = new Pool();
+
             pool->LoadPool(obj);
+
+            saveState.flush();
+            saveState.close();
+
+            while(pool->FitnessAlreadyMeasured())
+            {
+                pool->NextGenome();
+            }
+
+            InitializeRun(false);
+            pool->SetCurrentFrame(pool->GetCurrentFrame() + 1);
         }
     }
 
-    while(pool->FitnessAlreadyMeasured())
-    {
-        pool->NextGenome();
-    }
-
-    InitializeRun(false);
-    pool->SetCurrentFrame(pool->GetCurrentFrame() + 1);
 }
 
 void RoboCopHandler::FrameUpdated()

@@ -96,10 +96,11 @@ Size Player::getSize()
 
 void Player::drawPlayer(QPainter &painter, bool devMode)
 {
-    painter.setPen(QPen(Qt::white));
+    painter.setPen(QPen(Qt::black));
 
     if(devMode)
     {
+        // Displays various bits of info about the player.
         painter.drawText(20, 70, QString("Player last state: %1").arg(PlayerStateStrings[lastState]));
         painter.drawText(20, 80, QString("Player state: %1").arg(PlayerStateStrings[pState]));
         painter.drawText(20, 90, QString("Player next state: %1").arg(PlayerStateStrings[nextState]));
@@ -113,12 +114,13 @@ void Player::drawPlayer(QPainter &painter, bool devMode)
         painter.drawText(20, 170, QString("Should player spring: %1").arg(shouldPlayerSprint));
         painter.drawText(20, 180, QString("Last jump height: %1").arg(lastHeight));
         painter.drawText(20, 190, QString("Player Pos Y: %2").arg(posY));
-    }
 
-    painter.drawText(950, 70, QString( "[A]\t= Move Left"));
-    painter.drawText(950, 80, QString( "[D]\t= Move Right"));
-    painter.drawText(950, 90, QString( "[W]\t= JUMP"));
-    painter.drawText(950, 100, QString("[LShift]\t= Sprint"));
+        // Draws the Controls in the upper right hand corner.
+        painter.drawText(1050, 70, QString( "[A]\t= Move Left"));
+        painter.drawText(1050, 80, QString( "[D]\t= Move Right"));
+        painter.drawText(1050, 90, QString( "[W]\t= JUMP"));
+        painter.drawText(1050, 100, QString("[LShift]\t= Sprint"));
+    }
 
 }//Draws the player
 
@@ -529,24 +531,6 @@ void Player::slide()
             pState = IDLE;
         }
     }
-//    else
-//    {
-//        posY += (40 * GRAVITY_FACTOR);
-//        rectPosY += (40 * GRAVITY_FACTOR);
-
-//        changeImage(fallImagePath.arg((playerDirection == WEST) ? "Left" : "Right").arg(frame));
-
-//        if((posY + size.y) >= ground && !inGap)
-//        {
-//            this->setPosY(ground - 89);
-//            rectPosY = ground - 89;
-//            lastState = FALLING;
-//            pState = IDLE;
-//            speedX = PLAYER_INITIAL_X_VELOCITY;
-//            jumping = false;
-//            onGround = true;
-//        }
-//    }
 }
 
 
@@ -795,6 +779,11 @@ void Player::SetOnObstactle(bool onObs, int obsY)
 //        jumping = true;
 //        speedX = PLAYER_FALLING_X_VELOCITY;
     }
+}
+
+QPointF Player::GetMiddle()
+{
+    playerBB->rect().center();
 }
 
 int Player::GetPixmapX()

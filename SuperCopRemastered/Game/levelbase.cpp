@@ -71,8 +71,8 @@ void LevelBase::LoadLevel(int levelNum, GameView *view, bool devMode)
                         floorItems.push_back(view->addPixmap(*(levelFloor.last()->GetTexture())));
                         floorItems.last()->setPos(xPos * 70, floorHeight - (yPos * 70));
 
-                        if(devMode)
-                        {
+//                        if(devMode)
+//                        {
                             QGraphicsTextItem *i = view->addText(QString("%1").arg(floorItems.size() / 7));
                             i->setPos((xPos * 70) + 30, floorHeight - (yPos * 70) + 30);
 
@@ -80,7 +80,7 @@ void LevelBase::LoadLevel(int levelNum, GameView *view, bool devMode)
                                 i->setDefaultTextColor(Qt::black);
                             else
                                 i->setDefaultTextColor(Qt::white);
-                        }
+//                        }
 
                         // This loop is used to fill in the scene underneath the floor.
                         for(int k = 0; k < 6; k++)
@@ -111,7 +111,7 @@ void LevelBase::LoadLevel(int levelNum, GameView *view, bool devMode)
 
                     foreach(BlockBase *bb, levelFloor)
                     {
-                        if(bb->GetBoundingBox() != NULL && (bb->GetType() != INTERNAL_BLOCK || bb->GetType() != FLOOR_COVERED_CORNER_LEFT || bb->GetType() != FLOOR_COVERED_CORNER_RIGHT))
+                        if(bb->GetBoundingBox() != NULL && (bb->GetType() != INTERNAL_BLOCK && bb->GetType() != FLOOR_COVERED_CORNER_LEFT && bb->GetType() != FLOOR_COVERED_CORNER_RIGHT))
                         {
                             QPen pen;
 
@@ -267,13 +267,13 @@ void LevelBase::LoadLevel(int levelNum, GameView *view, bool devMode)
 
 //    if(devMode)
 //    {
-//        // Draw Vertical lines
+        // Draw Vertical lines
 //        for(int i = 0; i < levelFloor.size() / 7; i++)
 //        {
 //            view->addLine((i * 70), 0, (i * 70), view->height());
 //        }
 
-//        // Draw Horizontal lines
+        // Draw Horizontal lines
 //        for(int i = 0; i < 16; i++)
 //        {
 //            view->addLine(0, (i * 70) - 20, ((levelFloor.size() / 7) * 70), (i * 70));
@@ -300,20 +300,21 @@ void LevelBase::drawLevelBase(QPainter &painter, bool devMode)
 
         if(enemies.at(0) != NULL)
             enemies.at(0)->DrawEnemy(painter);
-    }
 
-    // Renders the parsed view array on screen
-    int x = 0, y = 0;
-    for(y = 0; y < 10; y++)
-    {
-        for(x = 0; x < 18; x++)
+
+        // Renders the parsed view array on screen
+        int x = 0, y = 0;
+        for(y = 0; y < 10; y++)
         {
-            if(parsedView[y][x] != 0)
-                painter.drawText((15 * x) + 215, (15 * y) + 50, QString(" %1 ").arg(parsedView[y][x]));
+            for(x = 0; x < 18; x++)
+            {
+                if(parsedView[y][x] != 0)
+                    painter.drawText((15 * x) + 215, (15 * y) + 50, QString(" %1 ").arg(parsedView[y][x]));
+            }
         }
-    }
 
-    painter.drawRect(210, 45, (15*18) + 5, (10*15) + 5);
+        painter.drawRect(210, 45, (15*18) + 5, (10*15) + 5);
+    }
 
 }
 
@@ -744,6 +745,7 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
         if(idx != -1)
         {
             QPoint pos = view->mapFromScene(obstacles.at(idx)->GetPosX(), obstacles.at(idx)->GetPosY());
+
             if(pos.x() >= 0 && pos.x() <= view->width()&& pos.y() >= 0 && pos.y() <= view->height())
             {
                 x = (pos.x() / 70) % 18;
@@ -783,7 +785,7 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
         {
             QPoint pos = view->mapFromScene(levelFloor.at(idx)->GetPosX(), levelFloor.at(idx)->GetPosY());
 
-            if(pos.x() >= 0 && pos.x() <= view->width()&& pos.y() >= 0 && pos.y() <= view->height())
+            if(pos.x() >= 0 && pos.x() <= view->width() && pos.y() >= 0 && pos.y() <= view->height())
             {
                 x = (pos.x() / 70) % 18;
                 y = ((pos.y() / 70) % 10) + 1;
@@ -812,7 +814,7 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
         if(enemies.at(enemyItems.indexOf(item)) != NULL)
         {
             int idx = enemyItems.indexOf(item);
-            if(idx != -1)
+            if(idx != -1 && enemies.at(idx)->isEnabled())
             {
                 QPoint pos = view->mapFromScene(enemies.at(idx)->GetPosX(), enemies.at(idx)->GetPosY());
 
@@ -881,6 +883,7 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
 
         if(pos.x() >= 0 && pos.x() <= view->width() && pos.y() >= 0 && pos.y() <= view->height())
         {
+            // Center the player's x position relative to the player
             x = ((int)pos.x() / 70) % 18;
             y = ((int)pos.y() / 70) % 10;
 
@@ -903,13 +906,12 @@ void LevelBase::ResetLevel(GameView *view)
     {
         if(bb != NULL)
         {
-            // Only reset the block if is a BonusBlock, and its type has changed
-            if(bb->isBonus() && bb->GetType() != BONUS)
+            // Only reset the block if is a BonusBlock
+            if(bb->isBonus())
             {
                 ((BonusBlock*)bb)->SetHits(1);
-                bb->SetType(levelFloor.at(0)->GetLevelType(), BONUS);
+                bb->SetType(NO_LEVEL_TYPE, BONUS);
                 int idx = obstacles.indexOf(bb);
-                qDebug() << "Bonus ids: " << idx;
                 obstacleItems.at(idx)->setPixmap(*obstacles.at(idx)->GetTexture());
                 obstacleItems.at(idx)->setPos(bb->GetPosX(), bb->GetPosY());
             }
@@ -961,6 +963,8 @@ void LevelBase::ResetLevel(GameView *view)
             eb->Toggle();
         }
     }
+
+    nullHolder->ensureVisible(0,0,5,5,1,1);
 
     qDebug() << "--Done";
 }

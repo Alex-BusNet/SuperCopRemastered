@@ -183,6 +183,19 @@ int EnemyBase::GetRightEdge()
     return posX + enemySize.x;
 }
 
+Size EnemyBase::GetSize()
+{
+    return enemySize;
+}
+
+QPoint EnemyBase::GetMiddle()
+{
+    QPoint pt;
+    pt.setX(this->posX + (this->enemySize.x / 2));
+    pt.setY(this->posY + (this->enemySize.y / 2));
+    return pt;
+}
+
 bool EnemyBase::isEnabled()
 {
     return this->enabled;

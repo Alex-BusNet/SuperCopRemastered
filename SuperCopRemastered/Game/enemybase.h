@@ -32,6 +32,8 @@ public:
     int GetPosX();
     int GetPosY();
     int GetRightEdge();
+    Size GetSize();
+    QPoint GetMiddle();
 
     bool isEnabled();
 

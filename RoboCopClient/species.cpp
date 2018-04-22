@@ -71,7 +71,7 @@ Genome *Species::BreedChild(int innovationSize)
         Genome *g1 = genomes[rand() % genomes.size()];
         Genome *g2 = genomes[rand() % genomes.size()];
 
-        child = g1->Crossover(g2, innovationSize);
+        child = Genome::Crossover(g1, g2, innovationSize);
     }
     else
     {

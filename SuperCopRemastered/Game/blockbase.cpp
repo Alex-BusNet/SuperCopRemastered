@@ -137,6 +137,16 @@ Size BlockBase::GetSize()
     return blockSize;
 }
 
+QPointF BlockBase::GetMiddle()
+{
+    QPointF pt1 = leftBB->rect().center();
+    QPointF pt2 = rightBB->rect().center();
+    QPointF pt3;
+    pt3.setX(pt1.x() + ((pt2.x() - pt1.x()) / 2.0f));
+    pt3.setY(pt1.y());
+    return pt3;
+}
+
 bool BlockBase::isBonus()
 {
     return bonusType;

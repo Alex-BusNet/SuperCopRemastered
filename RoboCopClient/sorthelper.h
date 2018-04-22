@@ -9,24 +9,29 @@ namespace RoboCop
     template<class T>
     static int Partition(QVector<T*> &arr, int p, int r, bool (*condition)(T*, T*))
     {
-        T* pivot = arr[r];
-        int i = p - 1;
-        for(int j = p; j < r; j++)
+        if(p < r && r < arr.size())
         {
-            if((*condition)(arr[j], pivot))
+            T* pivot = arr[r];
+            int i = p - 1;
+            for(int j = p; j < r; j++)
             {
-                i++;
-                T* temp;
-                temp = arr[i];
-                arr[i] = arr[j];
-                arr[j] = temp;
+                if((*condition)(arr[j], pivot))
+                {
+                    i++;
+                    T* temp;
+                    temp = arr[i];
+                    arr[i] = arr[j];
+                    arr[j] = temp;
+                }
             }
+
+            arr[r] = arr[i + 1];
+            arr[i + 1] = pivot;
+
+            return i+1;
         }
-
-        arr[r] = arr[i + 1];
-        arr[i + 1] = pivot;
-
-        return i+1;
+        else
+            return p;
     }
 
     template<class T>
