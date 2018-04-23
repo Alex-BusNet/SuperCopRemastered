@@ -11,6 +11,9 @@ RoboCopHandler::RoboCopHandler()
     gameRunning = false;
     reset = false;
     playerPosX = 0;
+    playerPosY = 520;
+    prevY = 520;
+    hasJumped=false;
     rightmost = 0;
 
     srand(time(0));
@@ -74,11 +77,15 @@ void RoboCopHandler::GameLoop()
 
             SetControls(controls);
 
-            if (playerPosX > rightmost)
+            if (playerPosX > rightmost || playerPosY < prevY)
             {
                 rightmost = playerPosX;
 //                qDebug() << "Player greater than rightmost";
                 timeout = RoboCop::TimeoutConstant;
+                if(playerPosY < 520){
+                    hasJumped = true;
+                }
+                prevY = playerPosY;
             }
 
             timeout--;
@@ -91,7 +98,16 @@ void RoboCopHandler::GameLoop()
             {
                 if(reset) { reset = false; }
 
-                float fitness = (float)rightmost - (float)pool->GetCurrentFrame() / 2.0f;
+                float fitness;
+                if(playerPosX <= 210){
+                    fitness = -9001.0f;
+                }
+                else{
+                    fitness = (float)rightmost - (float)pool->GetCurrentFrame() / 2.0f;
+                }
+                if(hasJumped){
+                    fitness = fitness + 100;
+                }
 
                 if(rightmost > (70 * 205)) // Need to check what rightmost max should be
                     fitness += 1000;
@@ -122,7 +138,14 @@ void RoboCopHandler::GameLoop()
             emit SpeciesUpdate(pool->GetCurrentSpecies(), pool->species.size());
             emit GenomeUpdate(pool->GetCurrentGenome());
             emit GenerationUpdate(pool->GetGeneration());
-            emit FitnessUpdate(std::floor((float)rightmost - (float)pool->GetCurrentFrame() / 2.0f - (timeout + timeoutBonus) * 2.0f / 3.0f));
+            float fitcalc=std::floor((float)rightmost - (float)pool->GetCurrentFrame() / 2.0f - (timeout + timeoutBonus) * 2.0f / 3.0f);
+            if(playerPosX <= 210){
+                fitcalc = -9001;
+            }
+            if(hasJumped){
+                fitcalc = fitcalc + 100;
+            }
+            emit FitnessUpdate(fitcalc);
             emit MaxFitnessUpdate(std::floor(pool->GetMaxFitness()));
             emit timeoutval(timeout + timeoutBonus);
 
@@ -171,7 +194,9 @@ void RoboCopHandler::InitializeRun(bool playerDied)
     pool->SetCurrentFrame(0);
     rightmost = 0;
     timeout = RoboCop::TimeoutConstant;
-
+    hasJumped = false;
+    prevY = 520;
+    playerPosY = 500;
     if(!playerDied)
         emit NewSpecies(); // Send reset command back to RoboCop
 
@@ -265,10 +290,15 @@ void RoboCopHandler::SetInputs(int **in)
             }
         }
     }
-//    qDebug() << "--Finished SetInputs()";
+    //    qDebug() << "--Finished SetInputs()";
 }
 
-void RoboCopHandler::SetPosition(int x)
+void RoboCopHandler::SetPositionY(int y)
+{
+    this->playerPosY = y;
+}
+
+void RoboCopHandler::SetPositionX(int x)
 {
 //    qDebug() << "SetPositions()";
     this->playerPosX = x;
@@ -324,6 +354,12 @@ int RoboCopHandler::GetPlayerPosX()
 {
 //    qDebug() << "GetPlayerPosX()";
     return playerPosX;
+}
+
+int RoboCopHandler::GetPlayerPosY()
+{
+//    qDebug() << "GetPlayerPosX()";
+    return playerPosY;
 }
 
 int RoboCopHandler::GetRightMost()

@@ -275,6 +275,8 @@ void robocoprmgame::updateField()
         {
             QByteArray arr;
             arr.append("NextFrame_");
+            arr.append(QString::number(player->GetPosY()));
+            arr.append("_");
             arr.append(QString::number(player->GetPosX()));
             arr.append("__");
             socket->write(arr);

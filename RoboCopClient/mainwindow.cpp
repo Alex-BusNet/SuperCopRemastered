@@ -496,7 +496,8 @@ void MainWindow::readyRead()
         else if(command == "NextFrame")
         {
             rch->FrameUpdated();
-            rch->SetPosition(subSet.last().toInt());
+            rch->SetPositionY(subSet.at(1).toInt());
+            rch->SetPositionX(subSet.last().toInt());
         }
     }
 }

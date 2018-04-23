@@ -37,7 +37,8 @@ public:
     void ResetNN();
 
     void SetInputs(int **in);
-    void SetPosition(int x);
+    void SetPositionX(int x);
+    void SetPositionY(int y);
 
     void EvaluateCurrent();
     void RankGlobally();
@@ -50,6 +51,7 @@ public:
     Pool *GetPool();
     QVector<int> GetInputs();
     int GetPlayerPosX();
+    int GetPlayerPosY();
     int GetRightMost();
     int GetTimeout();
     QMap<QString, bool> GetControls();
@@ -66,6 +68,9 @@ private:
     Pool *pool;
     QVector<int> inputs;
     int playerPosX;
+    int playerPosY;
+    int prevY;
+    bool hasJumped;
     int rightmost = 0;
     float timeout;
 
