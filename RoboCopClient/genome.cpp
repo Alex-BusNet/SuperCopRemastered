@@ -551,7 +551,7 @@ void Genome::LoadGenome(const QJsonObject &obj)
         QJsonObject gObj = arr.at(i).toObject();
         Gene *g = new Gene();
         g->LoadGene(gObj);
-        arr.push_back(gObj);
+        genes.push_back(g);
     }
 }
 /**
