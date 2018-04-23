@@ -289,7 +289,7 @@ void Player::UpdatePlayer(GameView *view)
 void Player::UpdateFrame()
 {
     if(pState != VICTORY)
-        if(framePerSecondCount % 3 == 0)
+        if(framePerSecondCount % 5 == 0)
             frame++;
 
     if(pState == JUMPING)
