@@ -497,7 +497,7 @@ Genome* Genome::Crossover(Genome *first, Genome *other, int innovationSize)
         Gene* g1 = first->genes[i];
         Gene* g2 = innovations2.contains(g1->innovation) ? innovations2[g1->innovation] : NULL;
 
-        int p = (RoboCop::randomi() % 2) + 1;
+        int p = (RoboCop::randomi() % 2);
 
         if(g2 != NULL && p == 1 && g2->enabled)
             child->genes.push_back(new Gene(*g2));

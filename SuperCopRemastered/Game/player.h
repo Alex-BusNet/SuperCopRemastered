@@ -19,14 +19,17 @@
 #define FALLING_FRAME_COUNT       1 // Old anim: 4
 #define VICTORY_FRAME_COUNT       5
 
-#define PLAYER_INITIAL_X_VELOCITY 1.0f
-#define PLAYER_WALK_VELOCITY      7.0f
-#define PLAYER_MAX_X_VELOCITY     15.0f
+#define FRAME_RATE_INT            60
+#define FRAME_RATE_FLOAT          60.0f
+
+#define PLAYER_INITIAL_X_VELOCITY 1.0f  * (60.0f / FRAME_RATE_FLOAT)
+#define PLAYER_WALK_VELOCITY      7.0f  * (60.0f / FRAME_RATE_FLOAT)
+#define PLAYER_MAX_X_VELOCITY     15.0f * (60.0f / FRAME_RATE_FLOAT)
 
 // Used for drifting
 // X px per update; is only used when drifting
-#define PLAYER_FALLING_X_VELOCITY 7.0f
-#define PLAYER_X_PX_PER_UPDATE    9.0f
+#define PLAYER_FALLING_X_VELOCITY 7.0f * (60.0f / FRAME_RATE_FLOAT)
+#define PLAYER_X_PX_PER_UPDATE    9.0f * (60.0f / FRAME_RATE_FLOAT)
 #define PLAYER_IDLE_VELOCITY      0.0f
 // Used with sliding. Currently disabled
 #define COEFF_OF_FRICTION         0.5f
@@ -39,12 +42,12 @@
 #define PLAYER_MID_Y_VELOCITY     18.182f
 // Max Vy is for Max jump height (holding jump button)
 #define PLAYER_MAX_Y_VELOCITY     22.0f
-#define PLAYER_Y_PX_PER_UPDATE    9.0f
+#define PLAYER_Y_PX_PER_UPDATE    9.0f * (60.0f / FRAME_RATE_FLOAT)
 
 // Pixels per unit where 1 unit is a single block
 #define UNIT_SCALE_FACTOR         70.0f
 // Minimum units player should jump before falling.
-#define MIN_JUMP_HEIGHT           2.4f
+#define MIN_JUMP_HEIGHT           2.4f * (60.0f / FRAME_RATE_FLOAT)
 #define MID_JUMP_HEIGHT
 // Gravity is in px/s^2 where 70px = 1 unit
 #define GRAVITY_FACTOR            44.0f//3080.0f

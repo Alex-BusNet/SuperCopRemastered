@@ -71,8 +71,8 @@ void LevelBase::LoadLevel(int levelNum, GameView *view, bool devMode)
                         floorItems.push_back(view->addPixmap(*(levelFloor.last()->GetTexture())));
                         floorItems.last()->setPos(xPos * 70, floorHeight - (yPos * 70));
 
-//                        if(devMode)
-//                        {
+                        if(devMode)
+                        {
                             QGraphicsTextItem *i = view->addText(QString("%1").arg(floorItems.size() / 7));
                             i->setPos((xPos * 70) + 30, floorHeight - (yPos * 70) + 30);
 
@@ -80,7 +80,7 @@ void LevelBase::LoadLevel(int levelNum, GameView *view, bool devMode)
                                 i->setDefaultTextColor(Qt::black);
                             else
                                 i->setDefaultTextColor(Qt::white);
-//                        }
+                        }
 
                         // This loop is used to fill in the scene underneath the floor.
                         for(int k = 0; k < 6; k++)

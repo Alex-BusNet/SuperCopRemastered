@@ -289,7 +289,7 @@ void Player::UpdatePlayer(GameView *view)
 void Player::UpdateFrame()
 {
     if(pState != VICTORY)
-        if(framePerSecondCount % 5 == 0)
+        if(framePerSecondCount % 3 == 0)
             frame++;
 
     if(pState == JUMPING)
@@ -321,7 +321,7 @@ void Player::UpdateFrame()
 void Player::playerAction(uint8_t action, bool sprint, bool bonusHit)
 {
     framePerSecondCount++;
-    if(framePerSecondCount > 60) framePerSecondCount = 0;
+    if(framePerSecondCount > FRAME_RATE_INT) framePerSecondCount = 0;
 
     if(pState != VICTORY)
     {
@@ -467,8 +467,8 @@ void Player::jump()
         QString dir = (playerDirection == EAST) ? "Right" : "Left";
 
         int currentFrame = framePerSecondCount;
-        if(currentFrame < jumpStart) { currentFrame += 60; }
-        float frameDelta = ((float)(currentFrame - jumpStart)) / 60.0f;
+        if(currentFrame < jumpStart) { currentFrame += FRAME_RATE_INT; }
+        float frameDelta = ((float)(currentFrame - jumpStart)) / FRAME_RATE_FLOAT;
 
         float height = UNIT_SCALE_FACTOR * ((speedY * frameDelta) - (std::pow(frameDelta, 2.0f) * GRAVITY_FACTOR * 0.5f));
         heightDelta = height - lastHeight;

@@ -137,7 +137,7 @@ void MainWindow::paintEvent(QPaintEvent *e)
                                 {
                                     Cell c;
                                     c.x = 560;
-                                    c.y = 310 + (RoboCop::BoxRadius * j) + (j * 3);
+                                    c.y = 310 + (RoboCop::BoxRadius * j) + (j * 15);
                                     if(net->neurons.contains(RoboCop::MaxNodes + j))
                                         c.value = net->neurons[RoboCop::MaxNodes + j]->value;
                                     else

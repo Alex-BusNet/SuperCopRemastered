@@ -33,7 +33,7 @@ namespace RoboCop
     static const float DisableMutationChance = 0.40f;        // Chance to disable a node
     static const float EnableMutationChance = 0.20f;         // Chance to enable a node
     static const long MaxNodes = 100000L;                   // Max number of nodes to create. WARNING: DO NOT ENTER A VALUE OVER 100000. System may slow down.
-    static const float TimeoutConstant = 30.0f; // frames
+    static const float TimeoutConstant = 60.0f; // frames
 
 
     static std::random_device rd;

@@ -72,7 +72,7 @@ robocoprmgame::robocoprmgame(QWidget *parent, bool industrialGraphics) :
         qDebug() << "Creating Timers...";
 
     timer = new QTimer();
-    timer->setInterval(1000/60);
+    timer->setInterval(1000/60); // Frame rate timer.
     connect(timer, &QTimer::timeout, this, &robocoprmgame::updateField);
 
     keyTimer = new QTimer();
@@ -130,7 +130,7 @@ robocoprmgame::robocoprmgame(QWidget *parent, bool industrialGraphics) :
     connect(server, SIGNAL(newConnection()), this, SLOT(newConnect()));
 
     sTimer = new QTimer();
-    sTimer->setInterval(100);
+    sTimer->setInterval(1000/60); // Server timer.
     connect(sTimer, SIGNAL(timeout()), this, SLOT(sendVisibleTerrain()));
     sTimer->start();
 
