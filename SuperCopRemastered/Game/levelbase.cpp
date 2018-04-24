@@ -19,7 +19,7 @@ LevelBase::LevelBase(int width, int height)
     // Clear the parsedView array
     for(y = 0; y < 10; y++)
     {
-        for(x = 0; x < 18; x++)
+        for(x = 0; x < 15; x++)
         {
             parsedView[y][x] = 0;
         }
@@ -730,13 +730,36 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
     // Clear the parsedView array
     for(y = 0; y < 10; y++)
     {
-        for(x = 0; x < 18; x++)
+        for(x = 0; x < 15; x++)
         {
             parsedView[y][x] = 0;
         }
     }
 
     x = y = 0;
+    int pBlockX = 7, pBlockY = 4;
+    // Set the player's location in the array.
+    if(p != NULL)
+    {
+        QPoint pos = view->mapFromScene(p->GetPosX(), p->GetPosY());
+
+//        if(pos.x() >= 0 && pos.x() <= view->width() && pos.y() >= 0 && pos.y() <= view->height())
+//        {
+            pBlockX = (pos.x() / 70) + 1;
+//            x = pBlockX % 15;
+            pBlockY = (pos.y() / 70);
+//            y = pBlockY % 10;
+
+//            if(x < 0) { x = 0; }
+
+//            if(y >= 0 && y < 10)
+                parsedView[4][7] = 2;
+
+//            if((y + 1) >= 0 && (y + 1) < 10)
+                parsedView[5][7] = 2;
+
+//        }
+    }
 
     // Set the position of any obstacles visible to the player
     foreach(QGraphicsPixmapItem* item, obstacleItems)
@@ -745,11 +768,23 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
         if(idx != -1)
         {
             QPoint pos = view->mapFromScene(obstacles.at(idx)->GetPosX(), obstacles.at(idx)->GetPosY());
+            int blockX = pos.x() / 70;
+            int blockY = pos.y() / 70;
 
-            if(pos.x() >= 0 && pos.x() <= view->width()&& pos.y() >= 0 && pos.y() <= view->height())
+//            if(pos.x() >= 0 && pos.x() <= view->width()&& pos.y() >= 0 && pos.y() <= view->height())
+            if((blockX >= (pBlockX - 7)) && (blockX <= (pBlockX + 7)) && (blockY >= (pBlockY - 4)) && (blockY <= (pBlockY + 5)))
             {
-                x = (pos.x() / 70) % 18;
-                y = ((pos.y() / 70) % 10) + 1;
+                if(blockX <= pBlockX)
+                    x = 7 - (pBlockX - blockX);
+                else
+                    x = 7 + (blockX - pBlockX);
+
+//                x = blockX % 15;
+                if(blockY <= pBlockY)
+                    y = 5 - (pBlockY - blockY);
+                else
+                    y = 5 + (blockY - pBlockY);
+//                y = blockY % 10/* + 1*/;
 
                 if(y >= 0 && y < 10)
                 {
@@ -772,7 +807,8 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
             //       (Not that any one will actually notice the improvement), but is
             //       reduced near the end of the level since the time complexity of the
             //       loop becomes O(n)
-            if(pos.x() >= view->width())
+            //            if(pos.x() > view->width())
+            if(blockX > (pBlockX + 7))
                 break;
         }
     }
@@ -784,15 +820,27 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
         if(idx != -1)
         {
             QPoint pos = view->mapFromScene(levelFloor.at(idx)->GetPosX(), levelFloor.at(idx)->GetPosY());
+            int blockX = pos.x() / 70;
+            int blockY = pos.y() / 70;
 
-            if(pos.x() >= 0 && pos.x() <= view->width() && pos.y() >= 0 && pos.y() <= view->height())
+//            if(pos.x() >= 0 && pos.x() <= view->width()&& pos.y() >= 0 && pos.y() <= view->height())
+            if((blockX >= (pBlockX - 7)) && (blockX <= (pBlockX + 7)) && (blockY >= (pBlockY - 4)) && (blockY <= (pBlockY + 5)))
             {
-                x = (pos.x() / 70) % 18;
-                y = ((pos.y() / 70) % 10) + 1;
+                if(blockX <= pBlockX)
+                    x = 7- (pBlockX - blockX);
+                else
+                    x = 7 + (blockX - pBlockX);
+
+//                x = blockX % 15;
+                if(blockY <= pBlockY)
+                    y = 4 - (pBlockY - blockY);
+                else
+                    y = 5 + (blockY - pBlockY);
+//                y = blockY % 10/* + 1*/;
 
                 if(y >= 0 && y < 10)
                 {
-                    if(levelFloor.at(idx)->GetType() != NO_BLOCK_TYPE && levelFloor.at(idx)->GetType() != GAP_BLOCK)
+                    if(levelFloor.at(idx)->GetType() != NO_BLOCK_TYPE && levelFloor.at(idx)->GetType() != GAP_BLOCK && levelFloor.at(idx)->GetType() != INTERNAL_BLOCK && levelFloor.at(idx)->GetType() != FLOOR_COVERED_CORNER_LEFT && levelFloor.at(idx)->GetType() != FLOOR_COVERED_CORNER_RIGHT)
                         parsedView[y][x] = 1;
                 }
             }
@@ -803,7 +851,8 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
             //       (Not that any one will actually notice the improvement), but is
             //       reduced near the end of the level since the time complexity of the
             //       loop becomes O(n)
-            if(pos.x() > view->width())
+//            if(pos.x() > view->width())
+            if(blockX > (pBlockX + 7))
                 break;
         }
     }
@@ -817,11 +866,23 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
             if(idx != -1 && enemies.at(idx)->isEnabled())
             {
                 QPoint pos = view->mapFromScene(enemies.at(idx)->GetPosX(), enemies.at(idx)->GetPosY());
+                int blockX = pos.x() / 70;
+                int blockY = pos.y() / 70;
 
-                if(pos.x() >= 0 && pos.x() <= view->width() && pos.y() >= 0 && pos.y() <= view->height())
+    //            if(pos.x() >= 0 && pos.x() <= view->width()&& pos.y() >= 0 && pos.y() <= view->height())
+                if((blockX >= (pBlockX - 7)) && (blockX <= (pBlockX + 7)) && (blockY >= (pBlockY - 4)) && (blockY <= (pBlockY + 5)))
                 {
-                    x = (pos.x() / 70) % 18;
-                    y = ((pos.y() / 70) % 10);
+                    if(blockX <= pBlockX)
+                        x = 7- (pBlockX - blockX);
+                    else
+                        x = 7 + (blockX - pBlockX);
+
+    //                x = blockX % 15;
+                    if(blockY <= pBlockY)
+                        y = 4 - (pBlockY - blockY);
+                    else
+                        y = 5 + (blockY - pBlockY);
+    //                y = blockY % 10/* + 1*/;
 
                     if((y+1) < 10 && parsedView[y+1][x] == 0)
                         y++;
@@ -836,7 +897,8 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
                 //       (Not that any one will actually notice the improvement), but is
                 //       reduced near the end of the level since the time complexity of the
                 //       loop becomes O(n)
-                if(pos.x() > view->width())
+//                if(pos.x() > view->width())
+                if(blockX > (pBlockX + 7))
                     break;
             }
         }
@@ -853,11 +915,23 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
                 if(idx != -1)
                 {
                     QPoint pos = view->mapFromScene(donuts.at(idx)->GetPosX(), donuts.at(idx)->GetPosY());
+                    int blockX = pos.x() / 70;
+                    int blockY = pos.y() / 70;
 
-                    if(pos.x() >= 0 && pos.x() <= view->width() && pos.y() >= 0 && pos.y() <= view->height())
+        //            if(pos.x() >= 0 && pos.x() <= view->width()&& pos.y() >= 0 && pos.y() <= view->height())
+                    if((blockX >= (pBlockX - 7)) && (blockX <= (pBlockX + 7)) && (blockY >= (pBlockY - 4)) && (blockY <= (pBlockY + 5)))
                     {
-                        x = (pos.x() / 70) % 18;
-                        y = ((pos.y() / 70) % 10) + 1;
+                        if(blockX <= pBlockX)
+                            x = 7 - (pBlockX - blockX);
+                        else
+                            x = 7 + (blockX - pBlockX);
+
+        //                x = blockX % 15;
+                        if(blockY <= pBlockY)
+                            y = 4 - (pBlockY - blockY);
+                        else
+                            y = 5 + (blockY - pBlockY);
+        //                y = blockY % 10/* + 1*/;
 
                         if(y >= 0 && y < 10)
                             parsedView[y][x] = 4;
@@ -869,34 +943,15 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
                     //       (Not that anywould will actually notice the improvement), but is
                     //       reduced near the end of the level since the time complexity of the
                     //       loop becomes O(n)
-                    if(pos.x() > view->width())
+                    //            if(pos.x() > view->width())
+                    if(blockX > (pBlockX + 7))
                         break;
                 }
             }
         }
     }
 
-    // Set the player's location in the array.
-    if(p != NULL)
-    {
-        QPoint pos = view->mapFromScene(p->GetPosX(), p->GetPosY());
 
-        if(pos.x() >= 0 && pos.x() <= view->width() && pos.y() >= 0 && pos.y() <= view->height())
-        {
-            // Center the player's x position relative to the player
-            x = ((int)pos.x() / 70) % 18;
-            y = ((int)pos.y() / 70) % 10;
-
-            if(x < 0) { x = 0; }
-
-            if(y >= 0 && y < 10)
-                parsedView[y][x] = 2;
-
-            if((y + 1) >= 0 && (y + 1) < 10)
-                parsedView[y+1][x] = 2;
-
-        }
-    }
 }
 
 void LevelBase::ResetLevel(GameView *view)

@@ -86,7 +86,7 @@ private:
     bool updateStatus;
 
     QPoint playerStart;
-    int parsedView[10][18]; // [y][x]
+    int parsedView[10][15]; // [y][x]
 
 signals:
     void EnemyDefeated(int value);

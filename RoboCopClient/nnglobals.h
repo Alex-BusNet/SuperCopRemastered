@@ -9,7 +9,7 @@ namespace RoboCop
 //    static const QString ButtonNames[] = {"JUMP", "SPRINT", "RIGHT", "LEFT", "NONE"};
     static const QString ButtonNames[] = {"JUMP", "RIGHT", "NONE"};
     static const int BoxRadius = 10;                        // px, used for NN rendering
-    static int InputSize = (18*10);                     // Gives a range of indecies from 0 - 179 (180 items) when used in < condition,
+    static int InputSize = (15*10);                     // Gives a range of indecies from 0 - 179 (180 items) when used in < condition,
                                                             // 0 - 180 (181 items) when used in <= condition.
     static int Inputs = InputSize + 1;                      // Add 1 for the bias node. Gives indecies 0 - 180 (181 items) when used in < condition,
                                                             // 0 - 181 (182 items) when used in <= condition.

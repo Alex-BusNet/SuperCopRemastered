@@ -277,11 +277,11 @@ void RoboCopHandler::SetInputs(int **in)
 //    qDebug() << "SetInputs()";
     for(int y = 0; y < 10; y++)
     {
-        for(int x = 0; x < 18; x++)
+        for(int x = 0; x < 15; x++)
         {
 //            qDebug() << ((y*18) + x);
             // Don't add the player location to the inputs vector
-            if(inputs.size() <= ((y * 18) + x))
+            if(inputs.size() <= ((y * 15) + x))
             {
                 if(in[y][x] == 2)
                     inputs.push_back(0);
@@ -296,13 +296,13 @@ void RoboCopHandler::SetInputs(int **in)
             {
                 // Don't add the player location to the inputs vector
                 if(in[y][x] == 2)
-                    inputs.replace((y * 18) + x, 0);
+                    inputs.replace((y * 15) + x, 0);
                 else if (in[y][x] == 3 || in[y][x] == 4)
-                    inputs.replace((y * 18) + x, -1);
+                    inputs.replace((y * 15) + x, -1);
                 else if(in[y][x] > 1)
-                    inputs.replace((y * 18) + x, 1);
+                    inputs.replace((y * 15) + x, 1);
                 else
-                    inputs.replace((y * 18) + x, in[y][x]);
+                    inputs.replace((y * 15) + x, in[y][x]);
             }
         }
     }

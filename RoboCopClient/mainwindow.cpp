@@ -39,8 +39,8 @@ MainWindow::MainWindow(QWidget *parent) :
     parsedView = new int *[10];
     for(int y = 0; y < 10; y++)
     {
-        parsedView[y] = new int[18];
-        for(int x = 0; x < 18; x++)
+        parsedView[y] = new int[15];
+        for(int x = 0; x < 15; x++)
         {
             parsedView[y][x] = 0;
         }
@@ -69,7 +69,7 @@ void MainWindow::paintEvent(QPaintEvent *e)
 
             paint.setPen(Qt::black);
             // window height: 287px
-            paint.drawRect(10, 290, 18*10, 10*10);
+            paint.drawRect(10, 290, 15 *10, 10*10);
 
             if(rch->isRunning() && rch->isGameRunning())
             {
@@ -93,7 +93,7 @@ void MainWindow::paintEvent(QPaintEvent *e)
                                 // Generate a cell for every input.
                                 for(int dy = 0; dy < 10; dy++)
                                 {
-                                    for(int dx = 0; dx < 18; dx++)
+                                    for(int dx = 0; dx < 15; dx++)
                                     {
                                         if(i >= neuronKeys.size()) { break; }
 
@@ -164,7 +164,7 @@ void MainWindow::paintEvent(QPaintEvent *e)
                                     if(k > RoboCop::InputSize && k < RoboCop::MaxNodes)
                                     {
                                         Cell c;
-                                        c.x = 200;
+                                        c.x = 170;
                                         c.y = 290;
                                         c.value = net->neurons[k]->value;
                                         cells.insert(k, c);
@@ -200,8 +200,8 @@ void MainWindow::paintEvent(QPaintEvent *e)
                                                     c1.x -= 15;
                                                 }
 
-                                                if(c1.x < 200)
-                                                    c1.x = 200;
+                                                if(c1.x < 170)
+                                                    c1.x = 170;
 
                                                 if(c1.x > 560)
                                                     c1.x = 560;
@@ -223,8 +223,8 @@ void MainWindow::paintEvent(QPaintEvent *e)
                                                     c2.x += 15;
                                                 }
 
-                                                if(c2.x < 200)
-                                                    c2.x = 200;
+                                                if(c2.x < 170)
+                                                    c2.x = 170;
 
                                                 if(c2.x > 560)
                                                     c2.x = 560;
@@ -313,6 +313,10 @@ void MainWindow::paintEvent(QPaintEvent *e)
                                         paint.drawLine(c1.x+5, c1.y+5, c2.x+5, c2.y+5);
                                     }
                                 }
+
+                                paint.setPen(Qt::red);
+                                paint.drawLine(80, 330, 80, 350);
+                                paint.setPen(Qt::black);
                             }
                         }
                     }
@@ -431,7 +435,7 @@ void MainWindow::readyRead()
 //            qDebug() << "\tClearing parsedView";
             for(int y = 0; y < 10; y++)
             {
-                for(int x = 0; x < 18; x++)
+                for(int x = 0; x < 15; x++)
                 {
                     parsedView[y][x] = 0;
                 }
@@ -458,7 +462,7 @@ void MainWindow::readyRead()
             QString disp = "";
             for(int y = 0; y < 10; y++)
             {
-                for(int x = 0; x < 18; x++)
+                for(int x = 0; x < 15; x++)
                 {
                     if(parsedView[y][x] != 0){
                         disp=disp+" "+QString::number(parsedView[y][x]);
