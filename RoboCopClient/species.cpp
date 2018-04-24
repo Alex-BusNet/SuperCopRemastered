@@ -75,7 +75,7 @@ Genome *Species::BreedChild(int innovationSize)
     }
     else
     {
-        Genome *g = genomes[rand() % genomes.size()];
+        Genome *g = genomes[rand() % (int)(std::ceil(genomes.size() / 2.0f))];
         child = new Genome(*g);
     }
 

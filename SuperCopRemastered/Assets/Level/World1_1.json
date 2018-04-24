@@ -2287,14 +2287,6 @@
 	{
 		"blockdefinitions": [
 			{
-			"unitX": 23,
-			"unitY": 1,
-			"enemytype":0,
-			"direction": 1,
-			"leftbound": 16,
-			"rightbound": 29
-			},
-			{
 			"unitX": 43,
 			"unitY": 1,
 			"enemytype":0,

@@ -17,7 +17,7 @@ MainWindow::MainWindow(QWidget *parent) :
     qRegisterMetaType<uint8_t>("uint8_t");
 
     rch = RoboCopHandler::instance();
-    ui->resetNNPB->setEnabled(false);
+    ui->resetNNPB->setEnabled(true);
     ui->saveNNPb->setEnabled(false);
     ui->loadNNPb->setEnabled(false);
 
@@ -356,14 +356,9 @@ void MainWindow::on_Connect_clicked()
 
             ui->Connect->setText("Disconnect");
 
-//            ui->Jump->setEnabled(false);
-//            ui->Left->setEnabled(false);
-//            ui->Right->setEnabled(false);
-//            ui->Stop->setEnabled(false);
-
-            ui->resetNNPB->setEnabled(true);
+            ui->resetNNPB->setEnabled(false);
             ui->saveNNPb->setEnabled(true);
-            ui->loadNNPb->setEnabled(true);
+            ui->loadNNPb->setEnabled(false);
         }
     }
     else
@@ -371,14 +366,9 @@ void MainWindow::on_Connect_clicked()
         Disconnected();
         ui->Connect->setText("Connect");
 
-//        ui->Jump->setEnabled(true);
-//        ui->Left->setEnabled(true);
-//        ui->Right->setEnabled(true);
-//        ui->Stop->setEnabled(true);
-
-        ui->resetNNPB->setEnabled(false);
+        ui->resetNNPB->setEnabled(true);
         ui->saveNNPb->setEnabled(false);
-        ui->loadNNPb->setEnabled(false);
+        ui->loadNNPb->setEnabled(true);
 
         if(rch->isRunning())
             rch->exit();

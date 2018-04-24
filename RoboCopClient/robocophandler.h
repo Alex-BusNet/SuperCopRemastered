@@ -71,7 +71,7 @@ private:
     int playerPosY;
     int prevY;
     bool hasJumped;
-    int rightmost = 0;
+    int rightmost = 0, heightMax;
     float timeout;
 
     bool frameUpdate, gameRunning, reset;
