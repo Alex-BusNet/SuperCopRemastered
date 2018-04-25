@@ -411,7 +411,7 @@ void Player::playerAction(uint8_t action, bool sprint, bool bonusHit)
         else
         {
             // Ensures minimum jump height
-            if(pState == JUMPING && (lastHeight > (MIN_JUMP_HEIGHT * UNIT_SCALE_FACTOR)))
+            if(pState == JUMPING && (lastHeight > (MAX_JUMP_HEIGHT * UNIT_SCALE_FACTOR)))
             {
                 qDebug() << "Min jump reached";
                 pState = FALLING;
@@ -421,7 +421,7 @@ void Player::playerAction(uint8_t action, bool sprint, bool bonusHit)
 
         if((action & 0b1111) == 0b0000) // Are no keys pressed?
         {
-            if (pState == JUMPING && (lastHeight > (MIN_JUMP_HEIGHT * UNIT_SCALE_FACTOR)))
+            if (pState == JUMPING && (lastHeight > (MAX_JUMP_HEIGHT * UNIT_SCALE_FACTOR)))
             {
                 qDebug() << "Idle min jump reached";
                 nextState = IDLE;

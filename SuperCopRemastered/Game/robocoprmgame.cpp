@@ -307,7 +307,7 @@ void robocoprmgame::exitGame()
 
 void robocoprmgame::actionInput(Qt::Key key)
 {
-//    qDebug() << "Action Input";
+    qDebug() << "Action Input";
 //    switch(key)
 //    {
 //    case Qt::Key_Left:
@@ -602,6 +602,7 @@ void robocoprmgame::Disconnected()
     socket->disconnectFromHost();
     qDebug() <<" Disconnected";
     gamePaused = true;
+    lb->ResetLevel(view);
     exit->show();
 }
 

@@ -664,9 +664,6 @@ void MainWindow::on_resetNNPB_clicked()
     {
         rch->ResetNN();
     }
-
-    if(socket != NULL && socket->isOpen())
-        ResetLevel();
 }
 
 void MainWindow::on_saveNNPb_clicked()

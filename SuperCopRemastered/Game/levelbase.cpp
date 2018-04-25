@@ -822,7 +822,7 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
 
                 if(y >= 0 && y < 10)
                 {
-                    if(levelFloor.at(idx)->GetType() != NO_BLOCK_TYPE && levelFloor.at(idx)->GetType() != GAP_BLOCK && levelFloor.at(idx)->GetType() != INTERNAL_BLOCK && levelFloor.at(idx)->GetType() != FLOOR_COVERED_CORNER_LEFT && levelFloor.at(idx)->GetType() != FLOOR_COVERED_CORNER_RIGHT)
+                    if(levelFloor.at(idx)->GetType() != NO_BLOCK_TYPE && levelFloor.at(idx)->GetType() != GAP_BLOCK && levelFloor.at(idx)->GetType() != INTERNAL_BLOCK /*&& levelFloor.at(idx)->GetType() != FLOOR_COVERED_CORNER_LEFT && levelFloor.at(idx)->GetType() != FLOOR_COVERED_CORNER_RIGHT*/)
                         parsedView[y][x] = 1;
                 }
             }

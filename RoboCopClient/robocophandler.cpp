@@ -103,7 +103,7 @@ void RoboCopHandler::GameLoop()
 
             emit resetStat(reset);
 
-            if((timeout /*+ timeoutBonus*/ <= 0) || reset)
+            if((timeout + timeoutBonus <= 0) || reset)
             {
                 if(reset) { reset = false; }
 
@@ -145,13 +145,13 @@ void RoboCopHandler::GameLoop()
             emit SpeciesUpdate(pool->GetCurrentSpecies(), pool->species.size());
             emit GenomeUpdate(pool->GetCurrentGenome());
             emit GenerationUpdate(pool->GetGeneration());
-            float fitcalc=std::floor((float)rightmost + (float)heightMax - (float)pool->GetCurrentFrame() / 2.0f - (timeout /*+ timeoutBonus*/) * 2.0f / 3.0f);
+            float fitcalc=std::floor((float)rightmost + (float)heightMax - (float)pool->GetCurrentFrame() / 2.0f - (timeout + timeoutBonus) * 2.0f / 3.0f);
             if(playerPosX <= 0){
                 fitcalc = 0;//-9001;
             }
             emit FitnessUpdate(fitcalc);
             emit MaxFitnessUpdate(std::floor(pool->GetMaxFitness()));
-            emit timeoutval(timeout/* + timeoutBonus*/);
+            emit timeoutval(timeout + timeoutBonus);
 
             //--------------------------
 
