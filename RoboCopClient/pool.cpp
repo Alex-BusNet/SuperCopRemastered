@@ -75,15 +75,18 @@ void Pool::RankGlobally()
 void Pool::NextGenome()
 {
 //    qDebug() << "NextGenome()";
-    currentGenome++;
-    if(currentGenome > (species[currentSpecies]->genomes.size() - 1))
+    if(!victory)
     {
-        currentGenome = 0;
-        currentSpecies++;
-        if(currentSpecies > (species.size() - 1))
+        currentGenome++;
+        if(currentGenome > (species[currentSpecies]->genomes.size() - 1))
         {
-            NewGeneration();
-            currentSpecies = 0;
+            currentGenome = 0;
+            currentSpecies++;
+            if(currentSpecies > (species.size() - 1))
+            {
+                NewGeneration();
+                currentSpecies = 0;
+            }
         }
     }
 
@@ -245,6 +248,16 @@ bool Pool::FitnessAlreadyMeasured()
     Genome *g = s->genomes[currentGenome];
 //    qDebug() << "--Finished FitnessAlreadyMeasured()";
     return g->GetFitness() != 0;
+}
+
+void Pool::SetVictory()
+{
+    victory = true;
+}
+
+void Pool::ClearVictory()
+{
+    victory = false;
 }
 
 void Pool::AddToSpecies(Genome *child)

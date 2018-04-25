@@ -356,6 +356,9 @@ void robocoprmgame::GameOver(bool endOfLevel)
     else
     {
         // Victory Stuff goes here.
+        QByteArray outData;
+        outData.append("Victory__");
+        socket->write(outData);
         paused->setText(QString("YOU WIN!"));
         gameOver = true;
         player->SetVictory();

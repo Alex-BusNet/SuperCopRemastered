@@ -35,6 +35,9 @@ public:
 
     void LevelReset();
     void ResetNN();
+    void PlayTop();
+
+    void SetVictory();
 
     void SetInputs(int **in);
     void SetPositionX(int x);
@@ -71,6 +74,7 @@ private:
     int playerPosY;
     int prevY;
     bool hasJumped;
+    bool victory;
     int rightmost = 0, heightMax;
     float timeout;
 

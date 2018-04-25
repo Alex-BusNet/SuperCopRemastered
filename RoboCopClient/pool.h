@@ -29,12 +29,13 @@ public:
     void RemoveWeakSpecies();
 
     void SetCurrentFrame(int frame);
-
     void SetMaxFitness(int mf);
     void SetCurrentSpecies(int cs);
     void SetCurrentGenome(int gm);
 
     bool FitnessAlreadyMeasured();
+    void SetVictory();
+    void ClearVictory();
 
     QVector<Species*> species;
 
@@ -55,6 +56,8 @@ private:
     int currentGenome;
     int currentFrame;
     int maxFitness;
+
+    bool victory;
 
     void SaveFile(QString filename);
     void LoadFile(QString filename);

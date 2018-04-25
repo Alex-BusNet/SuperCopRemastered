@@ -48,6 +48,7 @@ RoboCopHandler::RoboCopHandler(const RoboCopHandler &rch) : QThread()
     rightmost = 0;
     frameUpdate = false;
     gameRunning = false;
+    victory = false;
     reset = false;
 }
 
@@ -260,7 +261,47 @@ void RoboCopHandler::LevelReset()
 void RoboCopHandler::ResetNN()
 {
     gameRunning = false;
+    victory = false;
+    pool->ClearVictory();
     this->InitializePool();
+}
+
+void RoboCopHandler::PlayTop()
+{
+    int maxG = 0, maxS = 0;
+    float maxFit = 0.0f;
+    int idxG = 0, idxS = 0;
+    foreach(Species *s, pool->species)
+    {
+        foreach(Genome *gm, s->genomes)
+        {
+            if(gm->GetFitness() > maxFit)
+            {
+                maxFit = gm->GetFitness();
+                maxG = idxG;
+                maxS = idxS;
+            }
+
+            idxG++;
+        }
+
+        idxS++;
+        idxG = 0;
+    }
+
+    pool->SetCurrentGenome(maxG);
+    pool->SetCurrentSpecies(maxS);
+    pool->SetMaxFitness(maxFit);
+
+    // Wait five seconds before reseting RoboCop (We should wait for the celbrations to end).
+    wait(5000);
+    InitializeRun(true);
+}
+
+void RoboCopHandler::SetVictory()
+{
+    victory = true;
+    PlayTop();
 }
 
 void RoboCopHandler::SetInputs(int **in)

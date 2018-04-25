@@ -499,6 +499,11 @@ void MainWindow::readyRead()
             rch->SetPositionY(subSet.at(1).toInt());
             rch->SetPositionX(subSet.last().toInt());
         }
+        else if(command == "Victory")
+        {
+            // Set rch to run top.
+            rch->SetVictory();
+        }
     }
 }
 
@@ -682,6 +687,5 @@ void MainWindow::on_loadNNPb_clicked()
     qDebug() << filename;
     rch->LoadFile(filename);
     rch->LevelReset();
-    ResetLevel();
     rch->InitializeRun(false);
 }
