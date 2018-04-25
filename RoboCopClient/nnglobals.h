@@ -32,6 +32,7 @@ namespace RoboCop
     static const float StepSize = 0.10f;                    // Used to alter weight of node if pertrubing
     static const float DisableMutationChance = 0.40f;       // Chance to disable a node
     static const float EnableMutationChance = 0.20f;        // Chance to enable a node
+
     static const long MaxNodes = 100000L;                   // Max number of nodes to create. WARNING: DO NOT ENTER A VALUE OVER 100000. System may slow down.
     static const float TimeoutConstant = 20.0f; // frames
 

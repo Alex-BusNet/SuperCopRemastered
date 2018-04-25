@@ -80,14 +80,10 @@ void RoboCopHandler::GameLoop()
             if (playerPosX > rightmost || playerPosY < prevY)
             {
                 if(playerPosX > rightmost)
-                {    rightmost = playerPosX;
-//                qDebug() << "Player greater than rightmost";
+                {
+                    rightmost = playerPosX;
                     timeout = RoboCop::TimeoutConstant;
                 }
-//                if(playerPosY < 520){
-//                    hasJumped = true;
-//                }
-//                prevY = playerPosY;
 
                 if(playerPosY < prevY)
                 {
@@ -107,7 +103,7 @@ void RoboCopHandler::GameLoop()
 
             emit resetStat(reset);
 
-            if((timeout + timeoutBonus <= 0) || reset)
+            if((timeout /*+ timeoutBonus*/ <= 0) || reset)
             {
                 if(reset) { reset = false; }
 
@@ -118,9 +114,6 @@ void RoboCopHandler::GameLoop()
                 else{
                     fitness = (float)rightmost + (float)heightMax - (float)pool->GetCurrentFrame() / 2.0f;
                 }
-//                if(hasJumped){
-//                    fitness = fitness + 100;
-//                }
 
                 // Boost fitness by 1000 for reaching the end
                 if(rightmost > (70 * 205))
@@ -152,16 +145,13 @@ void RoboCopHandler::GameLoop()
             emit SpeciesUpdate(pool->GetCurrentSpecies(), pool->species.size());
             emit GenomeUpdate(pool->GetCurrentGenome());
             emit GenerationUpdate(pool->GetGeneration());
-            float fitcalc=std::floor((float)rightmost + (float)heightMax - (float)pool->GetCurrentFrame() / 2.0f - (timeout + timeoutBonus) * 2.0f / 3.0f);
+            float fitcalc=std::floor((float)rightmost + (float)heightMax - (float)pool->GetCurrentFrame() / 2.0f - (timeout /*+ timeoutBonus*/) * 2.0f / 3.0f);
             if(playerPosX <= 0){
                 fitcalc = 0;//-9001;
             }
-//            if(hasJumped){
-//                fitcalc = fitcalc + 100;
-//            }
             emit FitnessUpdate(fitcalc);
             emit MaxFitnessUpdate(std::floor(pool->GetMaxFitness()));
-            emit timeoutval(timeout + timeoutBonus);
+            emit timeoutval(timeout/* + timeoutBonus*/);
 
             //--------------------------
 

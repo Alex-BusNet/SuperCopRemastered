@@ -348,6 +348,12 @@ void MainWindow::on_Connect_clicked()
         {
             qDebug() << socket->errorString();
             socket->close();
+
+            ui->Connect->setText("Connect");
+
+            ui->resetNNPB->setEnabled(true);
+            ui->saveNNPb->setEnabled(false);
+            ui->loadNNPb->setEnabled(true);
         }
 
         if(socket->state() != QAbstractSocket::UnconnectedState)
@@ -640,7 +646,7 @@ void MainWindow::timeoutValue(float num)
 
 void MainWindow::on_closePB_clicked()
 {
-    if(socket->state() == QAbstractSocket::ConnectedState)
+    if(socket != NULL && socket->state() == QAbstractSocket::ConnectedState)
     {
         ResetLevel();
         Disconnected();
@@ -659,7 +665,7 @@ void MainWindow::on_resetNNPB_clicked()
         rch->ResetNN();
     }
 
-    if(socket->state() == QAbstractSocket::ConnectedState)
+    if(socket != NULL && socket->isOpen())
         ResetLevel();
 }
 

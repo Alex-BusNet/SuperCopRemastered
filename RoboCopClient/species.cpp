@@ -68,14 +68,15 @@ Genome *Species::BreedChild(int innovationSize)
     float p = RoboCop::randomf();
     if(p < RoboCop::CrossoverChance)
     {
-        Genome *g1 = genomes[rand() % genomes.size()];
+//        Genome *g1 = genomes[rand() % genomes.size()];
+        Genome *g1 = genomes[0];
         Genome *g2 = genomes[rand() % genomes.size()];
 
         child = Genome::Crossover(g1, g2, innovationSize);
     }
     else
     {
-        Genome *g = genomes[rand() % (int)(std::ceil(genomes.size() / 2.0f))];
+        Genome *g = genomes[rand() % genomes.size()];
         child = new Genome(*g);
     }
 

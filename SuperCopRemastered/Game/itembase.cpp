@@ -26,8 +26,8 @@ ItemBase::ItemBase(ItemType iType)
 
 ItemBase::~ItemBase()
 {
-    if(boundingBox != NULL)
-        delete boundingBox;
+//    if(boundingBox != NULL)
+//        delete boundingBox;
 
     if(texture != NULL)
         delete texture;

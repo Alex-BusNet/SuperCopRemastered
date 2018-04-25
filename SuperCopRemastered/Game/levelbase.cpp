@@ -743,22 +743,11 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
     {
         QPoint pos = view->mapFromScene(p->GetPosX(), p->GetPosY());
 
-//        if(pos.x() >= 0 && pos.x() <= view->width() && pos.y() >= 0 && pos.y() <= view->height())
-//        {
-            pBlockX = (pos.x() / 70) + 1;
-//            x = pBlockX % 15;
-            pBlockY = (pos.y() / 70);
-//            y = pBlockY % 10;
+        pBlockX = (pos.x() / 70) + 1;
+        pBlockY = (pos.y() / 70);
 
-//            if(x < 0) { x = 0; }
-
-//            if(y >= 0 && y < 10)
-                parsedView[4][7] = 2;
-
-//            if((y + 1) >= 0 && (y + 1) < 10)
-                parsedView[5][7] = 2;
-
-//        }
+        parsedView[4][7] = 2;
+        parsedView[5][7] = 2;
     }
 
     // Set the position of any obstacles visible to the player
@@ -771,7 +760,6 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
             int blockX = pos.x() / 70;
             int blockY = pos.y() / 70;
 
-//            if(pos.x() >= 0 && pos.x() <= view->width()&& pos.y() >= 0 && pos.y() <= view->height())
             if((blockX >= (pBlockX - 7)) && (blockX <= (pBlockX + 7)) && (blockY >= (pBlockY - 4)) && (blockY <= (pBlockY + 5)))
             {
                 if(blockX <= pBlockX)
@@ -779,12 +767,10 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
                 else
                     x = 7 + (blockX - pBlockX);
 
-//                x = blockX % 15;
                 if(blockY <= pBlockY)
                     y = 5 - (pBlockY - blockY);
                 else
                     y = 5 + (blockY - pBlockY);
-//                y = blockY % 10/* + 1*/;
 
                 if(y >= 0 && y < 10)
                 {
@@ -807,7 +793,6 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
             //       (Not that any one will actually notice the improvement), but is
             //       reduced near the end of the level since the time complexity of the
             //       loop becomes O(n)
-            //            if(pos.x() > view->width())
             if(blockX > (pBlockX + 7))
                 break;
         }
@@ -823,7 +808,6 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
             int blockX = pos.x() / 70;
             int blockY = pos.y() / 70;
 
-//            if(pos.x() >= 0 && pos.x() <= view->width()&& pos.y() >= 0 && pos.y() <= view->height())
             if((blockX >= (pBlockX - 7)) && (blockX <= (pBlockX + 7)) && (blockY >= (pBlockY - 4)) && (blockY <= (pBlockY + 5)))
             {
                 if(blockX <= pBlockX)
@@ -831,12 +815,10 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
                 else
                     x = 7 + (blockX - pBlockX);
 
-//                x = blockX % 15;
                 if(blockY <= pBlockY)
                     y = 4 - (pBlockY - blockY);
                 else
                     y = 5 + (blockY - pBlockY);
-//                y = blockY % 10/* + 1*/;
 
                 if(y >= 0 && y < 10)
                 {
@@ -869,7 +851,6 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
                 int blockX = pos.x() / 70;
                 int blockY = pos.y() / 70;
 
-    //            if(pos.x() >= 0 && pos.x() <= view->width()&& pos.y() >= 0 && pos.y() <= view->height())
                 if((blockX >= (pBlockX - 7)) && (blockX <= (pBlockX + 7)) && (blockY >= (pBlockY - 4)) && (blockY <= (pBlockY + 5)))
                 {
                     if(blockX <= pBlockX)
@@ -877,12 +858,10 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
                     else
                         x = 7 + (blockX - pBlockX);
 
-    //                x = blockX % 15;
                     if(blockY <= pBlockY)
                         y = 4 - (pBlockY - blockY);
                     else
                         y = 5 + (blockY - pBlockY);
-    //                y = blockY % 10/* + 1*/;
 
                     if((y+1) < 10 && parsedView[y+1][x] == 0)
                         y++;
@@ -897,7 +876,6 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
                 //       (Not that any one will actually notice the improvement), but is
                 //       reduced near the end of the level since the time complexity of the
                 //       loop becomes O(n)
-//                if(pos.x() > view->width())
                 if(blockX > (pBlockX + 7))
                     break;
             }
@@ -918,7 +896,6 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
                     int blockX = pos.x() / 70;
                     int blockY = pos.y() / 70;
 
-        //            if(pos.x() >= 0 && pos.x() <= view->width()&& pos.y() >= 0 && pos.y() <= view->height())
                     if((blockX >= (pBlockX - 7)) && (blockX <= (pBlockX + 7)) && (blockY >= (pBlockY - 4)) && (blockY <= (pBlockY + 5)))
                     {
                         if(blockX <= pBlockX)
@@ -926,12 +903,10 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
                         else
                             x = 7 + (blockX - pBlockX);
 
-        //                x = blockX % 15;
                         if(blockY <= pBlockY)
                             y = 4 - (pBlockY - blockY);
                         else
                             y = 5 + (blockY - pBlockY);
-        //                y = blockY % 10/* + 1*/;
 
                         if(y >= 0 && y < 10)
                             parsedView[y][x] = 4;
@@ -943,7 +918,6 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
                     //       (Not that anywould will actually notice the improvement), but is
                     //       reduced near the end of the level since the time complexity of the
                     //       loop becomes O(n)
-                    //            if(pos.x() > view->width())
                     if(blockX > (pBlockX + 7))
                         break;
                 }
