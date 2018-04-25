@@ -47,7 +47,7 @@
 // Pixels per unit where 1 unit is a single block
 #define UNIT_SCALE_FACTOR         70.0f
 // Minimum units player should jump before falling.
-#define MIN_JUMP_HEIGHT           2.8f * (60.0f / FRAME_RATE_FLOAT)
+#define MIN_JUMP_HEIGHT           2.4f * (60.0f / FRAME_RATE_FLOAT)
 #define MID_JUMP_HEIGHT
 // Gravity is in px/s^2 where 70px = 1 unit
 #define GRAVITY_FACTOR            44.0f//3080.0f

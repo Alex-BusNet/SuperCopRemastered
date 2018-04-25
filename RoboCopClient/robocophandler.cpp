@@ -79,10 +79,11 @@ void RoboCopHandler::GameLoop()
 
             if (playerPosX > rightmost || playerPosY < prevY)
             {
-                rightmost = playerPosX;
+                if(playerPosX > rightmost)
+                {    rightmost = playerPosX;
 //                qDebug() << "Player greater than rightmost";
-                timeout = RoboCop::TimeoutConstant;
-
+                    timeout = RoboCop::TimeoutConstant;
+                }
 //                if(playerPosY < 520){
 //                    hasJumped = true;
 //                }

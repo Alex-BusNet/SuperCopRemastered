@@ -20,18 +20,18 @@ namespace RoboCop
                                                             // are used.
 
     static const float DeltaDisjoint = 2.0f;                // Disjoint modifier value
-    static const float DeltaWeights = 0.40f;                 // Weight modifier value
+    static const float DeltaWeights = 0.40f;                // Weight modifier value
     static const float DeltaThreshold = 1.0f;               // Threshold to determine if two species are the same
     static const int StaleSpecies = 15;                     // Max number of counts before a species is killed off
     static const float MutationConnectionChance = 0.25f;    // Chance to alter weight of gene
-    static const float PerturbChance = 0.90f;                // Chance to alter gene away from its normal path
+    static const float PerturbChance = 0.90f;               // Chance to alter gene away from its normal path
     static const float CrossoverChance = 0.75f;             //
     static const float LinkMutationChance = 2.0f;           // Chance to add a new node between a random input and output node
-    static const float BiasMutationChance = 0.40f;           // Chance to add a new biasing node to an output node.
-    static const float NodeMutationChance = 0.50f;           //
-    static const float StepSize = 0.10f;                     // Used to alter weight of node if pertrubing
-    static const float DisableMutationChance = 0.40f;        // Chance to disable a node
-    static const float EnableMutationChance = 0.20f;         // Chance to enable a node
+    static const float BiasMutationChance = 0.40f;          // Chance to add a new biasing node to an output node.
+    static const float NodeMutationChance = 0.50f;          //
+    static const float StepSize = 0.10f;                    // Used to alter weight of node if pertrubing
+    static const float DisableMutationChance = 0.40f;       // Chance to disable a node
+    static const float EnableMutationChance = 0.20f;        // Chance to enable a node
     static const long MaxNodes = 100000L;                   // Max number of nodes to create. WARNING: DO NOT ENTER A VALUE OVER 100000. System may slow down.
     static const float TimeoutConstant = 20.0f; // frames
 

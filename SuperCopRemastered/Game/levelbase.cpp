@@ -517,30 +517,30 @@ void LevelBase::UpdateLevel(Player* p, GameView *view, bool devMode)
                         p->setWallCollided(WEST, true);
                         p->setPosX(nearestObsY->GetRightEdge() - 20);
                     }
-                    else if(bottomBlockCollision)
-                    {
-                        if(devMode)
-                            qDebug() << "Bonus block collision";
+//                    else if(bottomBlockCollision)
+//                    {
+//                        if(devMode)
+//                            qDebug() << "Bonus block collision";
 
-                        donuts.push_back(new ItemBase(DONUT));
-                        donuts.last()->SetPostion(nearestObsY->GetPosX(), nearestObsY->GetPosY() - 64);
+//                        donuts.push_back(new ItemBase(DONUT));
+//                        donuts.last()->SetPostion(nearestObsY->GetPosX(), nearestObsY->GetPosY() - 64);
 
-                        donutItems.push_back(view->addPixmap(*donuts.last()->GetTexture()));
-                        donutItems.last()->setPos(nearestObsY->GetPosX(), nearestObsY->GetPosY() - 64);
-                        donuts.last()->SetViewPixmap(donutItems.last());
+//                        donutItems.push_back(view->addPixmap(*donuts.last()->GetTexture()));
+//                        donutItems.last()->setPos(nearestObsY->GetPosX(), nearestObsY->GetPosY() - 64);
+//                        donuts.last()->SetViewPixmap(donutItems.last());
 
-                        donutBBs.push_back(view->addRect(*donuts.last()->GetBoundingBox()));
-                        donuts.last()->SetViewBB(donutBBs.last());
+//                        donutBBs.push_back(view->addRect(*donuts.last()->GetBoundingBox()));
+//                        donuts.last()->SetViewBB(donutBBs.last());
 
-                        ((BonusBlock*)obstacles.at(idx))->BlockHit();
-                        if(((BonusBlock*)obstacles.at(idx))->GetHitsRemaining() <= 0)
-                        {
-                            obstacles.at(idx)->SetType(levelFloor.at(0)->GetLevelType(), BLOCK_EDGE_TOP);
-                            obstacleItems.at(idx)->setPixmap(*obstacles.at(idx)->GetTexture());
-                        }
+//                        ((BonusBlock*)obstacles.at(idx))->BlockHit();
+//                        if(((BonusBlock*)obstacles.at(idx))->GetHitsRemaining() <= 0)
+//                        {
+//                            obstacles.at(idx)->SetType(levelFloor.at(0)->GetLevelType(), BLOCK_EDGE_TOP);
+//                            obstacleItems.at(idx)->setPixmap(*obstacles.at(idx)->GetTexture());
+//                        }
 
-                        p->playerAction(NONE, false, true);
-                    }
+//                        p->playerAction(NONE, false, true);
+//                    }
                     else if((bt == GOAL) || (bt == GOAL_BASE) || (bt == GOAL_MIDDLE))
                     {
                         if(p->getState() != VICTORY)
@@ -984,9 +984,11 @@ void LevelBase::ResetLevel(GameView *view)
             delete p;
         }
     }
+    qDebug() << "Clearing DonutItems";
     if(donutItems.size() > 0)
         donutItems.clear();
 
+    qDebug() << "Clearing donuts";
     if(donuts.size() > 0)
         donuts.clear();
 
