@@ -19,7 +19,7 @@ MainWindow::MainWindow(QWidget *parent) :
     rch = RoboCopHandler::instance();
     ui->resetNNPB->setEnabled(true);
     ui->saveNNPb->setEnabled(false);
-    ui->loadNNPb->setEnabled(false);
+    ui->loadNNPb->setEnabled(true);
 
     ui->Right->hide();
     ui->Left->hide();
