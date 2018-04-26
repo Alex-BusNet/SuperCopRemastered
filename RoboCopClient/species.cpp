@@ -63,7 +63,7 @@ void Species::SetStaleness(int stale)
 
 Genome *Species::BreedChild(int innovationSize)
 {
-//    qDebug() << "BreedChild()";
+    qDebug() << "BreedChild()";
     Genome *child = NULL;
     float p = RoboCop::randomf();
     if(p < RoboCop::CrossoverChance)
@@ -76,12 +76,13 @@ Genome *Species::BreedChild(int innovationSize)
     }
     else
     {
-        Genome *g = genomes[rand() % genomes.size()];
+//        Genome *g = genomes[rand() % genomes.size()];
+        Genome *g = genomes[0];
         child = new Genome(*g);
     }
 
     Genome::Mutate(child);
-//    qDebug() << "--Finished BreedChild()";
+    qDebug() << "--Finished BreedChild()";
     return child;
 }
 

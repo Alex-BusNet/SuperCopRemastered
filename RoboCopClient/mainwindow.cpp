@@ -503,6 +503,7 @@ void MainWindow::readyRead()
         {
             // Set rch to run top.
             rch->SetVictory();
+            ui->victoryLabel->setStyleSheet("QLabel { background-color: lightgreen; }");
         }
     }
 }
@@ -669,6 +670,8 @@ void MainWindow::on_resetNNPB_clicked()
     {
         rch->ResetNN();
     }
+
+    ui->victoryLabel->setStyleSheet("QLabel { background-color: transparent; }");
 }
 
 void MainWindow::on_saveNNPb_clicked()

@@ -143,7 +143,7 @@ void RoboCopHandler::GameLoop()
             //--------------------------
             // NN State info goes here
 
-            emit SpeciesUpdate(pool->GetCurrentSpecies(), pool->species.size());
+            emit SpeciesUpdate(pool->GetCurrentSpecies(), pool->species.size() - 1);
             emit GenomeUpdate(pool->GetCurrentGenome());
             emit GenerationUpdate(pool->GetGeneration());
             float fitcalc=std::floor((float)rightmost + (float)heightMax - (float)pool->GetCurrentFrame() / 2.0f - (timeout + timeoutBonus) * 2.0f / 3.0f);

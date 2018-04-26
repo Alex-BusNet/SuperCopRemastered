@@ -401,6 +401,17 @@
            </property>
           </widget>
          </item>
+         <item>
+          <widget class="QLabel" name="victoryLabel">
+           <property name="text">
+            <string>Victory
+Mode</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
         </layout>
        </item>
       </layout>

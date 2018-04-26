@@ -123,7 +123,6 @@ void Pool::NewGeneration()
     CullSpecies(true); // Leave only the top member of each species.
     while((children.size() + species.size()) < RoboCop::Population)
     {
-
         Species *s = species[RoboCop::randomi() % species.size()];
         children.push_back(s->BreedChild(innovation));
 //        qDebug() << "\t\t" << children.size() << species.size() << RoboCop::Population;
@@ -148,7 +147,7 @@ QMap<QString, bool> Pool::EvaluateNetwork(QVector<int> inputs)
 
 void Pool::CullSpecies(bool cutToOne)
 {
-//    qDebug() << "CullSpecies()";
+    qDebug() << "CullSpecies()";
     foreach(Species *s, species)
     {
         if(s->genomes.size() > 0)
@@ -262,7 +261,7 @@ void Pool::ClearVictory()
 
 void Pool::AddToSpecies(Genome *child)
 {
-//    qDebug() << "AddToSpecies()";
+    qDebug() << "AddToSpecies()";
     bool foundSpecies = false;
     foreach(Species *s, species)
     {
@@ -286,7 +285,7 @@ void Pool::AddToSpecies(Genome *child)
         this->species.push_back(s);
     }
 
-//    qDebug() << "--Finished AddToSpecies()";
+    qDebug() << "--Finished AddToSpecies()";
 }
 
 int Pool::GetCurrentGenome()
